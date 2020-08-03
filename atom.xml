@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.easy233.top/"/>
-  <updated>2020-07-02T10:16:25.737Z</updated>
+  <updated>2020-08-03T07:59:59.438Z</updated>
   <id>https://www.easy233.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>某cms代码审计</title>
+    <link href="https://www.easy233.top/2020/08/03/lfdcms/"/>
+    <id>https://www.easy233.top/2020/08/03/lfdcms/</id>
+    <published>2020-08-03T07:27:37.000Z</published>
+    <updated>2020-08-03T07:59:59.438Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;好久没有进行代码审计了，今天空闲选了一个较为简单的MVC架构的CMS进行练练手。&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="代码审计" scheme="https://www.easy233.top/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>某汽车网源码的进一步代码审计</title>
