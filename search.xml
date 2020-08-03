@@ -4,38 +4,6 @@
   
     
     <entry>
-      <title>AWVS安装爬坑记</title>
-      <link href="/2020/07/17/awvs-an-zhuang-pa-keng-ji/"/>
-      <url>/2020/07/17/awvs-an-zhuang-pa-keng-ji/</url>
-      
-        <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>说出来真是脸面丢尽，我AWVS从大一装到大二，从windows到linux再到docker都尝试装过，都没有成功。在windows安装不知道为何每次安装后CPU都会拉满，使得我无法在windows平台上进行操作。在linux上安装发现安装成功了但是却无法进行扫描，使用<a href="https://hub.docker.com/r/vouu/acunetix" target="_blank" rel="noopener">docker</a>安装却发现无论怎么样都无法在web页面访问。终于在今天看到一篇文章提到AWVS不支持centos，</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>探索计算机网络</title>
-      <link href="/2020/07/10/tan-suo-ji-suan-ji-wang-luo/"/>
-      <url>/2020/07/10/tan-suo-ji-suan-ji-wang-luo/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 备考计算机网络考试时学习到了非常多计算机网络的知识，以前对计算机网络一些一直困惑我的问题也得到了解决，在这里我进行一个系统总结。</p><h2 id="IP，子网掩码，网关"><a href="#IP，子网掩码，网关" class="headerlink" title="IP，子网掩码，网关"></a>IP，子网掩码，网关</h2><h3 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h3><p>IP地址是一种逻辑地址，其用处在于确定网络中的主机位置，<strong>IP地址由网络地址+主机地址组成是一个32位二进制数，为了方便记忆一般每8位分开来。我们平时看到这些IP地址则是这些二进制的十进制表示形式。</strong>。网络地址能够确定主机处在那一个局域网中，而主机地址则表示该主机在该局域网中的位置，两者结合就可以确定物理主机位置。网上有非常巧妙的“北大街” 比喻ip地址的比喻，对IP地址存在疑惑的可以<a href="https://blog.csdn.net/hexf9632/article/details/93469788" target="_blank" rel="noopener">看看</a></p><p>IP地址分为A,B,C,D,E五类,如下图所示：</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200711170958.png" alt=""></p><p><strong>注意:主机ID全为0的为网络地址，主机ID全为1的为广播地址。这两个地址不能分配给主机使用</strong></p><h4 id="公网IP和私网IP"><a href="#公网IP和私网IP" class="headerlink" title="公网IP和私网IP"></a>公网IP和私网IP</h4><p><strong>公网IP</strong></p><p>公有地址分配和管理由Inter NIC（Internet Network Information Center 因特网信息中心）负责。各级ISP使用的公网地址都需要向Inter NIC提出申请，有Inter NIC统一发放，这样就能确保地址块不冲突。</p><p><strong>私网IP地址</strong><br>创建IP寻址方案的人也创建了私网IP地址。这些地址可以被用于私有网络，在Internet没有这些IP地址，Internet上的路由器也没有到私有网络的路由表。</p><ul><li>A类：10.0.0.0 255.0.0.0，保留了1个A类网络。</li><li>B类：172.16.0.0 255.255.0.0～172.31.0.0 255.255.0.0，保留了16个B类网络。</li><li>C类：192.168.0.0 255.255.255.0～192.168.255.0 255.255.255.0，保留了256个C类网络。</li></ul><p>PS：私网地址访问Internet需要做NAT或PAT网络地址转换</p><h3 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h3><p>网络掩码和IP地址一样都是由32位二位进制数组成的一个地址。它的作用主要有两个一是用于屏蔽IP地址的一部分以区别网络地址和主机地址，并说明该IP地址是在局域网上，还是在远程网上。二是用于将一个大的IP网络划分为若干小的子网络。</p><h4 id="通过子网掩码和ip计算网络地址"><a href="#通过子网掩码和ip计算网络地址" class="headerlink" title="通过子网掩码和ip计算网络地址"></a>通过子网掩码和ip计算网络地址</h4><p>例如:ip为192.168.2.100 </p><p>​        子网掩码:255.255.255.0怎么计算其网络地址</p><p>首先把两者转化成二进制:</p><p>192.168.2.100: 11000000  10101000 00000010 01100100</p><p>255.255.255.0: 11111111 11111111 11111111 00000000</p><p>然后把他们与运算(0&amp;0=0;0&amp;1=0;1&amp;0=0;1&amp;1=1)</p><p>得到:11000000  10101000  00000010 00000000</p><p>在转化成十进制就为:192.168.2.0</p><h4 id="子网划分"><a href="#子网划分" class="headerlink" title="子网划分"></a>子网划分</h4><p>如果我们使用ip只通过A类，B类，C类来分的话。 我们可以看出C类最多地址块是2^8=256，而B类2^16=65536,对很多情况下C类要太少，而B类又太多。为了解决IPv4的不足，提高网络划分的灵活性，我们可以使用子网划分和超网合并。</p><p><strong>子网划分的思想很简单:就是把原来IP中的网络ID部分先主机ID错位。</strong></p><p>例如我们把192.168.0.0   255.255.255.0 这个网络划分成两个子网</p><p>要借用1位主机为作为子网位。因为二进制有两种组合0和1组合</p><p><img src="http://picbed.easy233.top/blog-img/cc05ee8e14483fc9144d7f74397aa78e.png" alt=""></p><p>能够得到子网A: 192.168.0.0      255.255.255.128</p><p>​                子网B: 192.168.0.1      255.255.255.128</p><p>从中<strong>我们可以看出因为二进制0和1组合所以每占用n个主机ID就能划分2^n个子网，子网掩码就增加n位。同时我们可以得到每个子网主机数为2^y-2台主机j(y是没有没有占用的主机ID数，并且减去一个网络地址和一个广播地址)</strong></p><p>在举个例子:</p><p>网络地址为:172.168.0.0</p><p>子网掩码为:255.255.255.128(/25)</p><p>首先明确目标的IP类型，这里为B段网络默认子网掩码为255.255.0.0(/16)</p><p><strong>所以这里的划分的子网数量为:</strong></p><p>2^9=256个子网，25-16=9</p><p><strong>每个子网的主机数量为：</strong></p><p>2^7-2=126个主机位。</p><p><strong>每个子网的广播地址是？</strong></p><p>主机位都为1即是子网的广播地址，这里172.168.0.127，172.168.0.255……..</p><h3 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h3><p>网关实质上是一个网络通其他网络的IP地址，这个ip地址具有路由的功能。而默认网关就是当数据找不到可用的网关就把数据发送到默认网关中去。</p><h3 id="DNS协议"><a href="#DNS协议" class="headerlink" title="DNS协议"></a>DNS协议</h3><p>简单来说DNS协议功能就是把域名转化成ip。 </p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 计算机网络 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>某汽车网源码的进一步代码审计</title>
       <link href="/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/"/>
       <url>/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/</url>
