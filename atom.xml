@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>EASY</title>
+  
+  <subtitle>探索这个世界</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://www.easy233.top/"/>
+  <updated>2020-07-17T13:10:14.178Z</updated>
+  <id>https://www.easy233.top/</id>
+  
+  <author>
+    <name>EASY</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AWVS安装爬坑记</title>
+    <link href="https://www.easy233.top/2020/07/17/awvs-an-zhuang-pa-keng-ji/"/>
+    <id>https://www.easy233.top/2020/07/17/awvs-an-zhuang-pa-keng-ji/</id>
+    <published>2020-07-17T09:34:23.000Z</published>
+    <updated>2020-07-17T13:10:14.178Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>探索计算机网络</title>
+    <link href="https://www.easy233.top/2020/07/10/tan-suo-ji-suan-ji-wang-luo/"/>
+    <id>https://www.easy233.top/2020/07/10/tan-suo-ji-suan-ji-wang-luo/</id>
+    <published>2020-07-10T08:36:22.000Z</published>
+    <updated>2020-07-13T04:04:45.257Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;在
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="计算机网络" scheme="https://www.easy233.top/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>某汽车网源码的进一步代码审计</title>
+    <link href="https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/"/>
+    <id>https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/</id>
+    <published>2020-07-02T10:03:25.000Z</published>
+    <updated>2020-07-02T10:16:25.737Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;文章首发于圈子社区:&lt;a href=&quot;https://www.secquan.org/CodeAudit/1071106&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="代码审计" scheme="https://www.easy233.top/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>New blog</title>
+    <link href="https://www.easy233.top/2020/06/24/hexo-jian-zhan-you-hua-guo-cheng-ji-lu/"/>
+    <id>https://www.easy233.top/2020/06/24/hexo-jian-zhan-you-hua-guo-cheng-ji-lu/</id>
+    <published>2020-06-24T04:44:59.000Z</published>
+    <updated>2020-07-01T03:56:37.894Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="blog" scheme="https://www.easy233.top/categories/blog/"/>
+    
+    
+      <category term="blog优化" scheme="https://www.easy233.top/tags/blog%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>disable_functions绕过技巧总结</title>
+    <link href="https://www.easy233.top/2020/06/18/hello/"/>
+    <id>https://www.easy233.top/2020/06/18/hello/</id>
+    <published>2020-06-18T13:52:47.000Z</published>
+    <updated>2020-06-25T01:37:53.553Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;disable_functions是php.ini中的一个设置选项，可以用来设置PHP环境禁止使用某些函数，通常是网站管理员为了安全起见，用来禁用某些危险的命令执行函数等。&lt;br&gt;要进行添加的话在php.ini中添加即可，每个函数之间使用逗号隔开。&lt;br&gt;&lt;strong&gt;注
+        
+      
+    
+    </summary>
+    
+    
+      <category term="bypass" scheme="https://www.easy233.top/categories/bypass/"/>
+    
+    
+      <category term="bypass" scheme="https://www.easy233.top/tags/bypass/"/>
+    
+      <category term="disable_functions" scheme="https://www.easy233.top/tags/disable-functions/"/>
+    
+  </entry>
+  
+</feed>
