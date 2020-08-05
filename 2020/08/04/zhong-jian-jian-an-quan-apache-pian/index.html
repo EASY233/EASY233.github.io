@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="某汽车网源码的进一步代码审计, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="中间件安全-apache篇, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>某汽车网源码的进一步代码审计 | EASY</title>
+    <title>中间件安全-apache篇 | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -287,12 +287,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">某汽车网源码的进一步代码审计</h1>
+                    <h1 class="description center-align post-title">中间件安全-apache篇</h1>
                 </div>
             </div>
         </div>
@@ -409,8 +409,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                <span class="chip bg-color">代码审计</span>
+                            <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">中间件安全</span>
                             </a>
                         
                     </div>
@@ -425,7 +425,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-02
+                    2020-08-04
                 </div>
                 
 
@@ -441,52 +441,41 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>文章首发于圈子社区:<a href="https://www.secquan.org/CodeAudit/1071106" target="_blank" rel="noopener">https://www.secquan.org/CodeAudit/1071106</a></p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Apache 是世界使用排名第一的 Web 服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的 Web 服务器端软件之一。</p>
+<h2 id="Apache解析漏洞"><a href="#Apache解析漏洞" class="headerlink" title="Apache解析漏洞"></a>Apache解析漏洞</h2><p>Apache 默认一个文件可以有多个以点分隔的后缀，当右边的后缀无法识别（不在 mime.tyoes 内），则继续向左识别。例如这样的一个文件:shell.php.xx.yy。当右边yy无法识别的时候就会往左边继续进行识别直到识别到apache可以解析的内容。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804114233.png" alt=""></p>
+<h3 id="修复方法"><a href="#修复方法" class="headerlink" title="修复方法"></a>修复方法</h3><p>在apache配置文件中把<code>AddType application/x-httpd-php .php .html.phtml</code>  删除掉即可，重启apache即可。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804102732.png" alt=""></p>
+<h2 id="htaccess文件解析"><a href="#htaccess文件解析" class="headerlink" title=".htaccess文件解析"></a>.htaccess文件解析</h2><blockquote>
+<p>原理：.htaccess文件(或者”分布式配置文件”）,全称是Hypertext Access(超文本入口)。提供了针对目录改变配置的方法， 即，在一个特定的文档目录中放置一个包含一个或多个指令的文件， 以作用于此目录及其所有子目录。作为用户，所能使用的命令受到限制。管理员可以通过Apache的AllowOverride指令来设置。</p>
 </blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在先知社区看到一篇文章<a href="https://xz.aliyun.com/t/2730" target="_blank" rel="noopener">代码审计之某汽车网源码</a> 。作者介绍了两个sql注入漏洞，我在学习之余对该套代码进行进一步审计也发现了几个有趣的漏洞。</p>
-<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><pre class=" language-php"><code class="language-php">admin    <span class="token operator">--</span>后台文件夹
-cache    <span class="token operator">--</span>缓存文件夹
-<span class="token keyword">include</span>   <span class="token operator">--</span> 一些公共包含文件重点审核
-index     <span class="token operator">--</span> 前台注册登陆
-news      <span class="token operator">--</span> 新闻模块
-index<span class="token punctuation">.</span>php   <span class="token operator">--</span>网站入口
-qzqcw<span class="token punctuation">.</span>php   <span class="token operator">--</span>后台入口</code></pre>
-<h2 id="越权添加管理员"><a href="#越权添加管理员" class="headerlink" title="越权添加管理员"></a>越权添加管理员</h2><p>该漏洞是个几个小漏洞组合而成，待我一一分析。</p>
-<h3 id="前台有限制的任意文件包含漏洞"><a href="#前台有限制的任意文件包含漏洞" class="headerlink" title="前台有限制的任意文件包含漏洞"></a>前台有限制的任意文件包含漏洞</h3><p>该网站的功能都是直接通过include包含其他php使用的。在入口文件index.php中我们可以看到里面的包含规则：</p>
-<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'common.inc.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/page.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token variable">$m</span> <span class="token operator">=</span> <span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token string">'index'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">file_exists</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'error url'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter">?></span></code></pre>
-<p>获取GET传来的$m参数拼接到文件路径中，如果文件存在就直接包含。当然这里也对$m参数也进行路径穿越的过滤，但是绕过并不是很难。<br>过滤代码在<code>include/function.func.php</code>22-32行之间，如下</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$value</span> <span class="token keyword">as</span> <span class="token variable">$key</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token variable">$val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token variable">$value</span><span class="token punctuation">[</span><span class="token variable">$key</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$val</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> 
-        <span class="token keyword">return</span> <span class="token variable">$value</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> 
-    <span class="token keyword">return</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'..\\'</span><span class="token punctuation">,</span> <span class="token string">'../'</span><span class="token punctuation">,</span> <span class="token string">'./'</span><span class="token punctuation">,</span> <span class="token string">'.\\'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span> </code></pre>
-<p>使用str_replace函数进行关键词过滤是非常不安全的，尤其是这种把关键词替换成空的情况。例如该函数把select关键词替换成空，我们只需改成selselectect即可。当函数把selelct替换成空前后合在一起就又成了我们所需要的select关键词。<br>这里的绕过同理，我测试的payload为:<code>.../...//....///</code>经过一轮替换后可以变成我们需要的<code>../</code>。<br>但是因为这里限定后缀只能是php所以在这里这个漏洞还是很鸡肋。</p>
-<h3 id="后台不安全的资源访问"><a href="#后台不安全的资源访问" class="headerlink" title="后台不安全的资源访问"></a>后台不安全的资源访问</h3><p>在admin文件夹下文件都会在开头加上这一行代码来防止普通用户来访问后文件资源</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">defined</span><span class="token punctuation">(</span><span class="token string">'APP_IN'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'Access Denied'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>如果APP_IN这个常量没有被定义就直接退出系统。但是该定义APP_IN这个常量的文件竟然在公共文件<code>common.inc.php</code>处。<br><img src="https://secquan.zzyuncheng.com/8e06ebb4354ea10d1cf7b83aab4818c4.png-quanzi" alt="file"><br>而这个文件正好也被前面所说的index.php包含着。所以思路就很明确在index.php处包含后台文件即可使用网站后台资源了。</p>
-<h3 id="添加管理员"><a href="#添加管理员" class="headerlink" title="添加管理员"></a>添加管理员</h3><p>我们利用该漏洞尝试在没有进行后台登陆的情况下添加管理员,效果如下图<br><img src="https://p4.ssl.qhimg.com/t01b9ca0aa7531aee83.png" alt="img"><br>然后我们查看是否添加成功：<br><img src="https://secquan.zzyuncheng.com/23d3785a38d44d9f9a877d97230d94a2.png-quanzi" alt="file"></p>
-<h2 id="存储型xss"><a href="#存储型xss" class="headerlink" title="存储型xss"></a>存储型xss</h2><p>该站存在的xss其实并不少，这里挑选个利用相对简单的存储型xss聊聊</p>
-<p>漏洞在公司注册处：<a href="http://qzqcms.top/?m=register" target="_blank" rel="noopener">http://qzqcms.top/?m=register</a><br>漏洞代码在<code>index/register.php</code>处<br><img src="https://secquan.zzyuncheng.com/d15679ad40db979efc694973dc46f70e.png-quanzi" alt="file"><br>可以看到参数nicname和company没有进行任何的xss过滤操作就直接带入到了数据库。<br>这里利用的需要注意两点:</p>
+<p>条件：</p>
 <ul>
-<li>1.数据库限制了nicncame参数的长度范围，所以真正好利用是公司名称company参数。</li>
-<li>2.这些参数都有前端的限制我们可以在burp中修改绕过限制。</li>
+<li>php5.6以下不带nts的版本</li>
+<li>服务器没有禁止.htaccess文件的上传，且服务商允许用户使用自定义.htaccess文件</li>
 </ul>
-<p><img src="https://secquan.zzyuncheng.com/d89e8a81f3874121371ccf9ce981d745.png-quanzi" alt="file"></p>
-<p>登陆后台查看，xss果然被触发：<br><img src="https://secquan.zzyuncheng.com/f27b987d13121fdb1d76394845960cb7.png-quanzi" alt="file"></p>
+<p>一般出于安全性考虑根目录的AllowOverride属性一般都配置成不允许任何Override，即要设置为None。要想使.htaccess文件生效需要把None改成ALL。当是在测试过程中发现phpstudy无论是否修改都可以解析。。。。。具体可以看看该<a href="[]()">文章</a></p>
+<p><strong>所以开发过程中切忌不要使用集成环境，不够安全</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804114352.png" alt="img"></p>
+<p>上传文件.htaccess中代码为：</p>
+<pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>FilesMatch</span> <span class="token attr-name">"shell.jpg"</span><span class="token punctuation">></span></span></span> 
+SetHandler application<span class="token operator">/</span>x<span class="token operator">-</span>httpd<span class="token operator">-</span>php 
+<span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>FilesMatch</span><span class="token punctuation">></span></span></span></code></pre>
+<p>该目录包括子目录下的所有名为shell.jpg的文件都会解析为php文件</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804111828.png" alt=""></p>
+<h2 id="Apache-HTTPD-多后缀解析漏洞"><a href="#Apache-HTTPD-多后缀解析漏洞" class="headerlink" title="Apache HTTPD 多后缀解析漏洞"></a>Apache HTTPD 多后缀解析漏洞</h2><p>Apache Httpd支持一个文件拥有多个后缀,不同的后缀执行不同的命令,也就是说当我们上传的文件中只要后缀名含有php,该文件就可以被解析成php文件,利用Apache httpd这个特性,就可以绕过上传文件的白名单。无关apache版本和php版本是用户配置错误漏洞</p>
+<p>开发的错误配置：</p>
+<p><code>AddHandler application/x-httpd-php .php</code></p>
+<p>直接上传一个名为<code>shell.php.jpg</code>的文件，可以成功解析：<br><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/8N5@B4ZBRZT9E3$KM01JA@O.png" alt=""></p>
+<h2 id="Apache-HTTPD-换行解析漏洞"><a href="#Apache-HTTPD-换行解析漏洞" class="headerlink" title="Apache HTTPD 换行解析漏洞"></a>Apache HTTPD 换行解析漏洞</h2><p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其2.4.0~2.4.29版本中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>vulhub上的详细复现和环境：<a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/" target="_blank" rel="noopener">https://vulhub.org/#/environments/httpd/CVE-2017-15715/</a></p>
+<p> 个人复现：<br>利用vulhub提供的靶场环境上传文件，在php处做好标记：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/V9X_1%5DKK1UPT2B8(AXXGF%7D2.png" alt="img"></p>
+<p>在php后面插入<code>\x0A</code>，在把前面的标志删掉。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200804170817.png" alt=""></p>
+<p>使用蚁剑进行连接可以成功利用:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200804171037.png" alt=""></p>
+<h2 id="apache提权-CVE-2019-0211"><a href="#apache提权-CVE-2019-0211" class="headerlink" title="apache提权-CVE-2019-0211"></a>apache提权-<strong>CVE-2019-0211</strong></h2><p>暂时没有复现成功，可以参考文章：<a href="https://paper.seebug.org/889/" target="_blank" rel="noopener">https://paper.seebug.org/889/</a></p>
 
             </div>
             <hr/>
@@ -512,7 +501,7 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/">https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/</a>
+                    <a href="https://www.easy233.top/2020/08/04/zhong-jian-jian-an-quan-apache-pian/">https://www.easy233.top/2020/08/04/zhong-jian-jian-an-quan-apache-pian/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -550,8 +539,8 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                    <span class="chip bg-color">代码审计</span>
+                                <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">中间件安全</span>
                                 </a>
                             
                         </div>
@@ -723,6 +712,53 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2020/08/05/zhong-jian-jian-an-quan-nginx-pian/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/12.jpg" class="responsive-img" alt="中间件安全-nginx篇">
+                        
+                        <span class="card-title">中间件安全-nginx篇</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言Nginx 是一款轻量级Web 服务器、 反向代理服务器及电子邮件（IMAP/POP3）代理服务器。
+其特点是 占有内存少， 并发能力强(来自百度)
+Nginx解析漏洞该漏洞与nginx和php的版本无关属于用户配置错误的漏洞。如下是p
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-05
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            EASY
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">中间件安全</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2020/08/03/lfdcms/">
                     <div class="card-image">
                         
@@ -740,9 +776,9 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-03
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-03
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -756,54 +792,6 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     
                     <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
                         <span class="chip bg-color">代码审计</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/06/24/hexo-jian-zhan-you-hua-guo-cheng-ji-lu/">
-                    <div class="card-image">
-                        
-                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200701093636.png" class="responsive-img" alt="New blog">
-                        
-                        <span class="card-title">New blog</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            前言我又又又换博客了，现在想想这是自已的第三个博客了。之前一直使用wordpress建立的博客，因为种种原因我选择放弃。hexo是我心中完美博客框架，纯静态的网页结构，在本地书写博客，一键上传github文章发布，甚至连自已的服务器与域名都
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-24
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/blog/" class="post-category">
-                                    blog
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/blog%E4%BC%98%E5%8C%96/">
-                        <span class="chip bg-color">blog优化</span>
                     </a>
                     
                 </div>

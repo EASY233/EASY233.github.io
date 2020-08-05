@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>中间件安全-nginx篇</title>
+      <link href="/2020/08/05/zhong-jian-jian-an-quan-nginx-pian/"/>
+      <url>/2020/08/05/zhong-jian-jian-an-quan-nginx-pian/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Nginx 是一款轻量级Web 服务器、 反向代理服务器及电子邮件（IMAP/POP3）代理服务器。</p><p>其特点是 <strong>占有内存少</strong>， <strong>并发能力强</strong>(来自百度)</p><h2 id="Nginx解析漏洞"><a href="#Nginx解析漏洞" class="headerlink" title="Nginx解析漏洞"></a>Nginx解析漏洞</h2><p>该漏洞与nginx和php的版本无关属于用户配置错误的漏洞。如下是phpstudy2018版本中的nginx配置，也是存在问题的。<img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805105236281.png" alt=""></p><p>上传一个正常的jpg图片，然后访问的时候加上/.php就会以php的形式执行。</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805105450911.png" alt=""></p><h2 id="Nginx-文件名逻辑漏洞（CVE-2013-4547）"><a href="#Nginx-文件名逻辑漏洞（CVE-2013-4547）" class="headerlink" title="Nginx 文件名逻辑漏洞（CVE-2013-4547）"></a>Nginx 文件名逻辑漏洞（CVE-2013-4547）</h2><blockquote><p>复现参考：<a href="https://vulhub.org/#/environments/nginx/CVE-2013-4547/" target="_blank" rel="noopener">https://vulhub.org/#/environments/nginx/CVE-2013-4547/</a></p><p>影响版本：Nginx 0.8.41 ~ 1.4.3 / 1.5.0 ~ 1.5.7，范围还是比较广的。</p></blockquote><p>其漏洞产生的主要原因在错误地解析了请求的URI，错误地获取到用户请求的文件名，导致出现权限绕过、代码执行的连带影响。</p><p>举个例子，比如，Nginx匹配到.php结尾的请求，就发送给fastcgi进行解析，常见的写法如下：</p><pre><code>location ~ \.php$ {    include        fastcgi_params;    fastcgi_pass   127.0.0.1:9000;    fastcgi_index  index.php;    fastcgi_param  SCRIPT_FILENAME  /var/www/html$fastcgi_script_name;    fastcgi_param  DOCUMENT_ROOT /var/www/html;}</code></pre><p>正常情况下（关闭pathinfo的情况下），只有.php后缀的文件才会被发送给fastcgi解析。而存在CVE-2013-4547的情况下，我们请求 1.gif[0x20][0x00].php ，这个URI可以匹配上正则 .php$，可以进入这个Location块；但进入后，由于fastcgi在查找文件时被\0截断，Nginx却错误地认为请求的文件是1.gif[0x20]，就设置其为SCRIPT_FILENAME的值发送给fastcgi。fastcgi根据SCRIPT_FILENAME的值进行解析，最后造成了解析漏洞。</p><p>所以，我们只需要上传一个空格结尾的文件，即可使PHP解析之。</p><h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>docker搭建一个nginx的上传页面，上传使用黑名单的形式。上传一个含有恶意代码的图片马，注意在后面添加一个空格可以上传成功</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805112759829.png" alt=""></p><p>但是我们正常是无法是访问到该图片的，所以我要构造test.jpg[0x20][0x00].php的形式使nginx将其当作php文件进行解析。</p><p>首先访问该图片文件在后面添加两个空格.php进行标志</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805114522898.png" alt=""></p><p>然后在hex上修改20为00，repeate发包即可成功解析为php文件。</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805113116640.png" alt=""></p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805113926937.png" alt=""></p><h2 id="其他的一些漏洞"><a href="#其他的一些漏洞" class="headerlink" title="其他的一些漏洞"></a>其他的一些漏洞</h2><p><a href="https://vulhub.org/#/environments/nginx/insecure-configuration/" target="_blank" rel="noopener">Nginx 配置错误导致漏洞三则</a></p><p><a href="https://vulhub.org/#/environments/node/CVE-2017-14849/" target="_blank" rel="noopener">Node.js 目录穿越漏洞（CVE-2017-14849</a></p><p><a href="https://vulhub.org/#/environments/nginx/CVE-2017-7529/" target="_blank" rel="noopener">Nginx越界读取缓存漏洞（CVE-2017-7529</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 中间件安全 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>中间件安全-apache篇</title>
+      <link href="/2020/08/04/zhong-jian-jian-an-quan-apache-pian/"/>
+      <url>/2020/08/04/zhong-jian-jian-an-quan-apache-pian/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Apache 是世界使用排名第一的 Web 服务器软件。它可以运行在几乎所有广泛使用的计算机平台上，由于其跨平台和安全性被广泛使用，是最流行的 Web 服务器端软件之一。</p><h2 id="Apache解析漏洞"><a href="#Apache解析漏洞" class="headerlink" title="Apache解析漏洞"></a>Apache解析漏洞</h2><p>Apache 默认一个文件可以有多个以点分隔的后缀，当右边的后缀无法识别（不在 mime.tyoes 内），则继续向左识别。例如这样的一个文件:shell.php.xx.yy。当右边yy无法识别的时候就会往左边继续进行识别直到识别到apache可以解析的内容。</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804114233.png" alt=""></p><h3 id="修复方法"><a href="#修复方法" class="headerlink" title="修复方法"></a>修复方法</h3><p>在apache配置文件中把<code>AddType application/x-httpd-php .php .html.phtml</code>  删除掉即可，重启apache即可。</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804102732.png" alt=""></p><h2 id="htaccess文件解析"><a href="#htaccess文件解析" class="headerlink" title=".htaccess文件解析"></a>.htaccess文件解析</h2><blockquote><p>原理：.htaccess文件(或者”分布式配置文件”）,全称是Hypertext Access(超文本入口)。提供了针对目录改变配置的方法， 即，在一个特定的文档目录中放置一个包含一个或多个指令的文件， 以作用于此目录及其所有子目录。作为用户，所能使用的命令受到限制。管理员可以通过Apache的AllowOverride指令来设置。</p></blockquote><p>条件：</p><ul><li>php5.6以下不带nts的版本</li><li>服务器没有禁止.htaccess文件的上传，且服务商允许用户使用自定义.htaccess文件</li></ul><p>一般出于安全性考虑根目录的AllowOverride属性一般都配置成不允许任何Override，即要设置为None。要想使.htaccess文件生效需要把None改成ALL。当是在测试过程中发现phpstudy无论是否修改都可以解析。。。。。具体可以看看该<a href="[]()">文章</a></p><p><strong>所以开发过程中切忌不要使用集成环境，不够安全</strong></p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804114352.png" alt="img"></p><p>上传文件.htaccess中代码为：</p><pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>FilesMatch</span> <span class="token attr-name">"shell.jpg"</span><span class="token punctuation">></span></span></span> SetHandler application<span class="token operator">/</span>x<span class="token operator">-</span>httpd<span class="token operator">-</span>php <span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>FilesMatch</span><span class="token punctuation">></span></span></span></code></pre><p>该目录包括子目录下的所有名为shell.jpg的文件都会解析为php文件</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200804111828.png" alt=""></p><h2 id="Apache-HTTPD-多后缀解析漏洞"><a href="#Apache-HTTPD-多后缀解析漏洞" class="headerlink" title="Apache HTTPD 多后缀解析漏洞"></a>Apache HTTPD 多后缀解析漏洞</h2><p>Apache Httpd支持一个文件拥有多个后缀,不同的后缀执行不同的命令,也就是说当我们上传的文件中只要后缀名含有php,该文件就可以被解析成php文件,利用Apache httpd这个特性,就可以绕过上传文件的白名单。无关apache版本和php版本是用户配置错误漏洞</p><p>开发的错误配置：</p><p><code>AddHandler application/x-httpd-php .php</code></p><p>直接上传一个名为<code>shell.php.jpg</code>的文件，可以成功解析：<br><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/8N5@B4ZBRZT9E3$KM01JA@O.png" alt=""></p><h2 id="Apache-HTTPD-换行解析漏洞"><a href="#Apache-HTTPD-换行解析漏洞" class="headerlink" title="Apache HTTPD 换行解析漏洞"></a>Apache HTTPD 换行解析漏洞</h2><p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其2.4.0~2.4.29版本中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p><p>vulhub上的详细复现和环境：<a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/" target="_blank" rel="noopener">https://vulhub.org/#/environments/httpd/CVE-2017-15715/</a></p><p> 个人复现：<br>利用vulhub提供的靶场环境上传文件，在php处做好标记：</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/V9X_1%5DKK1UPT2B8(AXXGF%7D2.png" alt="img"></p><p>在php后面插入<code>\x0A</code>，在把前面的标志删掉。</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200804170817.png" alt=""></p><p>使用蚁剑进行连接可以成功利用:</p><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200804171037.png" alt=""></p><h2 id="apache提权-CVE-2019-0211"><a href="#apache提权-CVE-2019-0211" class="headerlink" title="apache提权-CVE-2019-0211"></a>apache提权-<strong>CVE-2019-0211</strong></h2><p>暂时没有复现成功，可以参考文章：<a href="https://paper.seebug.org/889/" target="_blank" rel="noopener">https://paper.seebug.org/889/</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 中间件安全 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>某cms代码审计</title>
       <link href="/2020/08/03/lfdcms/"/>
       <url>/2020/08/03/lfdcms/</url>
