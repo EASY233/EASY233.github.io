@@ -107,6 +107,17 @@
   
   <li class="hide-on-med-and-down nav-item">
     
+    <a href="/mybook/book/" class="waves-effect waves-light">
+      
+      <i class="fas fa-quran" style="zoom: 0.6;"></i>
+      
+      <span>Gitbook</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
     <a href="/friends" class="waves-effect waves-light">
       
       <i class="fas fa-address-book" style="zoom: 0.6;"></i>
@@ -193,6 +204,17 @@
 			    <i class="fa-fw fas fa-user-circle"></i>
 			
 			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/mybook/book/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-quran"></i>
+			
+			Gitbook
 		</a>
           
         </li>
@@ -341,7 +363,7 @@
                     <div class="post-statis col l4 hide-on-med-and-down" data-aos="zoom-in-right">
                         
 <div class="statis">
-    <span class="count"><a href="/">8</a></span>
+    <span class="count"><a href="/">10</a></span>
     <span class="name">文章</span>
 </div>
 
@@ -355,7 +377,7 @@
 
 
 <div class="statis">
-    <span class="count"><a href="/tags">5</a></span>
+    <span class="count"><a href="/tags">7</a></span>
     <span class="name">标签</span>
 </div>
 
@@ -371,7 +393,7 @@
                                 <div class="post-statis hide-on-large-only" data-aos="zoom-in-right">
                                     
 <div class="statis">
-    <span class="count"><a href="/">8</a></span>
+    <span class="count"><a href="/">10</a></span>
     <span class="name">文章</span>
 </div>
 
@@ -385,7 +407,7 @@
 
 
 <div class="statis">
-    <span class="count"><a href="/tags">5</a></span>
+    <span class="count"><a href="/tags">7</a></span>
     <span class="name">标签</span>
 </div>
 
@@ -519,7 +541,7 @@
         },
         xAxis: {
             type: 'category',
-            data: ["2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08"]
+            data: ["2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09"]
         },
         yAxis: {
             type: 'value',
@@ -529,7 +551,7 @@
                 name: '文章篇数',
                 type: 'line',
                 color: ['#6772e5'],
-                data: [0,0,0,0,0,0,0,0,0,0,2,1,5],
+                data: [0,0,0,0,0,0,0,0,0,2,1,6,1],
                 markPoint: {
                     symbolSize: 45,
                     color: ['#fa755a','#3ecf8e','#82d3f4'],
@@ -571,7 +593,7 @@
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"bypass","value":1},{"name":"blog","value":1}],
+                data: [{"name":"blog","value":1},{"name":"bypass","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -595,7 +617,7 @@
         xAxis: [
             {
                 type: 'category',
-                data: ["中间件安全","代码审计","bypass","disable_functions","blog优化"]
+                data: ["中间件安全","代码审计","blog优化","bypass","disable_functions","信息收集","内网渗透"]
             }
         ],
         yAxis: [
@@ -608,7 +630,7 @@
                 type: 'bar',
                 color: ['#82d3f4'],
                 barWidth : 18,
-                data: [4,2,1,1,1],
+                data: [5,2,1,1,1,1,1],
                 markPoint: {
                     symbolSize: 45,
                     data: [{
@@ -778,14 +800,8 @@
         <div class="tag-chips center-align">
             
             
-            <a href="/tags/bypass/">
-                <span class="chip center-align waves-effect waves-light chip-default">bypass</span>
-            </a>
-            
-            
-            
-            <a href="/tags/disable-functions/">
-                <span class="chip center-align waves-effect waves-light chip-default">disable_functions</span>
+            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                <span class="chip center-align waves-effect waves-light chip-default">代码审计</span>
             </a>
             
             
@@ -802,8 +818,26 @@
             
             
             
-            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                <span class="chip center-align waves-effect waves-light chip-default">代码审计</span>
+            <a href="/tags/bypass/">
+                <span class="chip center-align waves-effect waves-light chip-default">bypass</span>
+            </a>
+            
+            
+            
+            <a href="/tags/disable-functions/">
+                <span class="chip center-align waves-effect waves-light chip-default">disable_functions</span>
+            </a>
+            
+            
+            
+            <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                <span class="chip center-align waves-effect waves-light chip-default">信息收集</span>
+            </a>
+            
+            
+            
+            <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">
+                <span class="chip center-align waves-effect waves-light chip-default">内网渗透</span>
             </a>
             
             

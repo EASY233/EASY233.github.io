@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="某汽车网源码的进一步代码审计, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="内网渗透Windows下的信息收集总结, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>某汽车网源码的进一步代码审计 | EASY</title>
+    <title>内网渗透Windows下的信息收集总结 | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -309,12 +309,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922193725.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">某汽车网源码的进一步代码审计</h1>
+                    <h1 class="description center-align post-title">内网渗透Windows下的信息收集总结</h1>
                 </div>
             </div>
         </div>
@@ -431,8 +431,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                <span class="chip bg-color">代码审计</span>
+                            <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                                <span class="chip bg-color">信息收集</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">
+                                <span class="chip bg-color">内网渗透</span>
                             </a>
                         
                     </div>
@@ -447,7 +451,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-02
+                    2020-09-22
                 </div>
                 
 
@@ -463,52 +467,97 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>文章首发于圈子社区:<a href="https://www.secquan.org/CodeAudit/1071106" target="_blank" rel="noopener">https://www.secquan.org/CodeAudit/1071106</a></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在先知社区看到一篇文章<a href="https://xz.aliyun.com/t/2730" target="_blank" rel="noopener">代码审计之某汽车网源码</a> 。作者介绍了两个sql注入漏洞，我在学习之余对该套代码进行进一步审计也发现了几个有趣的漏洞。</p>
-<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><pre class=" language-php"><code class="language-php">admin    <span class="token operator">--</span>后台文件夹
-cache    <span class="token operator">--</span>缓存文件夹
-<span class="token keyword">include</span>   <span class="token operator">--</span> 一些公共包含文件重点审核
-index     <span class="token operator">--</span> 前台注册登陆
-news      <span class="token operator">--</span> 新闻模块
-index<span class="token punctuation">.</span>php   <span class="token operator">--</span>网站入口
-qzqcw<span class="token punctuation">.</span>php   <span class="token operator">--</span>后台入口</code></pre>
-<h2 id="越权添加管理员"><a href="#越权添加管理员" class="headerlink" title="越权添加管理员"></a>越权添加管理员</h2><p>该漏洞是个几个小漏洞组合而成，待我一一分析。</p>
-<h3 id="前台有限制的任意文件包含漏洞"><a href="#前台有限制的任意文件包含漏洞" class="headerlink" title="前台有限制的任意文件包含漏洞"></a>前台有限制的任意文件包含漏洞</h3><p>该网站的功能都是直接通过include包含其他php使用的。在入口文件index.php中我们可以看到里面的包含规则：</p>
-<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'common.inc.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/page.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token variable">$m</span> <span class="token operator">=</span> <span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token string">'index'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">file_exists</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'error url'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter">?></span></code></pre>
-<p>获取GET传来的$m参数拼接到文件路径中，如果文件存在就直接包含。当然这里也对$m参数也进行路径穿越的过滤，但是绕过并不是很难。<br>过滤代码在<code>include/function.func.php</code>22-32行之间，如下</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$value</span> <span class="token keyword">as</span> <span class="token variable">$key</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token variable">$val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token variable">$value</span><span class="token punctuation">[</span><span class="token variable">$key</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$val</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> 
-        <span class="token keyword">return</span> <span class="token variable">$value</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> 
-    <span class="token keyword">return</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'..\\'</span><span class="token punctuation">,</span> <span class="token string">'../'</span><span class="token punctuation">,</span> <span class="token string">'./'</span><span class="token punctuation">,</span> <span class="token string">'.\\'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span> </code></pre>
-<p>使用str_replace函数进行关键词过滤是非常不安全的，尤其是这种把关键词替换成空的情况。例如该函数把select关键词替换成空，我们只需改成selselectect即可。当函数把selelct替换成空前后合在一起就又成了我们所需要的select关键词。<br>这里的绕过同理，我测试的payload为:<code>.../...//....///</code>经过一轮替换后可以变成我们需要的<code>../</code>。<br>但是因为这里限定后缀只能是php所以在这里这个漏洞还是很鸡肋。</p>
-<h3 id="后台不安全的资源访问"><a href="#后台不安全的资源访问" class="headerlink" title="后台不安全的资源访问"></a>后台不安全的资源访问</h3><p>在admin文件夹下文件都会在开头加上这一行代码来防止普通用户来访问后文件资源</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">defined</span><span class="token punctuation">(</span><span class="token string">'APP_IN'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'Access Denied'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>如果APP_IN这个常量没有被定义就直接退出系统。但是该定义APP_IN这个常量的文件竟然在公共文件<code>common.inc.php</code>处。<br><img src="https://secquan.zzyuncheng.com/8e06ebb4354ea10d1cf7b83aab4818c4.png-quanzi" alt="file"><br>而这个文件正好也被前面所说的index.php包含着。所以思路就很明确在index.php处包含后台文件即可使用网站后台资源了。</p>
-<h3 id="添加管理员"><a href="#添加管理员" class="headerlink" title="添加管理员"></a>添加管理员</h3><p>我们利用该漏洞尝试在没有进行后台登陆的情况下添加管理员,效果如下图<br><img src="https://p4.ssl.qhimg.com/t01b9ca0aa7531aee83.png" alt="img"><br>然后我们查看是否添加成功：<br><img src="https://secquan.zzyuncheng.com/23d3785a38d44d9f9a877d97230d94a2.png-quanzi" alt="file"></p>
-<h2 id="存储型xss"><a href="#存储型xss" class="headerlink" title="存储型xss"></a>存储型xss</h2><p>该站存在的xss其实并不少，这里挑选个利用相对简单的存储型xss聊聊</p>
-<p>漏洞在公司注册处：<a href="http://qzqcms.top/?m=register" target="_blank" rel="noopener">http://qzqcms.top/?m=register</a><br>漏洞代码在<code>index/register.php</code>处<br><img src="https://secquan.zzyuncheng.com/d15679ad40db979efc694973dc46f70e.png-quanzi" alt="file"><br>可以看到参数nicname和company没有进行任何的xss过滤操作就直接带入到了数据库。<br>这里利用的需要注意两点:</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在渗透测试中信息收集的深度与广度以及对关键信息的提取，直接或间接的决定了渗透测试的质量。这里对内网渗透的一些信息做一些总结，不定时更新~~</p>
+<h2 id="系统信息收集"><a href="#系统信息收集" class="headerlink" title="系统信息收集"></a>系统信息收集</h2><h3 id="系统信息"><a href="#系统信息" class="headerlink" title="系统信息"></a>系统信息</h3><p>关注操作系统，系统版本，系统类型(64位还是32位)，查看补丁。</p>
+<pre><code>systeminfo             </code></pre><p>查看运行的服务</p>
+<pre><code>wmic service list brief
+wmic service list brief | findstr Running  </code></pre><p>查询杀软</p>
+<pre><code>WMIC /Node:localhost /Namespace:\\root\SecurityCenter2 Path AntiVirusProduct Get displayName /Format:List</code></pre><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922171942.png" alt=""></p>
+<p>获取杀软名和安装路径</p>
+<pre><code>WMIC /namespace:\\root\securitycenter2 path antivirusproduct GET displayName,productState, pathToSignedProductExe</code></pre><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922172002.png" alt=""></p>
+<p>查看本机配置环境</p>
+<pre><code>set</code></pre><p>查看本机安装的软件以及版本</p>
+<pre><code>wmic product get name,version</code></pre><h3 id="网络信息"><a href="#网络信息" class="headerlink" title="网络信息"></a>网络信息</h3><p>这个不用多说了，查看网络情况，DNS,网卡，是否存在内网</p>
+<pre><code>ipconfig /all</code></pre><p>查看端口列表</p>
+<pre><code>netstat –ano</code></pre><p>查看防火墙信息</p>
+<pre><code>netsh firewall show config</code></pre><p>关闭防火墙</p>
+<pre><code>netsh advfirewall set allprofiles state off      //Windows server 2003之后系统版本
+netsh firewall set opmode disable              //Windows server 2003系统及以前版本</code></pre><h3 id="用户信息"><a href="#用户信息" class="headerlink" title="用户信息"></a>用户信息</h3><pre><code>net user    //查看本机用户列表
+net localgroup administrators   //查看本地管理员列表
+query user //查看当前登录的用户信息，该命令似乎windows10上不能用了。
+net user name password /add   //添加用户
+net localgroup administrators username /add   //把指定用户添加到管理员组中
+net user guest /active:yes               //激活guest用户</code></pre><h3 id="远程桌面服务"><a href="#远程桌面服务" class="headerlink" title="远程桌面服务"></a>远程桌面服务</h3><p>查看是否开启RDP服务，1表示关闭，0表示开启</p>
+<pre><code>REG QUERY &quot;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections</code></pre><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200921205500.png" alt=""></p>
+<p>查看RDP开发端口，注意查询到的值为16进制需要进行进一步的转化。</p>
+<pre><code>REG QUERY &quot;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp&quot; /v PortNumber</code></pre><p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200921205736.png" alt=""></p>
+<p>启动远程桌面服务</p>
+<pre><code>REG ADD &quot;HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fDenyTSConnections /t REG_DWORD /d 00000000 /f</code></pre><p>关闭远程桌面服务</p>
+<pre><code>REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 11111111 /f</code></pre><h3 id="密码收集"><a href="#密码收集" class="headerlink" title="密码收集"></a>密码收集</h3><pre><code># dir /b /s login*txt             也有一些管理员笔记喜欢用txt记录一些服务配置或者密码信息
+# dir /b /s login*            所有带有login字段的文件名
+# dir /b /s *.bak            所有以bak为后缀的的文件名
+# dir /b /s *.config                所有以config为后缀的文件名
+# findstr /si password *.ini *.txt *.asp *.cgi  
+# findstr /si password *.ini *.txt *.aspx 
+# findstr /si password *.ini *.txt *.php
+# findstr /si password *.ini *.txt *.php *.xml</code></pre><h3 id="WIFI信息"><a href="#WIFI信息" class="headerlink" title="WIFI信息"></a>WIFI信息</h3><pre><code>netsh wlan show profile 查询所有wifi的SSID
+netsh wlan show profile wifi的名字 key=clear  查询具体wifi的信息</code></pre><h2 id="域内信息收集"><a href="#域内信息收集" class="headerlink" title="域内信息收集"></a>域内信息收集</h2><h3 id="域的基本信息收集"><a href="#域的基本信息收集" class="headerlink" title="域的基本信息收集"></a>域的基本信息收集</h3><pre><code>net view /domain //查询域列表
+net config workstation      查询当前登陆域
+net view   //查看域内机器名
+wmic computersystem get domain   //获取域的全名，比如demo.com
+net group &quot;domain admins&quot; /domain   //看看当前域中的域管都有谁
+net group &quot;domain users&quot; /domain    //查看域内所有用户名
+nslookup 主机名.域的全名    //查看域控IP
+systeminfo      //查看补丁信息，域内大杀器MS14-068，对应的补丁号为3011780
+whoami/all //查看 sid 值
+net accounts       查看本机的账号密码设置策略,添加用户的时候可能要注意下
+net user epoadmin /domain  查看指定用户在当前域中的详细属性信息</code></pre><h3 id="内网扫描探测"><a href="#内网扫描探测" class="headerlink" title="内网扫描探测"></a>内网扫描探测</h3><h4 id="ICMP探测内网"><a href="#ICMP探测内网" class="headerlink" title="ICMP探测内网"></a>ICMP探测内网</h4><p>我们可以使用ICMP协议来探测内网信息，直接使用cmd命令</p>
+<pre><code>for /L %I in (1,1,254) DO @ping -w 1 -n 1 192.168.174.%I | findstr &quot;TTL=&quot;</code></pre><p>nmap命令</p>
+<pre><code>nmap ‐sP ‐PI 192.168.1.0/24 ‐T4</code></pre><h4 id="ARP探测内网"><a href="#ARP探测内网" class="headerlink" title="ARP探测内网"></a>ARP探测内网</h4><p>使用MSF中的模块 <code>use  auxiliary/scanner/discovery/arp_sweep</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922193725.png" alt=""></p>
+<h4 id="TCP-UDP协议探测内网"><a href="#TCP-UDP协议探测内网" class="headerlink" title="TCP/UDP协议探测内网"></a>TCP/UDP协议探测内网</h4><p>使用Nmap进行扫描</p>
 <ul>
-<li>1.数据库限制了nicncame参数的长度范围，所以真正好利用是公司名称company参数。</li>
-<li>2.这些参数都有前端的限制我们可以在burp中修改绕过限制。</li>
+<li><p>-sT 使用TCP 连续进行扫描</p>
+</li>
+<li><p>-Pn 不用ping命令预先判断主机是否存活</p>
+</li>
+<li><p>-p 指定扫描端口</p>
+</li>
 </ul>
-<p><img src="https://secquan.zzyuncheng.com/d89e8a81f3874121371ccf9ce981d745.png-quanzi" alt="file"></p>
-<p>登陆后台查看，xss果然被触发：<br><img src="https://secquan.zzyuncheng.com/f27b987d13121fdb1d76394845960cb7.png-quanzi" alt="file"></p>
+<pre><code>nmap -sT -Pn ip -p 21，22，23，25，80，139，445，3389</code></pre><p>使用MSF中模块<code>auxiliary/scanner/discovery/udp_sweep</code>进行UDP扫描</p>
+<p><img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922193940.png" alt=""></p>
+<h3 id="MSF提供的多种探测内网方式"><a href="#MSF提供的多种探测内网方式" class="headerlink" title="MSF提供的多种探测内网方式"></a>MSF提供的多种探测内网方式</h3><p>使用命令<code>search scanner type:auxiliary</code>  命令查找MSF中内网扫描模块</p>
+<pre><code>auxiliary/scanner/discovery/arp_sweep 
+auxiliary/scanner/discovery/udp_sweep
+auxiliary/scanner/ftp/ftp_version 
+auxiliary/scanner/http/http_version
+auxiliary/scanner/smb/smb_version
+auxiliary/scanner/ssh/ssh_version 
+auxiliary/scanner/telnet/telnet_version
+auxiliary/scanner/discovery/udp_probe 
+auxiliary/scanner/dns/dns_amp
+auxiliary/scanner/mysql/mysql_version
+auxiliary/scanner/netbios/nbname 
+auxiliary/scanner/http/title
+auxiliary/scanner/db2/db2_version 
+auxiliary/scanner/portscan/ack
+auxiliary/scanner/portscan/tcp
+auxiliary/scanner/portscan/syn 
+auxiliary/scanner/portscan/ftpbounce
+auxiliary/scanner/portscan/xmas 
+auxiliary/scanner/rdp/rdp_scanner
+auxiliary/scanner/smtp/smtp_version
+auxiliary/scanner/pop3/pop3_version
+auxiliary/scanner/postgres/postgres_version 
+auxiliary/scanner/ftp/anonymous
+//post下的六个模块
+windows/gather/arp_scanner 
+windows/gather/enum_ad_computers
+windows/gather/enum_computers 
+windows/gather/enum_domain
+windows/gather/enum_domains 
+windows/gather/enum_ad_user_comments
+</code></pre><h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>渗透学得越久就会发现信息收集越重要，学习到信息收集的新姿势在继续更新~~</p>
 
             </div>
             <hr/>
@@ -534,7 +583,7 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/">https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/</a>
+                    <a href="https://www.easy233.top/2020/09/22/nei-wang-shen-tou-windows-xia-de-xin-xi-shou-ji-zong-jie/">https://www.easy233.top/2020/09/22/nei-wang-shen-tou-windows-xia-de-xin-xi-shou-ji-zong-jie/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -572,8 +621,12 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                    <span class="chip bg-color">代码审计</span>
+                                <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                                    <span class="chip bg-color">信息收集</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">
+                                    <span class="chip bg-color">内网渗透</span>
                                 </a>
                             
                         </div>
@@ -741,30 +794,31 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/08/03/lfdcms/">
+                <a href="/2020/09/22/nei-wang-shen-tou-windows-xia-de-xin-xi-shou-ji-zong-jie/">
                     <div class="card-image">
                         
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200922193725.png" class="responsive-img" alt="内网渗透Windows下的信息收集总结">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="某cms代码审计">
-                        
-                        <span class="card-title">某cms代码审计</span>
+                        <span class="card-title">内网渗透Windows下的信息收集总结</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言好久没有进行代码审计了，今天空闲选了一个较为简单的MVC架构的CMS进行练练手。源码下载地址版本为3.8.6。 该cms使用了THINKPHP3.2.3框架进行开发，并且没有修复其历史漏洞，这是其有多个漏洞的一个重要原因。
-前端多个sq
+                            前言在渗透测试中信息收集的深度与广度以及对关键信息的提取，直接或间接的决定了渗透测试的质量。这里对内网渗透的一些信息做一些总结，不定时更新~~
+系统信息收集系统信息关注操作系统，系统版本，系统类型(64位还是32位)，查看补丁。
+syste
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-03
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-22
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -773,11 +827,16 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                        <span class="chip bg-color">代码审计</span>
+                    <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+                        <span class="chip bg-color">信息收集</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">
+                        <span class="chip bg-color">内网渗透</span>
                     </a>
                     
                 </div>
@@ -791,32 +850,28 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/24/hexo-jian-zhan-you-hua-guo-cheng-ji-lu/">
+                <a href="/2020/08/06/zhong-jian-jian-an-quan-jboss-pian/">
                     <div class="card-image">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200701093636.png" class="responsive-img" alt="New blog">
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806111922.jpg" class="responsive-img" alt="中间件安全-jboss篇">
                         
-                        <span class="card-title">New blog</span>
+                        <span class="card-title">中间件安全-jboss篇</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言我又又又换博客了，现在想想这是自已的第三个博客了。之前一直使用wordpress建立的博客，因为种种原因我选择放弃。hexo是我心中完美博客框架，纯静态的网页结构，在本地书写博客，一键上传github文章发布，甚至连自已的服务器与域名都
+                            前言JBoss是一个基于J2EE的开发源代码的应用服务器。JBoss代码遵循LGPL许可，可以在任何商业应用中免费使用。JBoss是一个管理EJB的容器和服务器，支持EJB1.1、EJB 2.0和EJB3的规范。但JBoss核心服务不包括支
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-06
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/blog/" class="post-category">
-                                    blog
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            EASY
                             
                         </span>
                     </div>
@@ -824,8 +879,8 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/blog%E4%BC%98%E5%8C%96/">
-                        <span class="chip bg-color">blog优化</span>
+                    <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">中间件安全</span>
                     </a>
                     
                 </div>

