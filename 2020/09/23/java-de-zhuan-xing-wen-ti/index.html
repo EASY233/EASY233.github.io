@@ -470,7 +470,7 @@
 Son s <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Son</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>而当我们这么写的时候就叫向上转型:</p>
 <pre class=" language-java"><code class="language-java">Father test <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Son</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>这是因为Student继承自Person，因此，它拥有Person的全部功能。Person类型的变量，如果指向Student类型的实例，对它进行操作，是没有问题的！</p>
+<p>这是因为Son继承自Father，因此，它拥有Father的全部功能。Father类型的变量，如果指向Son类型的实例，对它进行操作，是没有问题的！</p>
 <p><strong>注意：这时候test指向Son对象，向上转型的时候会遗失除与父类对象共有的其他方法以及字段。</strong></p>
 <p>例如如下代码:</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Fan</span><span class="token punctuation">{</span>
