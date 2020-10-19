@@ -1,14 +1,14 @@
 
 <!DOCTYPE HTML>
-<html lang="" >
+<html lang="zh-hans" >
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Introduction · GitBook</title>
+        <title>前言 · WEB安全知识总结</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
-        
+        <meta name="author" content="EASY">
         
         
     
@@ -17,11 +17,39 @@
     
             
                 
-                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search-pro/search.css">
                 
             
                 
-                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-donate/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
                 
             
                 
@@ -49,6 +77,7 @@
         
     
     
+    
     <meta name="HandheldFriendly" content="true"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +86,12 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="目录测试.html" />
+    <link rel="next" href="web安全基础总结/sql注入漏洞.html" />
+    
+    
+
+    
+    
     
     
 
@@ -69,7 +103,7 @@
         
             
 <div id="book-search-input" role="search">
-    <input type="text" placeholder="Type to search" />
+    <input type="text" placeholder="输入并搜索" />
 </div>
 
             
@@ -80,7 +114,16 @@
 <ul class="summary">
     
     
+    
+        
+        <li>
+            <a href="https://www.easy233.top/" target="_blank" class="custom-link">Home</a>
+        </li>
+    
+    
 
+    
+    <li class="divider"></li>
     
 
     
@@ -92,20 +135,7 @@
                 <a href="./">
             
                     
-                    Introduction
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="1.2" data-path="目录测试.html">
-            
-                <a href="目录测试.html">
-            
-                    
-                    目录测试
+                    前言
             
                 </a>
             
@@ -116,16 +146,16 @@
 
     
         
-        <li class="header">第一部分</li>
+        <li class="header">web安全基础</li>
         
         
     
-        <li class="chapter " data-level="2.1" data-path="file/READE.html">
+        <li class="chapter " data-level="2.1" data-path="web安全基础总结/sql注入漏洞.html">
             
-                <a href="file/READE.html">
+                <a href="web安全基础总结/sql注入漏洞.html">
             
                     
-                    目录
+                    Sql注入
             
                 </a>
             
@@ -134,12 +164,38 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="2.1.1" data-path="file/read.html">
+        <li class="chapter " data-level="2.1.1" data-path="web安全基础总结/sql/sql注入基础.html">
             
-                <a href="file/read.html">
+                <a href="web安全基础总结/sql/sql注入基础.html">
             
                     
-                    目录一
+                    sql注入基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="web安全基础总结/sql/sql注入的技巧.html">
+            
+                <a href="web安全基础总结/sql/sql注入的技巧.html">
+            
+                    
+                    sql注入的技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="web安全基础总结/sql/Sqlmap使用教程.html">
+            
+                <a href="web安全基础总结/sql/Sqlmap使用教程.html">
+            
+                    
+                    sqlmap使用教程
             
                 </a>
             
@@ -159,7 +215,7 @@
 
     <li>
         <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
-            Published with GitBook
+            本书使用 GitBook 发布
         </a>
     </li>
 </ul>
@@ -182,7 +238,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Introduction</a>
+        <a href="." >前言</a>
     </h1>
 </div>
 
@@ -197,7 +253,9 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="introduction">Introduction</h1>
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><ul><li><span class="title-icon "></span><a href="#&#x524D;&#x8A00;"><b>1.1. </b>&#x524D;&#x8A00;</a></li></ul></ul></div><a href="#" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h2 id="&#x524D;&#x8A00;"><a name="&#x524D;&#x8A00;" class="anchor-navigation-ex-anchor" href="#&#x524D;&#x8A00;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. &#x524D;&#x8A00;</h2>
+<p>&#x6B22;&#x8FCE;&#x6765;&#x5230;&#x6211;&#x7684;GitBook&#xFF0C;&#x8FD9;&#x662F;&#x6211;&#x672C;&#x4EBA;&#x4E0D;&#x5B9A;&#x671F;&#x66F4;&#x65B0;&#x7684;&#x514D;&#x8D39;&#x5F00;&#x6E90;&#x7684;Web&#x5B89;&#x5168;&#x76F8;&#x5173;&#x77E5;&#x8BC6;&#x5F52;&#x7EB3;&#x603B;&#x7ED3;&#x3002;&#x8BE5;&#x9879;&#x76EE;&#x65E8;&#x5728;&#x5F52;&#x7EB3;&#x81EA;&#x5DF2;&#x5728;&#x5927;&#x5B66;&#x6216;&#x8005;&#x5927;&#x5B66;&#x540E;&#x81EA;&#x5DF2;&#x5B66;&#x4E60;&#x5230;&#x7684;&#x77E5;&#x8BC6;&#xFF0C;&#x8BB0;&#x5F55;&#x81EA;&#x5DF2;&#x66FE;&#x7ECF;&#x594B;&#x6597;&#x8FC7;&#x7684;&#x9752;&#x6625;&#xFF0C;&#x5F53;&#x7136;&#x5982;&#x679C;&#x5BF9;&#x8DEF;&#x8FC7;&#x770B;&#x5230;&#x4EBA;&#x6709;&#x6240;&#x5E2E;&#x52A9;&#x6211;&#x4E5F;&#x975E;&#x5E38;&#x7684;&#x5F00;&#x5FC3;&#xFF01;</p>
+<p>&#x5C3D;&#x7BA1;&#x6211;&#x5728;&#x5199;&#x6587;&#x7AE0;&#x7684;&#x65F6;&#x5019;&#x5C3D;&#x53EF;&#x80FD;&#x7684;&#x907F;&#x514D;&#x51FA;&#x73B0;&#x9519;&#x8BEF;&#x6216;&#x8005;&#x95EE;&#x9898;&#xFF0C;&#x4F46;&#x662F;&#x672C;&#x4EBA;&#x6C34;&#x5E73;&#x6709;&#x9650;&#x96BE;&#x514D;&#x4F1A;&#x6709;&#x6240;&#x63CF;&#x8FF0;&#x4E0D;&#x6E05;&#x6216;&#x8005;&#x9519;&#x8BEF;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x5982;&#x679C;&#x60A8;&#x5728;&#x9605;&#x8BFB;&#x6587;&#x7AE0;&#x7684;&#x65F6;&#x5019;&#x53D1;&#x73B0;&#x4EFB;&#x4F55;&#x95EE;&#x9898;&#x90FD;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x63D0;<code>issue</code>&#x4E0E;&#x6211;&#x8054;&#x7CFB;&#x3002;</p>
 
                                 
                                 </section>
@@ -226,7 +284,7 @@
             
                 
                 
-                <a href="目录测试.html" class="navigation navigation-next navigation-unique" aria-label="Next page: 目录测试">
+                <a href="web安全基础总结/sql注入漏洞.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Sql注入">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -237,7 +295,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Introduction","level":"1.1","depth":1,"next":{"title":"目录测试","level":"1.2","depth":1,"path":"目录测试.md","ref":"目录测试.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"README.md","mtime":"2020-08-07T07:38:06.374Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-07T07:38:50.350Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"前言","level":"1.1","depth":1,"next":{"title":"Sql注入","level":"2.1","depth":1,"path":"web安全基础总结/sql注入漏洞.md","ref":"web安全基础总结/sql注入漏洞.md","articles":[{"title":"sql注入基础","level":"2.1.1","depth":2,"path":"web安全基础总结/sql/sql注入基础.md","ref":"web安全基础总结/sql/sql注入基础.md","articles":[]},{"title":"sql注入的技巧","level":"2.1.2","depth":2,"path":"web安全基础总结/sql/sql注入的技巧.md","ref":"web安全基础总结/sql/sql注入的技巧.md","articles":[]},{"title":"sqlmap使用教程","level":"2.1.3","depth":2,"path":"web安全基础总结/sql/Sqlmap使用教程.md","ref":"web安全基础总结/sql/Sqlmap使用教程.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["-search","search-pro","-sharing","splitter","anchors","expandable-chapters-small","toggle-chapters","chapter-fold","donate","sharing-plus","anchor-navigation-ex","favicon","copy-code-button","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"chapter-fold":{},"livereload":{},"splitter":{},"search-pro":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"donate":{"alipay":"http://picbed.easy233.top//img20201018212824.png","alipayText":"支付宝打赏","button":"打赏作者","title":"","wechat":"http://picbed.easy233.top//img20201018212856.png","wechatText":"微信打赏"},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"favicon":{},"expandable-chapters-small":{},"copy-code-button":{},"sharing":{},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"toggle-chapters":{}},"theme":"default","author":"EASY","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"WEB安全知识总结","language":"zh-hans","links":{"sidebar":{"Home":"https://www.easy233.top/"}},"gitbook":"3.2.3","description":"系统总结自已web安全学习知识","theme-default":{"showLevel":true}},"file":{"path":"README.md","mtime":"2020-10-19T02:22:20.860Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-19T08:41:44.735Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -247,15 +305,43 @@
     <script src="gitbook/theme.js"></script>
     
         
+        <script src="gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-donate/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-copy-code-button/toggle.js"></script>
+        
+    
+        
         <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-search/search.js"></script>
         
     
         
@@ -264,10 +350,6 @@
     
         
         <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
-        
-    
-        
-        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
         
     
         

