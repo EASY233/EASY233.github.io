@@ -1,0 +1,524 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>文件上传漏洞 · WEB安全知识总结</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="EASY">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search-pro/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-donate/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-anchor-navigation-ex/style/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="../sql/Sqlmap使用教程.html" />
+    
+
+    
+    
+    
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://www.easy233.top/" target="_blank" class="custom-link">Home</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">web安全基础</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../sql注入漏洞.html">
+            
+                <a href="../sql注入漏洞.html">
+            
+                    
+                    Sql注入
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../sql/sql注入基础.html">
+            
+                <a href="../sql/sql注入基础.html">
+            
+                    
+                    sql注入基础
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../sql/sql注入的技巧.html">
+            
+                <a href="../sql/sql注入的技巧.html">
+            
+                    
+                    sql注入的技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="../sql/Sqlmap使用教程.html">
+            
+                <a href="../sql/Sqlmap使用教程.html">
+            
+                    
+                    sqlmap使用教程
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="2.2" data-path="文件上传.html">
+            
+                <a href="文件上传.html">
+            
+                    
+                    文件上传漏洞
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >文件上传漏洞</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <div id="anchor-navigation-ex-navbar"><i class="fa fa-navicon"></i><ul><ul><li><span class="title-icon "></span><a href="#&#x524D;&#x8A00;"><b>1.1. </b>&#x524D;&#x8A00;</a></li><li><span class="title-icon "></span><a href="#&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;"><b>1.2. </b>&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;:</a></li><li><span class="title-icon "></span><a href="#&#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;"><b>1.3. </b>&#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;</a></li><ul><li><span class="title-icon "></span><a href="#&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;"><b>1.3.1. </b>&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;</a></li><li><span class="title-icon "></span><a href="#&#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;"><b>1.3.2. </b>&#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;</a></li><li><span class="title-icon "></span><a href="#&#x5229;&#x7528;htaccess&#x6587;&#x4EF6;"><b>1.3.3. </b>&#x5229;&#x7528;.htaccess&#x6587;&#x4EF6;</a></li></ul><li><span class="title-icon "></span><a href="#&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;"><b>1.4. </b>&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;</a></li><ul><li><span class="title-icon "></span><a href="#iis"><b>1.4.1. </b>iis</a></li><li><span class="title-icon "></span><a href="#apache"><b>1.4.2. </b>apache</a></li><li><span class="title-icon "></span><a href="#nginx"><b>1.4.3. </b>nginx</a></li><li><span class="title-icon "></span><a href="#tomcat"><b>1.4.4. </b>tomcat</a></li></ul><li><span class="title-icon "></span><a href="#00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;"><b>1.5. </b>00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;</a></li><ul><li><span class="title-icon "></span><a href="#00&#x622A;&#x65AD;"><b>1.5.1. </b>%00&#x622A;&#x65AD;</a></li><li><span class="title-icon "></span><a href="#&#x3000;0x00&#x622A;&#x65AD;"><b>1.5.2. </b>&#x3000;0X00&#x622A;&#x65AD;</a></li><li><span class="title-icon "></span><a href="#php&#x4E0B;&#x7684;00&#x622A;&#x65AD;"><b>1.5.3. </b>php&#x4E0B;&#x7684;00&#x622A;&#x65AD;</a></li></ul><li><span class="title-icon "></span><a href="#&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;waf&#x68C0;&#x6D4B;"><b>1.6. </b>&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;WAF&#x68C0;&#x6D4B;</a></li><ul><li><span class="title-icon "></span><a href="#waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;"><b>1.6.1. </b>waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;?</a></li><li><span class="title-icon "></span><a href="#&#x4E00;-&#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;"><b>1.6.2. </b>&#x4E00;. &#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;</a></li><li><span class="title-icon "></span><a href="#&#x4E8C;&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;"><b>1.6.3. </b>&#x4E8C;.&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;</a></li><li><span class="title-icon "></span><a href="#&#x4E09;&#x5185;&#x5BB9;&#x68C0;&#x6D4B;"><b>1.6.4. </b>&#x4E09;.&#x5185;&#x5BB9;&#x68C0;&#x6D4B;</a></li><li><span class="title-icon "></span><a href="#&#x53C2;&#x8003;&#x6587;&#x7AE0;"><b>1.6.5. </b>&#x53C2;&#x8003;&#x6587;&#x7AE0;</a></li></ul></ul></ul></div><a href="#" id="anchorNavigationExGoTop"><i class="fa fa-arrow-up"></i></a><h2 id="&#x524D;&#x8A00;"><a name="&#x524D;&#x8A00;" class="anchor-navigation-ex-anchor" href="#&#x524D;&#x8A00;"><i class="fa fa-link" aria-hidden="true"></i></a>1.1. &#x524D;&#x8A00;</h2>
+<p>&#x8FD9;&#x4E00;&#x7AE0;&#x6211;&#x4EEC;&#x6765;&#x8BB2;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x6F0F;&#x6D1E;,&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x6F0F;&#x6D1E;&#x662F;&#x6307;&#x7528;&#x6237;&#x4E0A;&#x4F20;&#x4E86;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x7684;&#x811A;&#x672C;&#x6587;&#x4EF6;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;&#x6B64;&#x811A;&#x672C;&#x6587;&#x4EF6;&#x83B7;&#x5F97;&#x4E86;&#x6267;&#x884C;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x547D;&#x4EE4;&#x7684;&#x80FD;&#x529B;&#x3002;&#x7528;&#x5B83;&#x83B7;&#x5F97;&#x670D;&#x52A1;&#x5668;&#x6743;&#x9650;&#x6700;&#x5FEB;&#x6700;&#x76F4;&#x63A5;&#x3002;&#x4F46;&#x662F;&#x60F3;&#x771F;&#x6B63;&#x628A;&#x8FD9;&#x4E2A;&#x6F0F;&#x6D1E;&#x5229;&#x7528;&#x597D;&#x5374;&#x4E0D;&#x90A3;&#x4E48;&#x5BB9;&#x6613;&#xFF0C;&#x5176;&#x4E2D;&#x6709;&#x5F88;&#x591A;&#x6280;&#x5DE7;&#xFF0C;&#x4E5F;&#x6709;&#x5F88;&#x591A;&#x9700;&#x8981;&#x638C;&#x63E1;&#x7684;&#x77E5;&#x8BC6;&#x3002;</p>
+<h2 id="&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;"><a name="&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;" class="anchor-navigation-ex-anchor" href="#&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;"><i class="fa fa-link" aria-hidden="true"></i></a>1.2. &#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x68C0;&#x9A8C;&#x601D;&#x8DEF;:</h2>
+<ul>
+<li>&#x4E0A;&#x4F20;&#x4E00;&#x4E2A;&#x6B63;&#x5E38;&#x7684;&#x56FE;&#x7247;&#x68C0;&#x9A8C;&#x4E0A;&#x4F20;&#x70B9;&#x662F;&#x5426;&#x53EF;&#x7528;&#xFF0C;&#x662F;&#x7A0B;&#x5E8F;&#x5458;&#x81EA;&#x5DF1;&#x5199;&#x7684;&#x4E0A;&#x4F20;&#x70B9;&#xFF0C;&#x8FD8;&#x662F;&#x7F16;&#x8F91;&#x5668;&#x7684;&#x4E0A;&#x4F20;&#x529F;&#x80FD;&#x3002;</li>
+<li>&#x4E0A;&#x4F20;&#x56FE;&#x7247;&#x9A6C;&#xFF0C;&#x4FEE;&#x6539;&#x540E;&#x7F00;&#x4E3A;php&#xFF0C;&#x68C0;&#x9A8C;&#x662F;&#x524D;&#x7AEF;&#x68C0;&#x9A8C;&#x8FD8;&#x662F;&#x540E;&#x7AEF;&#x68C0;&#x9A8C;&#xFF0C;&#x662F;&#x5185;&#x5BB9;&#x68C0;&#x9A8C;&#x8FD8;&#x662F;&#x540E;&#x7F00;&#x68C0;&#x9A8C;&#x3002;&#x628A;&#x540E;&#x7F00;&#x968F;&#x4FBF;&#x6539;&#x4E00;&#x4E2A;&#x68C0;&#x9A8C;&#x662F;&#x9ED1;&#x540D;&#x5355;&#x8FD8;&#x662F;&#x767D;&#x540D;&#x5355;&#x3002;</li>
+<li>&#x5224;&#x65AD;&#x670D;&#x52A1;&#x5668;&#x662F;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#xFF0C;web&#x670D;&#x52A1;&#x5668;&#x7A0B;&#x5E8F;&#xFF0C;&#x662F;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#xFF0C;&#x7248;&#x672C;&#x53F7;&#x591A;&#x5C11;&#xFF0C;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#xFF0C;&#x8BED;&#x8A00;&#x6216;&#x8005;&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;&#x3002;</li>
+</ul>
+<h2 id="&#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;"><a name="&#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;" class="anchor-navigation-ex-anchor" href="#&#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3. &#x9ED1;&#x540D;&#x5355;&#x7ED5;&#x8FC7;</h2>
+<h3 id="&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;"><a name="&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;" class="anchor-navigation-ex-anchor" href="#&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3.1. &#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;</h3>
+<p>&#x5176;&#x5B9E;&#x5F88;&#x591A;&#x8BED;&#x8A00;&#x90FD;&#x8FD9;&#x6837;&#xFF0C;&#x6709;&#x591A;&#x4E2A;&#x53EF;&#x4EE5;&#x89E3;&#x6790;&#x540E;&#x7F00;&#x3002;&#x5F53;&#x76EE;&#x6807;&#x7AD9;&#x70B9;&#x91C7;&#x7528;&#x9ED1;&#x540D;&#x5355;&#x65F6;&#xFF0C;&#x5F80;&#x5F80;&#x5305;&#x542B;&#x4E0D;&#x5168;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th>&#x8BED;&#x8A00;</th>
+<th>&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>asp/aspx</td>
+<td>asp,aspx,asa,asax,ascx,ashx,asmx,cer,aSp,aSpx,aSa,aSax,aScx,aShx,aSmx,cEr</td>
+</tr>
+<tr>
+<td>php</td>
+<td>php,php5,php4,php3,php2,pHp,pHp5,pHp4,pHp3,pHp2,html,htm,phtml,pht,Html,Htm,pHtml</td>
+</tr>
+<tr>
+<td>jsp</td>
+<td>jsp,jspa,jspx,jsw,jsv,jspf,jtml,jSp,jSpx,jSpa,jSw,jSv,jSpf,jHtml</td>
+</tr>
+</tbody>
+</table>
+<h3 id="&#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;"><a name="&#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;" class="anchor-navigation-ex-anchor" href="#&#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3.2. &#x3000;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x7279;&#x8BC1;</h3>
+<ul>
+<li>Windows&#x4E0B;&#x6587;&#x4EF6;&#x540D;&#x7ED3;&#x5C3E;&#x52A0;&#x5165;<code>.</code>,<code>&#x7A7A;&#x683C;</code>,<code>&lt;</code>,&#xB7;<code>&gt;</code>,<code>&gt;&gt;&gt;</code>,<code>0x81-0xff</code>&#x7B49;&#x5B57;&#x7B26;&#xFF0C;&#x6700;&#x7EC8;&#x751F;&#x6210;&#x7684;&#x6587;&#x4EF6;&#x5747;&#x88AB;windows&#x5FFD;&#x7565;&#x3002;</li>
+<li>Windows&#x4E0B;ADS&#x6D41;&#x7279;&#x6027;&#xFF0C;&#x5BFC;&#x81F4;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;xxx.php::$DATA = xxx.php</li>
+<li>Windows&#x4E0B;&#x6587;&#x4EF6;&#x540D;&#x4E0D;&#x533A;&#x5206;&#x5927;&#x5C0F;&#x5199;&#xFF0C;Linux&#x4E0B;&#x6587;&#x4EF6;&#x540D;&#x533A;&#x5206;&#x5927;&#x5C0F;&#x5199;&#x3002;</li>
+</ul>
+<h3 id="&#x5229;&#x7528;htaccess&#x6587;&#x4EF6;"><a name="&#x5229;&#x7528;htaccess&#x6587;&#x4EF6;" class="anchor-navigation-ex-anchor" href="#&#x5229;&#x7528;htaccess&#x6587;&#x4EF6;"><i class="fa fa-link" aria-hidden="true"></i></a>1.3.3. &#x5229;&#x7528;.htaccess&#x6587;&#x4EF6;</h3>
+<p>&#x5728;apache&#x4E2D;.htaccess&#x53EF;&#x4EE5;&#x91CD;&#x5199;apache&#x914D;&#x7F6E;(&#x5BF9;&#x5F53;&#x524D;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x548C;&#x6587;&#x4EF6;&#x5939;&#x6709;&#x6548;&#xFF09;&#xFF0C;&#x8BE5;&#x65B9;&#x5F0F;&#x4E3B;&#x8981;&#x6765;&#x7ED5;&#x8FC7;&#x9ED1;&#x540D;&#x5355;&#x3002;</p>
+<p>&#x4F8B;&#x5982;.htaccess&#x5199;&#x5165;&#x4EE3;&#x7801;:</p>
+<p>&#x8BE5;&#x6587;&#x4EF6;&#x5939;&#x4E0B;&#x7684;&#x6240;&#x6709;shell.xxx &#x90FD;&#x53EF;&#x4EE5;&#x89E3;&#x6790;&#x4E3A;php&#x6587;&#x4EF6;</p>
+<pre><code>&lt;FilesMatch &quot;shell&quot;&gt; 
+SetHandler application/x-httpd-php 
+&lt;/FilesMatch&gt;
+</code></pre><p>&#x4F46;&#x5229;&#x7528;&#x524D;&#x63D0;&#x662F;apache&#x542F;&#x7528;&#x4E86;.htaccess&#x6587;&#x4EF6;&#x3002;</p>
+<h2 id="&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;"><a name="&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;" class="anchor-navigation-ex-anchor" href="#&#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;"><i class="fa fa-link" aria-hidden="true"></i></a>1.4. &#x4E2D;&#x95F4;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;</h2>
+<h3 id="iis"><a name="iis" class="anchor-navigation-ex-anchor" href="#iis"><i class="fa fa-link" aria-hidden="true"></i></a>1.4.1. iis</h3>
+<p>&#x53EF;&#x53C2;&#x8003;&#x6587;&#x7AE0;<a href="https://www.easy233.top/2020/08/05/zhong-jian-jian-an-quan-iis-pian/" target="_blank">&#x4E2D;&#x95F4;&#x4EF6;&#x5B89;&#x5168;-IIS&#x7BC7;</a></p>
+<ul>
+<li><p>1.IIS6.0&#x6587;&#x4EF6;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;<strong>xx.asp;.jpg</strong>&#xFF08;&#xFF1B;&#x540E;&#x9762;&#x7684;&#x5185;&#x5BB9;&#x88AB;&#x5FFD;&#x7565;&#xFF09;</p>
+</li>
+<li><p>2.IIS6.0&#x76EE;&#x5F55;&#x89E3;&#x6790; xx.asp/1.jpg (&#x76EE;&#x5F55;&#x540D;&#x4E3A;xx.asp&#x91CC;&#x9762;&#x7684;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x90FD;&#x53EF;&#x4EE5;&#x89E3;&#x6790;&#x4E3A;asp&#x6587;&#x4EF6;)</p>
+</li>
+<li>3.IIS 7.0&#x7578;&#x5F62;&#x89E3;&#x6790; xxx.jpg/x.asp(&#x4E0A;&#x4F20;xx.jpg&#x8BBF;&#x95EE;xx.jpg/x.asp&#x5373;&#x53EF;&#x89E3;&#x6790;&#x6210;asp&#x6587;&#x4EF6;)</li>
+</ul>
+<h3 id="apache"><a name="apache" class="anchor-navigation-ex-anchor" href="#apache"><i class="fa fa-link" aria-hidden="true"></i></a>1.4.2. apache</h3>
+<p><a href="https://www.easy233.top/2020/08/04/zhong-jian-jian-an-quan-apache-pian/" target="_blank">&#x4E2D;&#x95F4;&#x4EF6;&#x5B89;&#x5168;-apache&#x7BC7;</a></p>
+<ul>
+<li>1.&#x6362;&#x884C;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;</li>
+<li>2.&#x672A;&#x77E5;&#x540E;&#x7F00; test.php.xxx(apache&#x5F53;&#x53F3;&#x8FB9;&#x7684;&#x540E;&#x7F00;&#x65E0;&#x6CD5;&#x8BC6;&#x522B;&#xFF08;&#x4E0D;&#x5728; mime.tyoes &#x5185;&#xFF09;&#xFF0C;&#x5219;&#x7EE7;&#x7EED;&#x5411;&#x5DE6;&#x8BC6;&#x522B;,&#x76F4;&#x5230;&#x53EF;&#x8BC6;&#x522B;&#x540E;&#x7F00; )</li>
+</ul>
+<h3 id="nginx"><a name="nginx" class="anchor-navigation-ex-anchor" href="#nginx"><i class="fa fa-link" aria-hidden="true"></i></a>1.4.3. nginx</h3>
+<p><a href="https://www.easy233.top/2020/08/05/zhong-jian-jian-an-quan-nginx-pian/" target="_blank">&#x4E2D;&#x95F4;&#x4EF6;&#x5B89;&#x5168;-nginx&#x7BC7;</a></p>
+<ul>
+<li>&#x8BBF;&#x95EE;&#x8FDE;&#x63A5;&#x52A0;/xxx.php test.jpg/xxx.php</li>
+<li>&#x7578;&#x5F62;&#x89E3;&#x6790;&#x6F0F;&#x6D1E; test.jpg%00xxx.php</li>
+<li>CVE-2013-4547 test.jpg(&#x975E;&#x7F16;&#x7801;&#x7A7A;&#x683C;)\0x.php</li>
+</ul>
+<h3 id="tomcat"><a name="tomcat" class="anchor-navigation-ex-anchor" href="#tomcat"><i class="fa fa-link" aria-hidden="true"></i></a>1.4.4. tomcat</h3>
+<p>tomcat&#x7528;&#x4E8E;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;&#x7684;&#x6709;&#x4E09;&#x79CD;,&#x9650;&#x5236;&#x5728;windows&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E0B;&#x3002;</p>
+<pre><code>xxx.jsp/
+xxx.jsp%20
+xxx.jsp::$DATA
+</code></pre><h2 id="00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;"><a name="00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;" class="anchor-navigation-ex-anchor" href="#00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5. 00&#x622A;&#x65AD;&#x6F0F;&#x6D1E;</h2>
+<p>00&#x622A;&#x65AD;&#x4E00;&#x822C;&#x6709;%00&#x622A;&#x65AD;&#x548C;0X00&#x622A;&#x65AD;&#xFF0C;&#x4E24;&#x8005;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x53EA;&#x662F;&#x4E0D;&#x540C;&#x8868;&#x793A;&#x800C;&#x5DF2;</p>
+<p>&#x53C2;&#x8003;&#x6587;&#x7AE0;:<a href="https://blog.csdn.net/qq_26090065/article/details/81458937" target="_blank">00&#x622A;&#x65AD;&#x539F;&#x7406;&#x5206;&#x6790;</a></p>
+<h3 id="00&#x622A;&#x65AD;"><a name="00&#x622A;&#x65AD;" class="anchor-navigation-ex-anchor" href="#00&#x622A;&#x65AD;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5.1. %00&#x622A;&#x65AD;</h3>
+<p>&#x5728;url&#x4E2D;%00&#x8868;&#x793A;ascll&#x7801;&#x4E2D;&#x7684;0 &#xFF0C;&#x800C;ascii&#x4E2D;0&#x4F5C;&#x4E3A;&#x7279;&#x6B8A;&#x5B57;&#x7B26;&#x4FDD;&#x7559;&#xFF0C;&#x8868;&#x793A;&#x5B57;&#x7B26;&#x4E32;&#x7ED3;&#x675F;&#xFF0C;&#x6240;&#x4EE5;&#x5F53;url&#x4E2D;&#x51FA;&#x73B0;%00&#x65F6;&#x5C31;&#x4F1A;&#x8BA4;&#x4E3A;&#x8BFB;&#x53D6;&#x5DF2;&#x7ED3;&#x675F;</p>
+<p>&#x6240;&#x4EE5;&#x5F53;&#x6211;&#x4EEC;&#x6784;&#x5EFA;&#x8FD9;&#x6837;&#x7684;payload:</p>
+<p>&#x5728;&#x4E0A;&#x4F20;&#x7684;&#x65F6;&#x5019;&#x7CFB;&#x7EDF;&#x5C31;&#x4F1A;&#x9ED8;&#x8BA4;&#x5E2E;&#x6211;&#x4EEC;&#x628A;%00&#x540E;&#x9762;&#x7684;&#x4E1C;&#x897F;&#x7ED9;&#x53BB;&#x9664;&#x3002;</p>
+<pre><code>https://mp.csdn.net/upfiles/?filename=test.php%00.jpg
+</code></pre><h3 id="&#x3000;0x00&#x622A;&#x65AD;"><a name="&#x3000;0x00&#x622A;&#x65AD;" class="anchor-navigation-ex-anchor" href="#&#x3000;0x00&#x622A;&#x65AD;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5.2. &#x3000;0X00&#x622A;&#x65AD;</h3>
+<p>0x&#x5F00;&#x5934;&#x8868;&#x793A;16&#x8FDB;&#x5236;&#xFF0C;0&#x5728;&#x5341;&#x516D;&#x8FDB;&#x5236;&#x4E2D;&#x662F;00, 0x00&#x5C31;&#x662F;%00&#x89E3;&#x7801;&#x6210;&#x7684;16&#x8FDB;&#x5236;</p>
+<p><img src="https://picbed.easy233.top//img2018060210230267" alt="img"></p>
+<p> &#x8FD9;&#x91CC;&#x5728;php&#x7684;&#x540E;&#x9762;&#x6DFB;&#x52A0;&#x4E86;&#x4E00;&#x4E2A;&#x7A7A;&#x683C;&#x548C;&#x5B57;&#x6BCD;a,&#x5176;&#x5B9E;a&#x5199;&#x4E0D;&#x5199;&#x90FD;&#x53EF;&#x4EE5;&#xFF0C;&#x8FD9;&#x91CC;&#x52A0;a&#x662F;&#x4E3A;&#x4E86;&#x663E;&#x793A;&#x7A7A;&#x683C;&#x7684;&#x4F4D;&#x7F6E;&#x3002;&#x7A7A;&#x683C;&#x662F;&#x4E3A;&#x4E86;&#x5360;&#x4F4D;&#xFF0C;&#x65B9;&#x4FBF;&#x4FEE;&#x6539;00&#x3002;&#x7136;&#x540E;&#x6253;&#x5F00;hex,&#xFF08;&#x7A7A;&#x683C;&#x7684;16&#x8FDB;&#x5236;&#x4E3A;0x20&#xFF09;&#x4FEE;&#x6539;16&#x8FDB;&#x5236;&#x5185;&#x5BB9;&#xFF0C;&#x628A;20&#x6539;&#x6210;00&#xFF1A;</p>
+<p><img src="https://picbed.easy233.top//img20180602102550553" alt="img"></p>
+<p><img src="https://picbed.easy233.top//img20180602102600467" alt="img"></p>
+<p>&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x7ED5;&#x8FC7;&#x4E0A;&#x4F20;&#x9650;&#x5236;&#x4E86;&#x3002;</p>
+<h3 id="php&#x4E0B;&#x7684;00&#x622A;&#x65AD;"><a name="php&#x4E0B;&#x7684;00&#x622A;&#x65AD;" class="anchor-navigation-ex-anchor" href="#php&#x4E0B;&#x7684;00&#x622A;&#x65AD;"><i class="fa fa-link" aria-hidden="true"></i></a>1.5.3. php&#x4E0B;&#x7684;00&#x622A;&#x65AD;</h3>
+<p>&#x5229;&#x7528;&#x6761;&#x4EF6;:</p>
+<pre><code>php&#x7248;&#x672C;&#x5C0F;&#x4E8E;5.3.4
+php&#x7684;magic_quotes_gpc&#x4E3A;OFF&#x72B6;&#x6001;
+</code></pre><h2 id="&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;waf&#x68C0;&#x6D4B;"><a name="&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;waf&#x68C0;&#x6D4B;" class="anchor-navigation-ex-anchor" href="#&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;waf&#x68C0;&#x6D4B;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6. &#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7ED5;&#x8FC7;WAF&#x68C0;&#x6D4B;</h2>
+<p>&#x53EF;&#x8BA4;&#x771F;&#x770B;&#x8FD9;&#x51E0;&#x7BC7;&#x6587;&#x7AE0;&#xFF0C;&#x83DC;&#x9E21;&#x5C31;&#x4E0D;&#x73ED;&#x95E8;&#x5F04;&#x65A7;&#x4E86;&#xFF0C;&#x53EA;&#x505A;&#x4E00;&#x4E9B;&#x8FD9;&#x4E9B;&#x7684;&#x603B;&#x7ED3;:
+<a href="https://paper.seebug.org/219/" target="_blank">&#x6211;&#x7684;WafBypass&#x4E4B;&#x9053;&#xFF08;upload&#x7BC7;&#xFF09;</a></p>
+<p><a href="https://xz.aliyun.com/t/7531" target="_blank">&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7A81;&#x7834;waf&#x603B;&#x7ED3;</a></p>
+<h3 id="waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;"><a name="waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;" class="anchor-navigation-ex-anchor" href="#waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.1. waf&#x4F1A;&#x68C0;&#x6D4B;&#x54EA;&#x91CC;?</h3>
+<pre><code>&#x8BF7;&#x6C42;&#x7684;url
+Boundary&#x8FB9;&#x754C;
+MIME&#x7C7B;&#x578B;
+&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;
+&#x6587;&#x4EF6;&#x5185;&#x5BB9;
+</code></pre><h3 id="&#x4E00;-&#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;"><a name="&#x4E00;-&#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;" class="anchor-navigation-ex-anchor" href="#&#x4E00;-&#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.2. &#x4E00;. &#x68C0;&#x6D4B;&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;</h3>
+<h4 id="1-&#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;"><a name="1-&#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;" class="anchor-navigation-ex-anchor" href="#1-&#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="1-&#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;" class="plugin-anchor" href="#1-&#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;"><i class="fa fa-link" aria-hidden="true"></i></a>1. &#x5BFB;&#x627E;&#x9ED1;&#x540D;&#x5355;&#x4E4B;&#x5916;&#x7684;&#x6269;&#x5C55;&#x540D;</h4>
+<p>&#x5728;&#x524D;&#x9762;&#x6211;&#x5DF2;&#x7ECF;&#x603B;&#x7ED3;&#x8FC7;&#x4E86;&#x5404;&#x5927;&#x8BED;&#x8A00;&#x7684;&#x4E00;&#x4E9B;&#x53EF;&#x89E3;&#x6790;&#x540E;&#x7F00;&#xFF0C;&#x5B9E;&#x6218;&#x4E2D;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#x5373;&#x53EF;</p>
+<h4 id="2&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;"><a name="2&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;" class="anchor-navigation-ex-anchor" href="#2&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="2&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;" class="plugin-anchor" href="#2&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;"><i class="fa fa-link" aria-hidden="true"></i></a>2.&#x6784;&#x9020;&#x7578;&#x5F62;&#x7684;&#x6570;&#x636E;&#x5305;</h4>
+<p>(1) &#x5220;&#x6389;content-type</p>
+<p>(2)&#x6784;&#x9020;&#x591A;&#x4E2A;filename</p>
+<p>&#x4F8B;&#x5982;:</p>
+<pre><code>Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;preview.jpg&quot;
+Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;preview.jpg&quot;
+Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;preview.jpg&quot;
+</code></pre><p>&#x6216;&#x8005;&#x8FDB;&#x884C;&#x6362;&#x884C;:</p>
+<pre><code>Content-Disposition: form-data; name=&quot;upload_file&quot;; 
+filename=&quot;preview.jpg&quot;;filename=&quot;preview.jpg&quot;;
+</code></pre><pre><code>Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;pre
+view.jpg&quot;;
+</code></pre><p>(3)&#x628A;filename&#x53C2;&#x6570;&#x53D8;&#x7578;&#x5F62;</p>
+<p>&#x6B63;&#x5E38;&#x7684;&#x5305;:</p>
+<pre><code>Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;preview.jpg&quot;;
+</code></pre><p>&#x5728;&#x540E;&#x9762;&#x5728;&#x591A;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x201C;&#x5373;&#x53EF;&#x7ED5;&#x8FC7;</p>
+<pre><code>Content-Disposition: form-data; name=&quot;upload_file&quot;; filename=&quot;preview.jpg&quot;&quot;;
+</code></pre><p>&#x7ECF;&#x8FC7;&#x4E0A;&#x9762;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#x5F88;&#x591A;&#x5BB9;&#x5668;&#x5E76;&#x4E0D;&#x4E25;&#x8C28;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x591A;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#xFF0C;&#x53C2;&#x8BD5;&#x662F;&#x5426;&#x80FD;&#x591F;&#x7ED5;&#x8FC7;WAF</p>
+<h3 id="&#x4E8C;&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;"><a name="&#x4E8C;&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;" class="anchor-navigation-ex-anchor" href="#&#x4E8C;&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.3. &#x4E8C;.&#x5783;&#x573E;&#x6570;&#x636E;&#x586B;&#x5145;</h3>
+<h4 id="content-disposition"><a name="content-disposition" class="anchor-navigation-ex-anchor" href="#content-disposition"><i class="fa fa-link" aria-hidden="true"></i></a><a name="content-disposition" class="plugin-anchor" href="#content-disposition"><i class="fa fa-link" aria-hidden="true"></i></a>Content-Disposition</h4>
+<p>waf&#x5982;&#x679C;&#x5BF9;Content-Disposition&#x957F;&#x5EA6;&#x5904;&#x7406;&#x7684;&#x4E0D;&#x591F;&#x597D;&#x7684;&#x8BDD;&#x53EF;&#x80FD;&#x4F1A;&#x5BFC;&#x81F4;&#x7ED5;&#x8FC7;&#xFF0C;&#x4F8B;&#x5982;:</p>
+<p>&#x5728;Content-Disposition: form-data; name=&quot;upload_file&quot;&#x540E;&#x9762;&#x586B;&#x5145;&#x5783;&#x573E;&#x6570;&#x636E;&#x3002;</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201027175957224.png" alt=""></p>
+<h4 id="&#x6587;&#x4EF6;&#x540D;"><a name="&#x6587;&#x4EF6;&#x540D;" class="anchor-navigation-ex-anchor" href="#&#x6587;&#x4EF6;&#x540D;"><i class="fa fa-link" aria-hidden="true"></i></a><a name="&#x6587;&#x4EF6;&#x540D;" class="plugin-anchor" href="#&#x6587;&#x4EF6;&#x540D;"><i class="fa fa-link" aria-hidden="true"></i></a>&#x6587;&#x4EF6;&#x540D;</h4>
+<ul>
+<li><p>&#x57FA;&#x4E8E;&#x6784;&#x9020;&#x957F;&#x6587;&#x4EF6;&#x540D;</p>
+</li>
+<li><p>&#x5982;&#x679C;web&#x7A0B;&#x5E8F;&#x4F1A;&#x5C06;filename&#x9664;&#x4E86;&#x6269;&#x5C55;&#x540D;&#x7684;&#x90A3;&#x6BB5;&#x91CD;&#x547D;&#x540D;&#x7684;&#x8BDD;&#xFF0C;&#x90A3;&#x4E48;&#x8FD8;&#x53EF;&#x4EE5;&#x6784;&#x9020;&#x66F4;&#x591A;&#x7684;&#x70B9;&#x3001;&#x7B26;&#x53F7;&#x7B49;&#x7B49;&#x3002;</p>
+</li>
+<li><p>&#x7279;&#x6B8A;&#x7684;&#x957F;&#x6587;&#x4EF6;&#x540D;&#xFF1A;</p>
+<p>&#x6587;&#x4EF6;&#x540D;&#x4F7F;&#x7528;&#x975E;&#x5B57;&#x6BCD;&#x6570;&#x5B57;&#xFF0C;&#x6BD4;&#x5982;&#x4E2D;&#x6587;&#x7B49;&#x6700;&#x5927;&#x7A0B;&#x5EA6;&#x7684;&#x62C9;&#x957F;&#xFF0C;&#x4E0D;&#x884C;&#x7684;&#x8BDD;&#x518D;&#x7ED3;&#x5408;&#x4E00;&#x4E0B;&#x5176;&#x4ED6;&#x7684;&#x7279;&#x6027;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#xFF1A;</p>
+<pre><code>shell.asp;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;&#x738B;.jpg
+</code></pre></li>
+</ul>
+<h3 id="&#x4E09;&#x5185;&#x5BB9;&#x68C0;&#x6D4B;"><a name="&#x4E09;&#x5185;&#x5BB9;&#x68C0;&#x6D4B;" class="anchor-navigation-ex-anchor" href="#&#x4E09;&#x5185;&#x5BB9;&#x68C0;&#x6D4B;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.4. &#x4E09;.&#x5185;&#x5BB9;&#x68C0;&#x6D4B;</h3>
+<ul>
+<li>&#x56FE;&#x7247;&#x9A6C;</li>
+<li>&#x6587;&#x4EF6;&#x5305;&#x542B;</li>
+<li>&#x66FF;&#x6362;&#x88AB;&#x68C0;&#x6D4B;&#x7684;&#x5185;&#x5BB9;</li>
+<li>&#x5148;&#x4E0A;&#x4F20;&#x4E00;&#x4E9B;&#x5C0F;&#x529F;&#x80FD;&#x7684;&#x811A;&#x672C;&#xFF0C;&#x6BD4;&#x5982;&#x5199;&#x6587;&#x4EF6;&#xFF0C;cmdshell&#x7B49;&#x7B49;</li>
+</ul>
+<h3 id="&#x53C2;&#x8003;&#x6587;&#x7AE0;"><a name="&#x53C2;&#x8003;&#x6587;&#x7AE0;" class="anchor-navigation-ex-anchor" href="#&#x53C2;&#x8003;&#x6587;&#x7AE0;"><i class="fa fa-link" aria-hidden="true"></i></a>1.6.5. &#x53C2;&#x8003;&#x6587;&#x7AE0;</h3>
+<p><a href="https://xz.aliyun.com/t/7531#toc-3" target="_blank">&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7A81;&#x7834;waf&#x603B;&#x7ED3;</a></p>
+<p><a href="https://paper.seebug.org/219/#0x00" target="_blank">&#x6211;&#x7684;WafBypass&#x4E4B;&#x9053;&#xFF08;upload&#x7BC7;&#xFF09;</a></p>
+<p><a href="https://gv7.me/articles/2018/make-upload-vul-fuzz-dic" target="_blank">&#x6784;&#x9020;&#x4F18;&#x8D28;&#x4E0A;&#x4F20;&#x6F0F;&#x6D1E;fuzz&#x5B57;&#x5178;</a></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../sql/Sqlmap使用教程.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: sqlmap使用教程">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"文件上传漏洞","level":"2.2","depth":1,"previous":{"title":"sqlmap使用教程","level":"2.1.3","depth":2,"path":"web安全基础总结/sql/Sqlmap使用教程.md","ref":"web安全基础总结/sql/Sqlmap使用教程.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-search","search-pro","-sharing","splitter","anchors","expandable-chapters-small","toggle-chapters","chapter-fold","donate","sharing-plus","anchor-navigation-ex","favicon","copy-code-button","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"chapter-fold":{},"livereload":{},"splitter":{},"search-pro":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"donate":{"alipay":"http://picbed.easy233.top//img20201018212824.png","alipayText":"支付宝打赏","button":"打赏作者","title":"","wechat":"http://picbed.easy233.top//img20201018212856.png","wechatText":"微信打赏"},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"associatedWithSummary":true,"float":{"floatIcon":"fa fa-navicon","level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"mode":"float","multipleH1":true,"pageTop":{"level1Icon":"","level2Icon":"","level3Icon":"","showLevelIcon":false},"printLog":false,"showGoTop":true,"showLevel":true},"favicon":{},"expandable-chapters-small":{},"copy-code-button":{},"sharing":{},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"toggle-chapters":{}},"theme":"default","author":"EASY","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"WEB安全知识总结","language":"zh-hans","links":{"sidebar":{"Home":"https://www.easy233.top/"}},"gitbook":"3.2.3","description":"系统总结自已web安全学习知识","theme-default":{"showLevel":true}},"file":{"path":"web安全基础总结/文件上传/文件上传.md","mtime":"2020-10-27T10:09:02.049Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-27T10:10:52.774Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-expandable-chapters-small/expandable-chapters-small.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-donate/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-copy-code-button/toggle.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
