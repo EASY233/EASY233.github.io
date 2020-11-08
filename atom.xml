@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.easy233.top/"/>
-  <updated>2020-10-19T09:02:49.186Z</updated>
+  <updated>2020-11-08T10:16:59.261Z</updated>
   <id>https://www.easy233.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>代码审计-yzmcms</title>
+    <link href="https://www.easy233.top/2020/11/08/dai-ma-shen-ji-yzmcms/"/>
+    <id>https://www.easy233.top/2020/11/08/dai-ma-shen-ji-yzmcms/</id>
+    <published>2020-11-08T10:12:30.000Z</published>
+    <updated>2020-11-08T10:16:59.261Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;这次审计的CMS是最新版的&lt;a href=&quot;https://github.com/yzmcms/yzmcms&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="代码审计" scheme="https://www.easy233.top/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>我的Gitbook发布啦！</title>
