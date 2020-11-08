@@ -491,7 +491,7 @@
 <p>我返回继续往下看到70到72行加载了三个公用文件:</p>
 <pre><code>yzm_base::load_common(&#39;function/system.func.php&#39;); //定义各种方法
 yzm_base::load_common(&#39;function/extention.func.php&#39;);//什么都没有干
-yzm_base::load_common(&#39;data/version.php&#39;); </code></pre><p>跟进同样发现进行特殊只是定义了各种方法和包含一些常量。此时读完后yzm_base类后没有了任何操作，这时我们回到index.php，看一下index.php文件的最后一行。</p>
+yzm_base::load_common(&#39;data/version.php&#39;); </code></pre><p>跟进同样发现只是定义了各种方法和包含一些常量。此时读完后yzm_base类后没有了任何操作，这时我们回到index.php，看一下index.php文件的最后一行。</p>
 <pre><code>yzm_base::creat_app();</code></pre><p>我们重返yzmcms.php中观察yzm_base类中creat_app静态方法都是怎么运行的:</p>
 <p><img src="https://picbed.easy233.top//imgimage-20201108152153352.png" alt=""></p>
 <p>上面我们看出来首先进入load_sys_class方法中然后在进入__load_class方法中，我们继续更进去看看</p>
