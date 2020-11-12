@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>记一次有趣的支付漏洞挖掘</title>
+      <link href="/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/"/>
+      <url>/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近漏洞挖掘过程中遇到一个有趣的支付漏洞，开发者已经修复，这里记录一下挖掘过程。</p><h2 id="支付逻辑分析"><a href="#支付逻辑分析" class="headerlink" title="支付逻辑分析"></a>支付逻辑分析</h2><p>产品界面</p><p><img src="https://picbed.easy233.top//imgimage-20201112151133977.png" alt=""></p><p>抓包分析：</p><p><img src="https://picbed.easy233.top//imgimage-20201112151322055.png" alt=""></p><p>主要几个参数:</p><ul><li>appname:购买产品名字</li><li>fee:支付金额，实际的支付金额是这个数除以100，所以这里是支付15元。</li><li>method:支付方法:微信or支付包</li><li>username:用户名。</li></ul><p>从上面可以看出来真正可以让用户操作产生漏洞也就自由fee这个参数。经过一番测试基本可以滤清里面的支付逻辑:</p><p>如果金额是1500，4500，14400就按照产品界面支付，也就是15块可以使用一个月。而如果不是这些金额的话就按照10块一天来支付比如你修改fee值为2000，你付了20快钱只能获取到2天的产品体验，低于10块为0天。数值为负数，添加了小数点，数值过大都不会放回付款码。咋一看这逻辑简直无敌，你改了别人的金额反而自已更亏了，但真的是无懈可击吗？</p><h2 id="小数处理问题"><a href="#小数处理问题" class="headerlink" title="小数处理问题"></a>小数处理问题</h2><p>经过笔者测试，当你使用14.5进行支付的时候获取到15块钱购买一个月的产品体验效果。因为后台代码会自动把金额除以100，本人猜测后端把金额的小数后面进行了四舍五入的处理，才导致了使用14.5达到15块的效果。但是你看到这里肯定会问这只是省下了5毛钱可太鸡肋了。那我就只能说看购买什么产品了，如果是价格便宜并且量大的产品这个危害就截然不同了。例如笔者在该网站下找到的另一个购买点。</p><p><img src="https://picbed.easy233.top//imgimage-20201112154227981.png" alt=""></p><p>五毛钱购买一次根据上面的逻辑这里我只需要把fee值修改25，后端除100就是0.25元，就可以实现减少一半的钱购买了。</p><p>这里我们只需要批量的刷100次最后的钱就是25元，比它打折后39元还要便宜不少。</p><p><img src="https://picbed.easy233.top//imgimage-20201112154447772.png" alt=""></p><h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>向开发者报告了漏洞写了一大堆最后对方只给我发了一个句已修复就没有后文了，连句感谢都没有，估计对方认为我不是什么好人~~</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 漏洞挖掘 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>代码审计-yzmcms</title>
       <link href="/2020/11/08/dai-ma-shen-ji-yzmcms/"/>
       <url>/2020/11/08/dai-ma-shen-ji-yzmcms/</url>

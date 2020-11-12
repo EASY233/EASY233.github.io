@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.easy233.top/"/>
-  <updated>2020-11-08T11:08:39.728Z</updated>
+  <updated>2020-11-12T07:56:55.141Z</updated>
   <id>https://www.easy233.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记一次有趣的支付漏洞挖掘</title>
+    <link href="https://www.easy233.top/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/"/>
+    <id>https://www.easy233.top/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/</id>
+    <published>2020-11-12T07:00:31.000Z</published>
+    <updated>2020-11-12T07:56:55.141Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近漏洞挖掘过程中遇到一个有趣的支付漏洞，开发者已经修复，这里记录一下挖掘过程。&lt;/p&gt;
+&lt;h2 id=&quot;支付逻辑分析&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="漏洞挖掘" scheme="https://www.easy233.top/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/"/>
+    
+  </entry>
   
   <entry>
     <title>代码审计-yzmcms</title>
