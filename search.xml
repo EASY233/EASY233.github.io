@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>PHP中双引号的安全问题</title>
+      <link href="/2020/11/15/php-zhong-shuang-yin-hao-de-an-quan-wen-ti/"/>
+      <url>/2020/11/15/php-zhong-shuang-yin-hao-de-an-quan-wen-ti/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在PHP语言中，单引号和双引号都可以表示一个字符串，但是对于双引号来说，可能会对引号内的内容进行二次解释，这就可能会出现安全问题。</p><h2 id="双引号引起的命令执行漏洞"><a href="#双引号引起的命令执行漏洞" class="headerlink" title="双引号引起的命令执行漏洞"></a>双引号引起的命令执行漏洞</h2><p>在双引号中倘若有${}出现，那么{}内的内容将被当做代码块来执行。例如以下代码可以正常解析为phpinfo的代码:</p><pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span><span class="token string">"${@phpinfo()}"</span><span class="token punctuation">;</span></code></pre><p><img src="https://picbed.easy233.top//imgimage-20201115123235709.png" alt=""></p><h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>倘若在一个cms的后台，可以修改数据库的配置文件我们就可以通过这个方法进行Getshell，因为使用的${}的方法我们还可以逃过CMS常进行过滤的addlashes()，htmlspecialchars()等函数的检测进行Getshell。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 代码审计 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>记一次有趣的支付漏洞挖掘</title>
       <link href="/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/"/>
       <url>/2020/11/12/ji-yi-ci-you-qu-de-zhi-fu-lou-dong-wa-jue/</url>
