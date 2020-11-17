@@ -306,6 +306,19 @@
 </header>
 
     
+<script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
 
 
 
@@ -701,30 +714,28 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/11/15/php-zhong-shuang-yin-hao-de-an-quan-wen-ti/">
+                <a href="/2020/11/17/dai-ma-shen-ji-tian-mu-cms/">
                     <div class="card-image">
                         
-                        <img src="https://picbed.easy233.top//imgimage-20201115123235709.png" class="responsive-img" alt="PHP中双引号的安全问题">
+                        <img src="https://picbed.easy233.top//imgimage-20201117145200336.png" class="responsive-img" alt="代码审计-天目CMS">
                         
-                        <span class="card-title">PHP中双引号的安全问题</span>
+                        <span class="card-title">代码审计-天目CMS</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言在PHP语言中，单引号和双引号都可以表示一个字符串，但是对于双引号来说，可能会对引号内的内容进行二次解释，这就可能会出现安全问题。
-双引号引起的命令执行漏洞在双引号中倘若有${}出现，那么{}内的内容将被当做代码块来执行。例如以下代码可
+                            前言继续MVC的代码审计学习，这次审计的是天目MVC核心版.官方介绍:TEMMOKUMVC是邳州天目网络科技有限公司开发的一款专业的PHP+MYSQL产品，采用自主MVC构架，适用大型及中小型企业的开源MVC。本次审计出来的漏洞都出现于后台
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-11-15
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-11-17
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -733,7 +744,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
