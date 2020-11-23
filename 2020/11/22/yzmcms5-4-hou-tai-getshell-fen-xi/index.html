@@ -322,7 +322,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20201122214920108.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//img20201123090237.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -476,7 +476,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看了先知师傅<a href="https://xz.aliyun.com/t/7231#toc-1" target="_blank" rel="noopener">YzmCMS 5.4 后台getshell</a>的文章分析感觉该漏洞颇具学习价值，所以自已下载下来进行一波，学习学习其中的思路。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>看了先知<a href="https://xz.aliyun.com/t/7231#toc-1" target="_blank" rel="noopener">YzmCMS 5.4 后台getshell</a>的文章分析感觉该漏洞颇具学习价值，所以自已下载下来审计一波，学习学习其中的思路。</p>
 <h2 id="缓存文件Getshell"><a href="#缓存文件Getshell" class="headerlink" title="缓存文件Getshell"></a>缓存文件Getshell</h2><p>我们看看缓存文件的写入函数<code>_fileputcontents</code>,文件位于<code>yzmphp/core/class/cache_file.class.php</code>。</p>
 <pre class=" language-php"><code class="language-php">    <span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function">_fileputcontents</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">,</span> <span class="token variable">$contents</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">config</span><span class="token punctuation">[</span><span class="token string">'mode'</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -489,7 +489,7 @@
         <span class="token keyword">return</span> <span class="token variable">$filesize</span> <span class="token operator">?</span> <span class="token variable">$filesize</span> <span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span></code></pre>
 <p>这里我们可以看到只有<code>config[&#39;mode&#39;]=1</code> 进入序列化代码我们写入任意代码才有意义，否则在前面添加上<code>&lt;?php \nreturn</code>就算能够写入webshell也无法运行。</p>
-<p>在<code>common/config/config.php</code>配置文件中我们可以看mode默认是2。所以该漏洞比较鸡肋需要mode修改为1可以利用。这里我们手工把它修改为1.<br><img src="https://picbed.easy233.top//imgimage-20201122212623137.png" alt="image-20201122212623137"></p>
+<p>在<code>common/config/config.php</code>配置文件中我们可以看mode默认是2。所以该漏洞比较鸡肋需要mode修改为1可以利用。这里我们手工把它修改为1.<br><img src="https://picbed.easy233.top//imgimage-20201122212623137.png" alt=""></p>
 <p>我们继续看看哪里调用该方法，最终发现在本文件下的<code>set</code>方法调用了该方法:</p>
 <pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token variable">$id</span><span class="token punctuation">,</span> <span class="token variable">$data</span><span class="token punctuation">,</span> <span class="token variable">$cachelife</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         <span class="token variable">$cache</span>  <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -563,7 +563,7 @@
     <span class="token punctuation">}</span></code></pre>
 <p>可以看到post过来的值被直接insert到了<code>config</code>表(如果insert的第二个参数为true则会进行过滤)，所以这个接口就可以用于写入代码。</p>
 <h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>修改配置文件中的mode为1，然后再自定义配置处修改配置值为我们的一句话木马。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20201122214644226.png" alt="image-20201122214644226"></p>
+<p><img src="https://picbed.easy233.top//imgimage-20201122214644226.png" alt=""></p>
 <p>成功Getshell:</p>
 <p><img src="https://picbed.easy233.top//imgimage-20201122214920108.png" alt=""></p>
 <h2 id="保存配置造成的Getshell"><a href="#保存配置造成的Getshell" class="headerlink" title="保存配置造成的Getshell"></a>保存配置造成的Getshell</h2><p>后台在修改配置的时候常常会把一些配置信息写入配置文件中，如果对输入过滤不够的严格就会容易造成Getshell。</p>
@@ -604,7 +604,7 @@
 <p>最终payload:</p>
 <p>``mark.png$1,eval(base64_decode($1c3lzdGVtKCdlY2hvIDEyMycpOw==$1)),$1`    </p>
 <p>最终执行的语句为<code>system(&#39;echo 123&#39;);</code></p>
-<p><img src="https://picbed.easy233.top//imgimage-20201122220420419.png" alt="image-20201122220420419"></p>
+<p><img src="https://picbed.easy233.top//imgimage-20201122220420419.png" alt=""></p>
 <p>保存好刷新页面:</p>
 <p><img src="https://picbed.easy233.top//imgimage-20201122220735725.png" alt=""></p>
 
@@ -847,7 +847,7 @@
                 <a href="/2020/11/22/yzmcms5-4-hou-tai-getshell-fen-xi/">
                     <div class="card-image">
                         
-                        <img src="https://picbed.easy233.top//imgimage-20201122214920108.png" class="responsive-img" alt="yzmcms5.4后台Getshell分析">
+                        <img src="https://picbed.easy233.top//img20201123090237.png" class="responsive-img" alt="yzmcms5.4后台Getshell分析">
                         
                         <span class="card-title">yzmcms5.4后台Getshell分析</span>
                     </div>
@@ -855,8 +855,8 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言看了先知师傅YzmCMS 5.4 后台getshell的文章分析感觉该漏洞颇具学习价值，所以自已下载下来进行一波，学习学习其中的思路。
-缓存文件Getshell我们看看缓存文件的写入函数_fileputcontents,文件位于yzmp
+                            前言看了先知YzmCMS 5.4 后台getshell的文章分析感觉该漏洞颇具学习价值，所以自已下载下来审计一波，学习学习其中的思路。
+缓存文件Getshell我们看看缓存文件的写入函数_fileputcontents,文件位于yzmphp
                         
                     </div>
                     <div class="publish-info">
