@@ -744,7 +744,7 @@ _method=__construct&amp;filter[]=assert&amp;method=get&amp;server[REQUEST_METHOD
 <p>进入if语句块，如果有路由缓存会读路由缓存，没有的话会读<code>/application/route.php</code>导入路由，经过<code>Route::check()</code>后，会拿<code>$config[&#39;url_route_must&#39;]</code>来判断是否是强路由，如果是强路由会抛出<code>throw new RouteNotFoundException()</code> 异常。到这里也就可以看到为什么开启强路由不行了。</p>
 <p>并非注册路由这里经过<code>Route::check</code>会放回False，会进入<code>Route::parseUrl($path, $depr, $config[&#39;controller_auto_search&#39;])</code>自动解析<code>模块/控制器/操作/参数</code>。</p>
 <p>我们更进查看:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20201214170347504.png" alt="image-20201214170347504"></p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214170347504.png" alt=""></p>
 <p><code>$depr</code>在配置文件中可以查看到为<code>/</code>,先把$url中的<code>/</code>替换成<code>|</code>然后给<code>self::parseUrlPath()</code>方法进行处理。更进查看：</p>
 <pre class=" language-php"><code class="language-php">    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">parseUrlPath</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">)</span>
     <span class="token punctuation">{</span>
