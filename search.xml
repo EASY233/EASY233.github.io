@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>使用wireshark分析nmap扫描方式</title>
+      <link href="/2021/03/17/shi-yong-wireshark-fen-xi-nmap-sao-miao-fang-shi/"/>
+      <url>/2021/03/17/shi-yong-wireshark-fen-xi-nmap-sao-miao-fang-shi/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>主机ip:192.168.10.40</p><p>扫描主机ip:192.168.10.54</p><h2 id="使用全连接模式扫描-sT"><a href="#使用全连接模式扫描-sT" class="headerlink" title="使用全连接模式扫描(-sT)"></a>使用全连接模式扫描(-sT)</h2><p><strong>原理:</strong>通过调用TCP connect()来向目标端口发送连接请求通过发送SYN数据包请求建立连接，若靶机开启端口则会建立完整的TCP连接</p><p>而未开启的端口会返回RST/ACK报文，不会建立完整的TCP连接。</p><p>这里简单提一下TCP三次握手建立连接:</p><ul><li>客户端向请求端发送SYN数据包(仅SYN 标志为1的TCP包)请求连接，只有当服务端收到客户端发来的SYN包，才可建立连接。</li><li>服务端收到后会发送一个SYN的确认包(SYN/ACK包，即仅SYN 和 ACK 标记为1的包.)回去，表示对第一个SYN包的确认，并继续握手操作。</li><li>客服端收到SYN/ACK包后，向服务端发送确认包ACK，通知服务端已建立起连接，至此，三次握手完成，一个TCP连接完成</li></ul><p>当TCP连接释放的时候需要经过四次挥手但并不是关闭TCP连接的唯一方法. 有时,如果主机需要尽快关闭连接(或连接超时,端口或主机不可达),RST(Reset)包将被发送. 注意在，由于RST包不是TCP连接中的必须部分, 可以只发送RST包(即不带ACK标记).但在正常的TCP连接中RST包可以带ACK确认标记 。</p><p>如下图若端口是打开的，返回了SYN,ACK则表明端口开放，然后扫描主机箱目标机发送ACK/RST包断开连接。</p><p><img src="https://picbed.easy233.top//imgimage-20210317162336056.png" alt=""></p><p>如果端口是关闭的，则会直接返回RST/ACK报文断开连接，说明端口是关闭的。</p><p><img src="https://picbed.easy233.top//imgimage-20210317164432652.png" alt=""></p><p>该种方法进行扫描会留下扫描纪录，而且速度较慢。</p><h2 id="使用半连接模式进行扫描-sS"><a href="#使用半连接模式进行扫描-sS" class="headerlink" title="使用半连接模式进行扫描(-sS)"></a>使用半连接模式进行扫描(-sS)</h2><p>使用该模式下当收到目标发来的SYN/ACK包就认为其开发，并不进行连接。而未开启的端口会返回RST/ACK报文，不会出现TCP连接</p><p>如果没有收到回复，那么判断为该端口被屏蔽(Filtered)，这种扫描方式因为不会建立完整的TCP连接，比较隐蔽，扫描速度也比较快，是Namp默认的扫描方式。</p><p>端口关闭情况下的扫描抓包:</p><p><img src="https://picbed.easy233.top//imgimage-20210317165154857.png" alt=""></p><p>端口开发情况下的扫描抓包:</p><p><img src="https://picbed.easy233.top//imgimage-20210317165237317.png" alt=""></p><p>nmap扫描结果如下:</p><p><img src="https://picbed.easy233.top//imgimage-20210317165314204.png" alt=""></p><h2 id="使用TCP-Null模式-sN"><a href="#使用TCP-Null模式-sN" class="headerlink" title="使用TCP Null模式 (-sN)"></a>使用TCP Null模式 (-sN)</h2><p>NULL扫描当主机向靶机一个端口发送的TCP数据包所有标志位都为空，如果目标主机该端口是关的，则返回一个RST数据包，若没有收到说明端口是开放的或者被屏蔽，如果端口是开放的则不会返回信息，但似乎该种方法并不可靠？3389明明是开发的却没有如预期一样被识别出来。</p><p><img src="https://picbed.easy233.top//imgimage-20210317171706575.png" alt=""></p><h2 id="使用FIN模式进行扫描-sF"><a href="#使用FIN模式进行扫描-sF" class="headerlink" title="使用FIN模式进行扫描(-sF)"></a>使用FIN模式进行扫描(-sF)</h2><p>FIN段负责表示发送端已经没有数据要传输了，希望释放连接,发送一个FIN=1的报文到一个关闭的端口时该报文会被丢掉，并返回一个RST报文.</p><p><img src="https://picbed.easy233.top//imgimage-20210317172415014.png" alt=""></p><p>但是当FIN报文到一个活动的端口时，该报文只是被简单的丢掉不回应任何信息.</p><h2 id="使用UPD扫描模式-sU"><a href="#使用UPD扫描模式-sU" class="headerlink" title="使用UPD扫描模式(-sU)."></a>使用UPD扫描模式(-sU).</h2><p>UDP端口扫描主要是检测目标的端口是否存在ICMP端口不可达数据包，如果收到回复“ICMP port unreachable”说明对方这一端口是关闭的，否则就说明该端口已经开启或者被屏蔽了。</p><p>nmap只提供一种UDP的扫描方式(-sU).UDP扫描的最大问题是性能问题。由干Linux内核限制1秒内最多发送一次ICMP Port Unreachable信息。按照这个速度，对一台主机的65536个UDP端口进行完整扫描，总耗时必 定会超过18个小时。</p><p>所以一般会指定端口进行扫描。</p><p><img src="https://picbed.easy233.top//imgimage-20210317171031779.png" alt=""></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 计算机网络 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>2020年年度总结</title>
       <link href="/2020/12/31/2020-nian-du-zong-jie/"/>
       <url>/2020/12/31/2020-nian-du-zong-jie/</url>
