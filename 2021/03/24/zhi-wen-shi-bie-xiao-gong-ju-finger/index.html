@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="使用wireshark分析nmap扫描方式, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="指纹识别工具-Finger, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>使用wireshark分析nmap扫描方式 | EASY</title>
+    <title>指纹识别工具-Finger | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -322,12 +322,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20210317162336056.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20210324111641053.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">使用wireshark分析nmap扫描方式</h1>
+                    <h1 class="description center-align post-title">指纹识别工具-Finger</h1>
                 </div>
             </div>
         </div>
@@ -444,8 +444,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
-                                <span class="chip bg-color">计算机网络</span>
+                            <a href="/tags/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">
+                                <span class="chip bg-color">安全工具开发</span>
                             </a>
                         
                     </div>
@@ -460,7 +460,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-17
+                    2021-03-24
                 </div>
                 
 
@@ -476,39 +476,66 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>主机ip:192.168.10.40</p>
-<p>扫描主机ip:192.168.10.54</p>
-<h2 id="使用全连接模式扫描-sT"><a href="#使用全连接模式扫描-sT" class="headerlink" title="使用全连接模式扫描(-sT)"></a>使用全连接模式扫描(-sT)</h2><p><strong>原理:</strong>通过调用TCP connect()来向目标端口发送连接请求通过发送SYN数据包请求建立连接，若靶机开启端口则会建立完整的TCP连接</p>
-<p>而未开启的端口会返回RST/ACK报文，不会建立完整的TCP连接。</p>
-<p>这里简单提一下TCP三次握手建立连接:</p>
-<ul>
-<li>客户端向请求端发送SYN数据包(仅SYN 标志为1的TCP包)请求连接，只有当服务端收到客户端发来的SYN包，才可建立连接。</li>
-<li>服务端收到后会发送一个SYN的确认包(SYN/ACK包，即仅SYN 和 ACK 标记为1的包.)回去，表示对第一个SYN包的确认，并继续握手操作。</li>
-<li>客服端收到SYN/ACK包后，向服务端发送确认包ACK，通知服务端已建立起连接，至此，三次握手完成，一个TCP连接完成</li>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一直苦于没有用的顺手的web指纹识别工具，学习前辈s7ckTeam的<a href="https://github.com/s7ckTeam/Glass" target="_blank" rel="noopener">Glass</a>和broken5的<a href="https://github.com/broken5/WebAliveScan" target="_blank" rel="noopener">WebAliveScan</a>优秀开源程序开发的轻量型web指纹工具。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="开发语言"><a href="#开发语言" class="headerlink" title="开发语言"></a>开发语言</h3><ul>
+<li>python3</li>
 </ul>
-<p>当TCP连接释放的时候需要经过四次挥手但并不是关闭TCP连接的唯一方法. 有时,如果主机需要尽快关闭连接(或连接超时,端口或主机不可达),RST(Reset)包将被发送. 注意在，由于RST包不是TCP连接中的必须部分, 可以只发送RST包(即不带ACK标记).但在正常的TCP连接中RST包可以带ACK确认标记 。</p>
-<p>如下图若端口是打开的，返回了SYN,ACK则表明端口开放，然后扫描主机箱目标机发送ACK/RST包断开连接。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317162336056.png" alt=""></p>
-<p>如果端口是关闭的，则会直接返回RST/ACK报文断开连接，说明端口是关闭的。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317164432652.png" alt=""></p>
-<p>该种方法进行扫描会留下扫描纪录，而且速度较慢。</p>
-<h2 id="使用半连接模式进行扫描-sS"><a href="#使用半连接模式进行扫描-sS" class="headerlink" title="使用半连接模式进行扫描(-sS)"></a>使用半连接模式进行扫描(-sS)</h2><p>使用该模式下当收到目标发来的SYN/ACK包就认为其开发，并不进行连接。而未开启的端口会返回RST/ACK报文，不会出现TCP连接</p>
-<p>如果没有收到回复，那么判断为该端口被屏蔽(Filtered)，这种扫描方式因为不会建立完整的TCP连接，比较隐蔽，扫描速度也比较快，是Namp默认的扫描方式。</p>
-<p>端口关闭情况下的扫描抓包:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317165154857.png" alt=""></p>
-<p>端口开发情况下的扫描抓包:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317165237317.png" alt=""></p>
-<p>nmap扫描结果如下:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317165314204.png" alt=""></p>
-<h2 id="使用TCP-Null模式-sN"><a href="#使用TCP-Null模式-sN" class="headerlink" title="使用TCP Null模式 (-sN)"></a>使用TCP Null模式 (-sN)</h2><p>NULL扫描当主机向靶机一个端口发送的TCP数据包所有标志位都为空，如果目标主机该端口是关的，则返回一个RST数据包，若没有收到说明端口是开放的或者被屏蔽，如果端口是开放的则不会返回信息，但似乎该种方法并不可靠？3389明明是开发的却没有如预期一样被识别出来。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317171706575.png" alt=""></p>
-<h2 id="使用FIN模式进行扫描-sF"><a href="#使用FIN模式进行扫描-sF" class="headerlink" title="使用FIN模式进行扫描(-sF)"></a>使用FIN模式进行扫描(-sF)</h2><p>FIN段负责表示发送端已经没有数据要传输了，希望释放连接,发送一个FIN=1的报文到一个关闭的端口时该报文会被丢掉，并返回一个RST报文.</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317172415014.png" alt=""></p>
-<p>但是当FIN报文到一个活动的端口时，该报文只是被简单的丢掉不回应任何信息.</p>
-<h2 id="使用UPD扫描模式-sU"><a href="#使用UPD扫描模式-sU" class="headerlink" title="使用UPD扫描模式(-sU)."></a>使用UPD扫描模式(-sU).</h2><p>UDP端口扫描主要是检测目标的端口是否存在ICMP端口不可达数据包，如果收到回复“ICMP port unreachable”说明对方这一端口是关闭的，否则就说明该端口已经开启或者被屏蔽了。</p>
-<p>nmap只提供一种UDP的扫描方式(-sU).UDP扫描的最大问题是性能问题。由干Linux内核限制1秒内最多发送一次ICMP Port Unreachable信息。按照这个速度，对一台主机的65536个UDP端口进行完整扫描，总耗时必 定会超过18个小时。</p>
-<p>所以一般会指定端口进行扫描。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210317171031779.png" alt=""></p>
+<h3 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h3><ul>
+<li>Linux</li>
+<li>Windows</li>
+<li>Mac</li>
+</ul>
+<h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code>git clone https://github.com/EASY233/Finger
+cd Finger
+pip3 install -r requirements.txt</code></pre><h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><pre><code>optional arguments:
+  -h, --help  show this help message and exit
+
+Target:
+  -u URL      Input your url target
+  -f FILE     Input your target&#39;s file
+
+Output:
+  -o OUTPUT   Select the output format.eg(html,json,xml,default:html)
+
+Usage:
+单一URL识别: python3 Finger.py -u http://www.baidu.com or www.baidu.com 
+批量URL识别: python3 Finger.py -f xx.txt
+输出方式:
+支持html，json，xml三种格式默认html格式
+用法:python3 Finger.py -f xx.txt -o json</code></pre><h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>默认线程数为20实际需要修改可以在<code>config/config.py</code>中进行修改</p>
+<pre><code>threads = 20</code></pre><p>指纹识别库在<code>config/apps.json</code>中可执行添加修改,添加修改规则:</p>
+<p>例如以下:</p>
+<pre class=" language-json"><code class="language-json"><span class="token property">"phpliteadmin"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Application"</span><span class="token punctuation">,</span>
+        <span class="token property">"html"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"&lt;span id='logo'>phpLiteAdmin&lt;/span> &lt;span id='version'>v([0-9.]+)&lt;\\;version:\\1"</span><span class="token punctuation">,</span>
+          <span class="token string">"&lt;!-- Copyright [0-9]+ phpLiteAdmin (?:http://www.phpliteadmin.org/) -->"</span><span class="token punctuation">,</span>
+          <span class="token string">"Powered by &lt;a href='http://www.phpliteadmin\\.org/'"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"icon"</span><span class="token operator">:</span> <span class="token string">"phpliteadmin.png"</span><span class="token punctuation">,</span>
+        <span class="token property">"implies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">"PHP"</span><span class="token punctuation">,</span>
+          <span class="token string">"SQLite"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://www.phpliteadmin.org/"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token property">"thttpd"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Server"</span><span class="token punctuation">,</span>
+        <span class="token property">"headers"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"Server"</span><span class="token operator">:</span> <span class="token string">"\bthttpd(?:/([\\d.]+))?\\;version:\\1"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"icon"</span><span class="token operator">:</span> <span class="token string">"thttpd.png"</span><span class="token punctuation">,</span>
+        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://acme.com/software/thttpd"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre>
+<p>主要从两个方面进行识别一是headers头识别，二是html内容识别。无对应规则可不写例如下面JBoss:</p>
+<pre class=" language-json"><code class="language-json"><span class="token property">"Jboss"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Application"</span><span class="token punctuation">,</span>
+        <span class="token property">"html"</span><span class="token operator">:</span> <span class="token string">"Your JBoss Application Server"</span><span class="token punctuation">,</span>
+        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://jboss.org"</span>
+      <span class="token punctuation">}</span></code></pre>
+<h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><p><img src="https://picbed.easy233.top//imgimage-20210324111641053.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimage-20210324111811080.png" alt=""></p>
 
             </div>
             <hr/>
@@ -534,7 +561,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2021/03/17/shi-yong-wireshark-fen-xi-nmap-sao-miao-fang-shi/">https://www.easy233.top/2021/03/17/shi-yong-wireshark-fen-xi-nmap-sao-miao-fang-shi/</a>
+                    <a href="https://www.easy233.top/2021/03/24/zhi-wen-shi-bie-xiao-gong-ju-finger/">https://www.easy233.top/2021/03/24/zhi-wen-shi-bie-xiao-gong-ju-finger/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -572,8 +599,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
-                                    <span class="chip bg-color">计算机网络</span>
+                                <a href="/tags/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">
+                                    <span class="chip bg-color">安全工具开发</span>
                                 </a>
                             
                         </div>
@@ -741,9 +768,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/24/zhi-wen-shi-bie-xiao-gong-ju-finger/">
                     <div class="card-image">
@@ -767,9 +795,9 @@ Ma
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-24
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-24
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -778,6 +806,7 @@ Ma
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -796,23 +825,25 @@ Ma
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/31/2020-nian-du-zong-jie/">
+                <a href="/2021/03/17/shi-yong-wireshark-fen-xi-nmap-sao-miao-fang-shi/">
                     <div class="card-image">
                         
-                        <img src="https://picbed.easy233.top//imgadult-1867665_1920.jpg" class="responsive-img" alt="2020年年度总结">
+                        <img src="https://picbed.easy233.top//imgimage-20210317162336056.png" class="responsive-img" alt="使用wireshark分析nmap扫描方式">
                         
-                        <span class="card-title">2020年年度总结</span>
+                        <span class="card-title">使用wireshark分析nmap扫描方式</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言今天是2020年最后一天，不禁感叹时光之飞逝，自已的大学生涯也过完了大半。我每周都有写反思总结的习惯，我很享受这个过程，感觉键盘敲下的时候就如同和自已的心灵在对话。得益这个习惯我可以在年末回顾这一整年来自已的心路历程，能够再次读取以往某
+                            前言主机ip:192.168.10.40
+扫描主机ip:192.168.10.54
+使用全连接模式扫描(-sT)原理:通过调用TCP connect()来向目标端口发送连接请求通过发送SYN数据包请求建立连接，若靶机开启端口则会建立完整的T
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-31
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-17
                             </span>
                         <span class="publish-author">
                             
@@ -825,8 +856,8 @@ Ma
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%8F%8D%E6%80%9D%E6%80%BB%E7%BB%93/">
-                        <span class="chip bg-color">反思总结</span>
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                        <span class="chip bg-color">计算机网络</span>
                     </a>
                     
                 </div>
