@@ -477,7 +477,6 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一直苦于没有用的顺手的web指纹识别工具，学习前辈s7ckTeam的<a href="https://github.com/s7ckTeam/Glass" target="_blank" rel="noopener">Glass</a>和broken5的<a href="https://github.com/broken5/WebAliveScan" target="_blank" rel="noopener">WebAliveScan</a>优秀开源程序开发的轻量型web指纹工具。</p>
-<p>Github地址:<a href="https://github.com/EASY233/Finger" target="_blank" rel="noopener">https://github.com/EASY233/Finger</a></p>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="开发语言"><a href="#开发语言" class="headerlink" title="开发语言"></a>开发语言</h3><ul>
 <li>python3</li>
 </ul>
@@ -488,7 +487,13 @@
 </ul>
 <h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code>git clone https://github.com/EASY233/Finger
 cd Finger
-pip3 install -r requirements.txt</code></pre><h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><pre><code>optional arguments:
+pip3 install -r requirements.txt</code></pre><h2 id="跟新说明"><a href="#跟新说明" class="headerlink" title="跟新说明"></a>跟新说明</h2><h3 id="V2-0跟新"><a href="#V2-0跟新" class="headerlink" title="V2.0跟新"></a>V2.0跟新</h3><ul>
+<li>添加了md5识别方法，可在<strong>config/config.py</strong>配置文件种开启该功能默认关闭。</li>
+<li>指纹库使用<a href="https://github.com/chorsley/python-Wappalyzer" target="_blank" rel="noopener">wappalyzer</a>库()和<a href="https://github.com/TideSec/TideFinger" target="_blank" rel="noopener">TideFinger</a>的cms指纹库。</li>
+<li>优化了整个识别算法，让其识别更加准确更加高效。</li>
+<li>修复了若干bug</li>
+</ul>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><pre><code>optional arguments:
   -h, --help  show this help message and exit
 
 Target:
@@ -504,40 +509,48 @@ Usage:
 输出方式:
 支持html，json，xml三种格式默认html格式
 用法:python3 Finger.py -f xx.txt -o json</code></pre><h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>默认线程数为20实际需要修改可以在<code>config/config.py</code>中进行修改</p>
-<pre><code>threads = 20</code></pre><p>指纹识别库在<code>config/apps.json</code>中可执行添加修改,添加修改规则:</p>
-<p>例如以下:</p>
-<pre class=" language-json"><code class="language-json"><span class="token property">"phpliteadmin"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Application"</span><span class="token punctuation">,</span>
-        <span class="token property">"html"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-          <span class="token string">"&lt;span id='logo'>phpLiteAdmin&lt;/span> &lt;span id='version'>v([0-9.]+)&lt;\\;version:\\1"</span><span class="token punctuation">,</span>
-          <span class="token string">"&lt;!-- Copyright [0-9]+ phpLiteAdmin (?:http://www.phpliteadmin.org/) -->"</span><span class="token punctuation">,</span>
-          <span class="token string">"Powered by &lt;a href='http://www.phpliteadmin\\.org/'"</span>
-        <span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token property">"icon"</span><span class="token operator">:</span> <span class="token string">"phpliteadmin.png"</span><span class="token punctuation">,</span>
-        <span class="token property">"implies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-          <span class="token string">"PHP"</span><span class="token punctuation">,</span>
-          <span class="token string">"SQLite"</span>
-        <span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://www.phpliteadmin.org/"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token property">"thttpd"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Server"</span><span class="token punctuation">,</span>
-        <span class="token property">"headers"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"Server"</span><span class="token operator">:</span> <span class="token string">"\bthttpd(?:/([\\d.]+))?\\;version:\\1"</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token property">"icon"</span><span class="token operator">:</span> <span class="token string">"thttpd.png"</span><span class="token punctuation">,</span>
-        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://acme.com/software/thttpd"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-</code></pre>
-<p>主要从两个方面进行识别一是headers头识别，二是html内容识别。无对应规则可不写例如下面JBoss:</p>
-<pre class=" language-json"><code class="language-json"><span class="token property">"Jboss"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"cats"</span><span class="token operator">:</span> <span class="token string">"Application"</span><span class="token punctuation">,</span>
-        <span class="token property">"html"</span><span class="token operator">:</span> <span class="token string">"Your JBoss Application Server"</span><span class="token punctuation">,</span>
-        <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"http://jboss.org"</span>
-      <span class="token punctuation">}</span></code></pre>
-<h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><p><img src="https://picbed.easy233.top//imgimage-20210324111641053.png" alt=""></p>
-<p>扫描报告样式取自Glass样式报告:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210324111811080.png" alt=""></p>
+<pre><code>threads = 20</code></pre><p>指纹识别库在<code>library/end.json</code>中可执行添加修改,添加修改规则:</p>
+<p>支持的规则如下:</p>
+<ul>
+<li>从headers头中匹配规则</li>
+<li>从html内容中匹配规则</li>
+<li>从script中匹配规则</li>
+<li>从meta中匹配规则</li>
+<li>请求特定的页面进行规则匹配(md5或者keyword)</li>
+</ul>
+<p>下面是一些例子:</p>
+<pre><code>{
+    &quot;name&quot;: &quot;WordPress&quot;,
+    &quot;cats&quot;: &quot;Application&quot;,
+    &quot;html&quot;: [&quot;&lt;link rel=[\&quot;&#39;]stylesheet[\&quot;&#39;] [^&gt;]+wp-(?:content|includes)&quot;, &quot;&lt;link[^&gt;]+s\\d+\\.wp\\.com&quot;],
+    &quot;meta&quot;: {
+        &quot;generator&quot;: &quot;WordPress( [\\d.]+)?\\;version:\\1&quot;
+    }
+    , {
+    &quot;name&quot;: &quot;phpSQLiteCMS&quot;,
+    &quot;cats&quot;: &quot;Application&quot;,
+    &quot;meta&quot;: {
+        &quot;generator&quot;: &quot;^phpSQLiteCMS(?: (.+))?$\\;version:\\1&quot;
+    }
+},{
+    &quot;name&quot;: &quot;非凡建站&quot;,
+    &quot;cats&quot;: &quot;Application&quot;,
+    &quot;matches&quot;: {
+        &quot;url&quot;: &quot;/images/Jobs_resume_up.gif&quot;,
+        &quot;md5&quot;: &quot;041718edc41fb801317c3a0b1f4b7ca9&quot;
+    }
+}, {
+    &quot;name&quot;: &quot;非凡建站&quot;,
+    &quot;cats&quot;: &quot;Application&quot;,
+    &quot;matches&quot;: {
+        &quot;url&quot;: &quot;/qq/images/mid4.gif&quot;,
+        &quot;md5&quot;: &quot;a2d236f6cf10df3342e017a8aea7de31&quot;
+    }
+}</code></pre><p>一些注意事项:</p>
+<ul>
+<li>注意按照格式填写规则，name识别名字和cats识别类型必须要填。cats目前只支持四类,Application(应用)，Language(语言)，System(操作系统),Server(服务)。</li>
+</ul>
+<h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><p><img src="https://picbed.easy233.top//imgimage-20210413095917458.png" alt=""><br>扫描报告样式取自Glass样式报告:<br><img src="https://picbed.easy233.top//imgimage-20210413095949209.png" alt=""></p>
 
             </div>
             <hr/>
@@ -787,7 +800,13 @@ Usage:
                     <div class="summary block-with-text">
                         
                             前言一直苦于没有用的顺手的web指纹识别工具，学习前辈s7ckTeam的Glass和broken5的WebAliveScan优秀开源程序开发的轻量型web指纹工具。
-Github地址:https://github.com/EASY233/F
+安装开发语言
+python3
+
+运行环境
+Linux
+Windows
+Ma
                         
                     </div>
                     <div class="publish-info">
