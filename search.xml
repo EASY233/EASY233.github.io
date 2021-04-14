@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>数据采集工具-Gather</title>
+      <link href="/2021/04/14/shu-ju-cai-ji-gong-ju-gather/"/>
+      <url>/2021/04/14/shu-ju-cai-ji-gong-ju-gather/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Gather是一个数据采集工具，使用python3编写，使用的时候请确保运行环境为python3.6以上。Gather支持Fofa，钟馗之眼(Zoomeye),Shodan的数据采集。</p><h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><p>Gather极力避免各种繁杂的参数，使用-aF or aZ or -aS 指定特定采集方式即可。</p><pre><code>git clone https://github.com/EASY233/Gather.gitpip install -r requirements.txtpython3 Gather.py -h  -aF         Using fofa to collect data  -aZ         Using Zoomeye to collect data  -aS         Using Shodan to collect data</code></pre><h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>在根目录下的<code>config.py</code>进行api等配置,注意fofa不是使用api进行调用而是使用爬虫的方式，需要填入fofa_token(没有钱开通会员，没有办法使用api进行测试所以没有写api调用版本~)。</p><pre class=" language-txt"><code class="language-txt">fofa_token = ""# 一轮抓取结束后，休眠时间，防止被fofa拉黑time_sleep = 5time_out = (10, 10)page_host_limit = 10# Zoomeye配置文件email = ""password = ""# Shodan配置文件api_key = ""</code></pre><h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><p>通过fofa进行数据采集，该脚本修改自开源项目:[<a href="https://github.com/FightingForWhat/fofa_spider-1.0.3" target="_blank" rel="noopener">fofa_spider-1.0.3</a></p><p><img src="https://picbed.easy233.top//imgimgimage-20210414210322955.png" alt=""></p><p>通过Zoomeye进行数据采集:</p><p><img src="https://picbed.easy233.top//imgimgimage-20210414210322955.png" alt=""></p><p>通过Shodan进行数据采集:</p><p><img src="https://picbed.easy233.top//imgimgimage-20210414210322955.png" alt=""></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 安全工具开发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>指纹识别工具-Finger</title>
       <link href="/2021/03/24/zhi-wen-shi-bie-xiao-gong-ju-finger/"/>
       <url>/2021/03/24/zhi-wen-shi-bie-xiao-gong-ju-finger/</url>
