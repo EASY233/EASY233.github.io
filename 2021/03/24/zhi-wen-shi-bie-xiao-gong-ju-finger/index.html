@@ -487,8 +487,12 @@
 </ul>
 <h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><pre><code>git clone https://github.com/EASY233/Finger
 cd Finger
-pip3 install -r requirements.txt</code></pre><h2 id="跟新说明"><a href="#跟新说明" class="headerlink" title="跟新说明"></a>跟新说明</h2><h3 id="V2-0跟新"><a href="#V2-0跟新" class="headerlink" title="V2.0跟新"></a>V2.0跟新</h3><ul>
-<li>添加了md5识别方法，可在<strong>config/config.py</strong>配置文件种开启该功能默认关闭。</li>
+pip3 install -r requirements.txt</code></pre><h2 id="跟新说明"><a href="#跟新说明" class="headerlink" title="跟新说明"></a>跟新说明</h2><h3 id="V3-0跟新"><a href="#V3-0跟新" class="headerlink" title="V3.0跟新"></a>V3.0跟新</h3><ul>
+<li>添加了数据库(sqlite)支持功能模块，默认开启可在<strong>config/config.py</strong>配置文件中关闭该功能,每一次指纹识别数据都会自动添加到数据库中如果发现之前的数据已经存在会覆盖曾经的数据。</li>
+<li>修复了一些bug</li>
+</ul>
+<h3 id="V2-0跟新"><a href="#V2-0跟新" class="headerlink" title="V2.0跟新"></a>V2.0跟新</h3><ul>
+<li>添加了md5识别方法，可在<strong>config/config.py</strong>配置文件中开启该功能默认关闭。</li>
 <li>指纹库使用<a href="https://github.com/chorsley/python-Wappalyzer" target="_blank" rel="noopener">wappalyzer</a>库()和<a href="https://github.com/TideSec/TideFinger" target="_blank" rel="noopener">TideFinger</a>的cms指纹库。</li>
 <li>优化了整个识别算法，让其识别更加准确更加高效。</li>
 <li>修复了若干bug</li>
@@ -502,13 +506,19 @@ Target:
 
 Output:
   -o OUTPUT   Select the output format.eg(html,json,xml,default:html)
+DB:
+  -type TYPE  Select how you want to query
+  -key KEY    search for the keyword
 
 Usage:
 单一URL识别: python3 Finger.py -u http://www.baidu.com or www.baidu.com 
 批量URL识别: python3 Finger.py -f xx.txt
 输出方式:
 支持html，json，xml三种格式默认html格式
-用法:python3 Finger.py -f xx.txt -o json</code></pre><h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>默认线程数为20实际需要修改可以在<code>config/config.py</code>中进行修改</p>
+用法:python3 Finger.py -f xx.txt -o json
+从数据库中查询信息:
+-type 查询方式可通过url，title，application,status等等方式支持模糊查询
+-key 查询关键字</code></pre><h3 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h3><p>默认线程数为20实际需要修改可以在<code>config/config.py</code>中进行修改</p>
 <pre><code>threads = 20</code></pre><p>指纹识别库在<code>library/end.json</code>中可执行添加修改,添加修改规则:</p>
 <p>支持的规则如下:</p>
 <ul>
@@ -550,6 +560,12 @@ Usage:
 <ul>
 <li>注意按照格式填写规则，name识别名字和cats识别类型必须要填。cats目前只支持四类,Application(应用)，Language(语言)，System(操作系统),Server(服务)。</li>
 </ul>
+<h3 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h3><p>每一次指纹识别数据都会自动添加到数据库中如果发现之前的数据已经存在会覆盖曾经的数据。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210419210749211.png" alt=""></p>
+<p>并且支持直接从数据库中提取我们需要的数据:</p>
+<p>从数据库中的查询title中含有wordpress的数据。</p>
+<p><code>python3 .\Finger.py -type title -key wordpress</code></p>
+<p><img src="https://picbed.easy233.top//imgimage-20210419210929577.png" alt=""></p>
 <h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><p><img src="https://picbed.easy233.top//imgimage-20210413095917458.png" alt=""><br>扫描报告样式取自Glass样式报告:<br><img src="https://picbed.easy233.top//imgimage-20210413095949209.png" alt=""></p>
 
             </div>
