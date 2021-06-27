@@ -476,7 +476,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在开发工具使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。</p>
 <h2 id="爬虫乱码问题"><a href="#爬虫乱码问题" class="headerlink" title="爬虫乱码问题"></a>爬虫乱码问题</h2><h3 id="text方法的缺陷"><a href="#text方法的缺陷" class="headerlink" title=".text方法的缺陷"></a>.text方法的缺陷</h3><p>首先我们思考一下Python-requests中的.content和.text方法的区别。</p>
 <ul>
 <li>.text 返回的是Beautifulsoup根据猜测的编码方式将content内容编码成字符串。</li>
@@ -506,6 +506,10 @@ rsp<span class="token punctuation">.</span>encoding <span class="token operator"
 urllib3<span class="token punctuation">.</span>disable_warnings<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
 <p>最终效果:</p>
 <p><img src="https://picbed.easy233.top//imgimage-20210418103437443.png" alt=""></p>
+<h2 id="stream参数"><a href="#stream参数" class="headerlink" title="stream参数"></a>stream参数</h2><p>在测试Finger的时候发现当请求类似下载app等资源的网站的时候会严重拖慢Finger的扫描速度。原因也非常简单requests库默认会把所有response数据包给下载下来，因为数据包比正常网站大太多了所以拖累了扫描的速度。</p>
+<p><strong>解决方法也很简单:</strong>在requests请求中追加了<code>stream=True</code>参数，此时仅有响应头被下载下来了，连接保持打开状态，当满足了我们的要求<code>int(response.headers.get(&quot;content-length&quot;,default=1000)) &lt; 100000:</code> 才会访问响应包资源，可根据自身需求修改该阀值。</p>
+<p>Finger修改后的源码如下:</p>
+<p><img src="https://picbed.easy233.top//imgimage-20210627104323410.png" alt=""></p>
 
             </div>
             <hr/>

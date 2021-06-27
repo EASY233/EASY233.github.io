@@ -98,7 +98,7 @@
     <link href="https://www.easy233.top/2021/04/18/python-zhong-requests-ku-shi-yong-zhu-yi-zhi-nan/"/>
     <id>https://www.easy233.top/2021/04/18/python-zhong-requests-ku-shi-yong-zhu-yi-zhi-nan/</id>
     <published>2021-04-18T01:50:13.000Z</published>
-    <updated>2021-04-18T02:42:08.340Z</updated>
+    <updated>2021-06-27T02:44:02.594Z</updated>
     
     <summary type="html">
     
@@ -106,7 +106,7 @@
       
         
         
-          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。&lt;/p&gt;
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近在开发工具使用requests库的时候发现了一些以前自已没有注意到的问题，这里记录一下。&lt;/p&gt;
 &lt;h2 id=&quot;爬虫乱码问题&quot;&gt;&lt;a
         
       
