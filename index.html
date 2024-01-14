@@ -46,6 +46,22 @@
   
   
 
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+
+</script>
+
+
 
   
 
@@ -201,7 +217,7 @@
             
 
   
-    <article id="post-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-CVE-2023-22809-Linux提权漏洞分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
@@ -209,7 +225,7 @@
   
     <h1 itemprop="name">
 	
-	  <a class="article-title" href="/2024/01/12/linux/" target="_blank">CVE-2023-22809-Linux提权漏洞分析</a>
+	  <a class="article-title" href="/2024/01/12/CVE-2023-22809-Linux%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" target="_blank">CVE-2023-22809-Linux提权漏洞分析</a>
   
     </h1>
   
@@ -217,7 +233,7 @@
 
   
   
-<a href="/2024/01/12/linux/" class="archive-article-date">
+<a href="/2024/01/12/CVE-2023-22809-Linux%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="archive-article-date">
         <time datetime="2024-01-12T09:56:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-12</time>
 </a>
 
@@ -230,9 +246,9 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>2023年爆出提权漏洞CVE-2023-22809，一开始看到很多文章对这个漏洞的介绍描述感觉挺严重的，说是适用范围广、利用难度低，CVSS评分给到了7.8。但我仔细分析发现该漏洞限制挺多的，其实并没有那么好用。</p>
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>2023年爆出提权漏洞CVE-2023-22809，一开始看到很多文章对这个漏洞的介绍描述感觉挺严重的，适用范围广、利用难度低，CVSS评分给到了7.8。但我仔细分析发现该漏洞限制挺多的，其实并没有那么好用。</p>
     
-    <a class="article-more-a" href="/2024/01/12/linux/#more">more >></a>
+    <a class="article-more-a" href="/2024/01/12/CVE-2023-22809-Linux%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/#more">more >></a>
     
     
 
@@ -259,7 +275,7 @@
 
     
     <p class="article-more-link">
-      <a class="article-more-a" href="/2024/01/12/linux/">展开全文 >></a>
+      <a class="article-more-a" href="/2024/01/12/CVE-2023-22809-Linux%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">展开全文 >></a>
     </p>
     
 
@@ -1150,18 +1166,6 @@
   </div>
   
   
-	<script src="/lib/busuanzi.pure.js"></script>
-	
-  
-  
-	
-	<span id="busuanzi_container_site_pv" style="display:none">
-		本站总访问量<span id="busuanzi_value_site_pv"></span>次	
-	        <span class="post-meta-divider" >|</span>
-	</span>
-  	<span id="busuanzi_container_site_uv" style='display:none'>
-  		本站访客数<span id="busuanzi_value_site_uv"></span>人
-  	</span>
   
 </footer>
 
